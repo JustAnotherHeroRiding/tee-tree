@@ -3,6 +3,9 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
 import { LoadingPage } from "~/components/loading";
+import { PageLayout } from "~/components/layout";
+import { PostView } from "~/components/postview";
+import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 
 
 const ProfileFeed = (props: { userId: string }) => {
@@ -53,19 +56,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     </>
   );
 };
-import { createServerSideHelpers } from '@trpc/react-query/server';
-import { appRouter } from "~/server/api/root";
-import { prisma } from "~/server/db";
-import superjson from "superjson";
-import { PageLayout } from "~/components/layout";
-import { PostView } from "~/components/postview";
+
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: { prisma, userId: null },
-    transformer: superjson, // optional - adds superjson serialization
-  });
+  const helpers = generateSsgHelper();
 
   const slug = context.params?.slug;
 
@@ -85,7 +79,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths = () => {
   return {
-    paths: ["/@justanotherheroriding"],
+    paths: [""],
     fallback: 'blocking'
   };
 }
