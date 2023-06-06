@@ -7,6 +7,10 @@ import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons'
+import Link from "next/link";
+
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
@@ -39,7 +43,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
+
         <div className=" bg-slate-600 h-36 relative">
+          <div></div>
+        <Link href={"/"} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
+        px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
+        transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
           <Image src={data.profilePicture}
             alt={`${data.username ?? ""}'s profile pic `}
             className="-mb-[64px] absolute bottom-0 left-0 ml-4 rounded-full border-2 border-black bg-black"

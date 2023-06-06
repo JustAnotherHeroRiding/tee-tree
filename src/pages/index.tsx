@@ -12,6 +12,8 @@ import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
 import Link from "next/link";
 
+
+
 dayjs.extend(relativeTime);
 
 
@@ -95,13 +97,19 @@ const Feed = () => {
 
 const Home: NextPage = () => {
 
-  const { isLoaded: userLoaded, isSignedIn } = useUser();
+  const { isLoaded: userLoaded, isSignedIn, user } = useUser();
+
+  const username = user?.username;
+
+
 
   // Start fetching asap
   api.posts.getAll.useQuery();
 
   // Return empty div if BOTH are not loaded, since user tends to load faster
-  if (!userLoaded) return <div></div>
+  if (!userLoaded) return <LoadingPage />
+
+  if (isSignedIn && !username) return <div></div>
 
 
 
@@ -118,7 +126,7 @@ const Home: NextPage = () => {
         {isSignedIn &&
           <div className="flex flex-col w-full">
             <div className="flex flex-row pb-4 border-b border-slate-400 mb-4">
-              <Link href={"@justanotherhero"} 
+              <Link href={username ? `@${username}` : "/"} 
               className="flex cursor-pointer px-4 py-2 rounded-3xl border outline-none border-slate-400
                hover:bg-slate-700 w-fit">Profile</Link>
             <SignOutButton>                

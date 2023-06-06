@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.19.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@prisma/client": "^4.14.0",
     "@t3-oss/env-nextjs": "^0.3.1",
     "@tanstack/react-query": "^4.29.7",
