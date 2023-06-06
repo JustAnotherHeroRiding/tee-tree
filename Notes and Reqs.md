@@ -1,7 +1,23 @@
-DATABASE_URL='mysql://g2ao71aw8zvplhd4g66k:pscale_pw_3346sPndkdwaeI1bv2RQ1mtca5ZlrtwNSf81Ajg5H5g@aws.connect.psdb.cloud/tee-tree?sslaccept=strict' goes in .env
+## T3 Basics - let's learn how to use cutting edge tech
+
+### Basic Components
+- Typescript - I'm still not sure what type safe means but I guess it has to do with making sure that the javascript code does not error out while the web app is online by catching possible null values and exceptions
+- Tailwind - I've been using it for months now and It makes CSS quick and easy
+- TRPC - This seems to be the router which actually makes the fetch requests that I made with the fetch api before, I can also write all of the backend routes and the data they will return using it
+- Next.js - Compared to Vite this seems to be a much more fully realized framework including the routing which is already implemented, in comparison vite seems to be just the front end. A lot to learn here.
+- Clerk for auth - The auth solution 
+- Prisma for ORM - Creating the database schema and interacting with the data provided by planetscale
+- Planetscale for the postgres database 
+- Vercel for hosting - Free hosting for hobby users, automatic deployments
+- Axiom for logging - Still not quite sure what this helps us with
 
 
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_bG95YWwtc3F1aXJyZWwtODAuY2xlcmsuYWNjb3VudHMuZGV2JA
-CLERK_SECRET_KEY=sk_test_tkplpvGF86nttk8aSI6WSoXZpVYaO7pQE72HlvXQbd
-## Clerk ENVs
+# Improvements
 
+Let's implement some features I have already implemented before in order to learn the stack.
+
+## Profile
+- Allow users to upload a background image for the profile background which will let the users select the part they want displayed just like twitter
+- Like and unlike
+- Following users, this might be tricky as the users are stored in clerk
+- Comments for tweets, likes and further comments for them too
