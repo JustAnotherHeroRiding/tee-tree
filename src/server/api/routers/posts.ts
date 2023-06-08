@@ -40,7 +40,7 @@ const addUserDataToPosts = async (posts: Post[]) => {
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(3, "1 m"),
+  limiter: Ratelimit.slidingWindow(100, "10 s"),
   analytics: true,
   /**
    * Optional prefix for the keys used in redis. This is useful if you want to share a redis
@@ -105,6 +105,7 @@ export const postsRouter = createTRPCRouter({
   )
   .mutation(async ({ ctx, input }) => {
     const authorId = ctx.userId;
+
 
     const { success } = await ratelimit.limit(authorId)
 
