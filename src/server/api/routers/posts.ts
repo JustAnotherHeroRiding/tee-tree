@@ -7,9 +7,15 @@ import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/ap
 import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
-import type { Post } from "@prisma/client";
+import type { Post, Like } from "@prisma/client";
 
-const addUserDataToPosts = async (posts: Post[]) => {
+
+type ExtendedPost = Post & {
+  likes: Like[];
+};
+
+
+const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   const users =
     (await clerkClient.users.getUserList({
       userId: posts.map((post) => post.authorId),
@@ -40,7 +46,7 @@ const addUserDataToPosts = async (posts: Post[]) => {
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(100, "10 s"),
+  limiter: Ratelimit.slidingWindow(3, "1 m"),
   analytics: true,
   /**
    * Optional prefix for the keys used in redis. This is useful if you want to share a redis
@@ -59,6 +65,9 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const post = await ctx.prisma.post.findUnique({
         where: { id: input.id },
+        include: {
+          likes: true, // Include the likes relation in the result
+        },
       });
 
       if (!post) {
@@ -77,7 +86,10 @@ export const postsRouter = createTRPCRouter({
     const posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [
-        { createdAt: 'desc' }]
+        { createdAt: 'desc' }],
+        include: {
+          likes: true, // Include the likes relation in the result
+        },
     });
 
 
@@ -95,6 +107,9 @@ export const postsRouter = createTRPCRouter({
       },
       take: 100,
       orderBy: [{ createdAt: 'desc' }],
+      include: {
+        likes: true, // Include the likes relation in the result
+      },
     }).then(addUserDataToPosts)
     ),
 
@@ -108,9 +123,9 @@ export const postsRouter = createTRPCRouter({
       const authorId = ctx.userId;
 
 
-      const { success } = await ratelimit.limit(authorId)
+      //const { success } = await ratelimit.limit(authorId)
 
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" })
+      //if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" })
 
       const post = await ctx.prisma.post.create({
         data: {

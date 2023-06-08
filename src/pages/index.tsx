@@ -50,6 +50,7 @@ const CreatePostWizard = () => {
       alt="Profile Image"
       width={56}
       height={56}
+      priority={true}
     />
     <input placeholder="Type Some emojis"
       className="bg-transparent grow outline-none"
