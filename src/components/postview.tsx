@@ -47,8 +47,14 @@ export const PostView = (props: PostWithUser) => {
 
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
-      void ctx.posts.getAll.invalidate();
-      console.log("Post Liked")
+      if (location.pathname === '/') {
+        void ctx.posts.getAll.invalidate();
+      } else if (location.pathname.startsWith('/post/')) {
+        void ctx.posts.getById.invalidate();
+      } else if (location.pathname.startsWith('/@')) {
+        void ctx.posts.getPostsByUserId.invalidate();
+      }
+      console.log("Post Liked");
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content;
@@ -81,9 +87,9 @@ export const PostView = (props: PostWithUser) => {
         </Link>
         <span
             onClick={() => mutate({postId: post.id})}
-          className={`w-fit transform origin-center cursor-pointer transition-all duration-300 hover:scale-125 text-3xl 
-          ${liked ? "text-red-600" : "hover:text-red-600"
-            } whitespace-normal`}
+          className={`w-fit transform origin-center cursor-pointer text-3xl transition-all duration-300 
+          ${liked ? "text-red-600" : "hover:text-red-300"
+            } whitespace-normal ${isLiking ? "animate-pulse text-red-900 scale-125" : "hover:scale-110"}`}
         >
           ♥ {likes}
         </span>

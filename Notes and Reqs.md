@@ -18,6 +18,6 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Profile
 - Allow users to upload a background image for the profile background which will let the users select the part they want displayed just like twitter
-- Like and unlike
+- Like and unlike #DONE 
 - Following users, this might be tricky as the users are stored in clerk
 - Comments for tweets, likes and further comments for them too
