@@ -1,11 +1,12 @@
 
 import Image from "next/image";
-import type { RouterOutputs } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import dayjs from 'dayjs'
 import Link from "next/link";
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState, useEffect } from "react";
-
+import toast from "react-hot-toast";
+import { useUser } from "@clerk/nextjs";
 
 dayjs.extend(relativeTime);
 
@@ -13,35 +14,52 @@ type PostWithUser = RouterOutputs['posts']['getAll'][number];
 
 export const PostView = (props: PostWithUser) => {
   const { post, author } = props;
-
+  
   const [liked, setLiked] = useState(false)
+
+  const { user } = useUser();
+
 
   type Like = {
     authorId: string;
   };
-
-
-
+  
   useEffect(() => {
     function authorLikedPost(authorId: string, likes: Like[]): boolean {
       return likes.some((like) => like.authorId === authorId);
     }
+    if (user) {
+      setLiked(authorLikedPost(user.id, post.likes));
+    } else {
+      setLiked(false);
+    }
+  }, [user, post.likes]);
   
-    setLiked(authorLikedPost(author.id, post.likes));
-  }, [author.id, post.likes]);
-  
+  const [likes, setLikes] = useState(0)
+
+  useEffect(() => {
+    setLikes(post.likes.length)
+  }, [post.likes])
+
+  const ctx = api.useContext();
 
 
 
+  const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
+    onSuccess: () => {
+      void ctx.posts.getAll.invalidate();
+      console.log("Post Liked")
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to Like! Please try again later.")
+      }
+    }
+  });
 
-  // write a function that will check if the author.id is included in the post.likes array which includes all of the likes that the post has
-
-
-  let likes = 0;
-
-  if (post.likes.length) {
-    likes = post.likes.length
-  }
 
   return (
     <div key={post.id}
@@ -62,7 +80,8 @@ export const PostView = (props: PostWithUser) => {
           <br />
         </Link>
         <span
-          className={`w-fit transform origin-center transition-all duration-300 hover:scale-125 text-3xl 
+            onClick={() => mutate({postId: post.id})}
+          className={`w-fit transform origin-center cursor-pointer transition-all duration-300 hover:scale-125 text-3xl 
           ${liked ? "text-red-600" : "hover:text-red-600"
             } whitespace-normal`}
         >

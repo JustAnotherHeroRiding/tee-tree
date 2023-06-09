@@ -87,9 +87,9 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [
         { createdAt: 'desc' }],
-        include: {
-          likes: true, // Include the likes relation in the result
-        },
+      include: {
+        likes: true, // Include the likes relation in the result
+      },
     });
 
 
@@ -136,4 +136,35 @@ export const postsRouter = createTRPCRouter({
 
       return post;
     }),
+
+  likePost: privateProcedure
+    .input(z.object({ postId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+      const existingLike = await ctx.prisma.like.findFirst({
+        where: {
+          postId: input.postId,
+          authorId: authorId
+        },
+      });
+
+      if (existingLike) {
+        console.log("existing like found");
+        // If the user already liked the post, remove the like
+        await ctx.prisma.like.delete({
+          where: { id: existingLike.id },
+        });
+      } else {
+        // If the user hasn't liked the post yet, add a new like
+        await ctx.prisma.like.create({
+          data: {
+            postId: input.postId,
+            authorId: authorId,
+          },
+        });
+      }
+
+      return { success: true };
+    }),
+
 });
