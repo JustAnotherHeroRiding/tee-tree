@@ -61,7 +61,7 @@ export const PostView = (props: PostWithUser) => {
       if (errorMessage && errorMessage[0]) {
         toast.error(errorMessage[0]);
       } else {
-        toast.error("Failed to Like! Please try again later.")
+        toast.error("Failed to Like! Are you logged in?")
       }
     }
   });
@@ -85,14 +85,15 @@ export const PostView = (props: PostWithUser) => {
           <span className="text-2xl">{post.content}</span>
           <br />
         </Link>
-        <span
+        <button
+        disabled={isLiking}
             onClick={() => mutate({postId: post.id})}
           className={`w-fit transform origin-center cursor-pointer text-3xl transition-all duration-300 
           ${liked ? "text-red-600" : "hover:text-red-300"
             } whitespace-normal ${isLiking ? "animate-pulse text-red-900 scale-125" : "hover:scale-110"}`}
         >
           ♥ {likes}
-        </span>
+        </button>
 
       </div>
     </div>

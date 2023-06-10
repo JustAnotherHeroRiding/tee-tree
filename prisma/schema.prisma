@@ -37,4 +37,12 @@ model Post {
     @@index([authorId])
 }
 
+model Follow {
+  id          String @id @default(cuid())
+  followerId  String
+  followingId String
+
+  @@index([followerId, followingId], name: "UniqueFollow")
+}
+
 
