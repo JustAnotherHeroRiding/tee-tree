@@ -152,7 +152,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="p-4 text-2xl font-bold">
           {`@${data.username ?? ""}`}
         </div>
-        {followersData && (
+        {followersData ? (
           <div className="flex flex-row">
             <div className="flex flex-row items-center ml-4 mb-4 text-slate-300">
               <h1>Followers</h1>
@@ -163,7 +163,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <h1 className="text-bold text-2xl ml-2">{followingCount}</h1>
           </div>
           </div>
-          )}
+          ):
+          <div className="flex items-center justify-center"><LoadingSpinner size={32}/></div>
+        }
         <div className="border-b border-slate-400 w-full"></div>
         <ProfileFeed userId={data.id} />
       </PageLayout>
