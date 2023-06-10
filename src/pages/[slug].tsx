@@ -43,11 +43,17 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followers, setFollowers] = useState<Follow[]>([]);
   const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
 
   // Query followers using the enabled option
   const { data: followersData } = api.follow.getFollowersById.useQuery(
     { followedUserId: data?.id },
+    { enabled: shouldFetchFollowers }
+  );
+
+  const { data: followingData  } = api.follow.getFollowingById.useQuery(
+    { followingUserId: data?.id },
     { enabled: shouldFetchFollowers }
   );
 
@@ -63,9 +69,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     if (followersData) {
       setFollowers(followersData);
       setFollowerCount(followersData.length);
+      setFollowingCount(followingData?.length || 0);
 
     }
-  }, [followersData]);
+  }, [followersData, followingData]);
 
   // Check if the current user is following
   useEffect(() => {
@@ -121,16 +128,16 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
 
             {data.id !== user?.id && user &&
-            (followersData ?
-              (
-                <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
+              (followersData ?
+                (
+                  <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
          hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 
          ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
-                  onClick={() => mutate({ userToFollowId: data.id })}
-                  disabled={isFollowingLoading}
-                >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
-              ) : 
-              <div className="flex items-center justify-center"><LoadingSpinner/></div> )}
+                    onClick={() => mutate({ userToFollowId: data.id })}
+                    disabled={isFollowingLoading}
+                  >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
+                ) :
+                <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
 
           </div>
           <Image src={data.profilePicture}
@@ -138,18 +145,25 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             className="-mb-[64px] absolute bottom-0 left-0 ml-4 rounded-full border-2 border-black bg-black"
             width={128}
             height={128} />
-          {followersData && (
-            <div className="flex flex-col items-center">
-              <h1>Followers:</h1>
-              <h1 className="text-bold text-2xl">{followerCount}</h1>
-            </div>
-          )}
+          
 
         </div>
         <div className="h-[64px]"></div>
         <div className="p-4 text-2xl font-bold">
           {`@${data.username ?? ""}`}
         </div>
+        {followersData && (
+          <div className="flex flex-row">
+            <div className="flex flex-row items-center ml-4 mb-4 text-slate-300">
+              <h1>Followers</h1>
+              <h1 className="text-bold text-2xl ml-2">{followerCount}</h1>
+            </div>
+            <div className="flex flex-row items-center ml-4 mb-4 text-slate-300">
+            <h1>Following</h1>
+            <h1 className="text-bold text-2xl ml-2">{followingCount}</h1>
+          </div>
+          </div>
+          )}
         <div className="border-b border-slate-400 w-full"></div>
         <ProfileFeed userId={data.id} />
       </PageLayout>
