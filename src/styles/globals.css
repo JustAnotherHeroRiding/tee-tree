@@ -8,3 +8,16 @@ body {
 
     overscroll-behavior: none;
 }
+
+
+@layer components {
+
+
+    .modalparent {
+        @apply bg-black bg-opacity-40 fixed top-0 right-0 bottom-0 left-0 z-10
+    }
+
+    .modal {
+        @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[500px] min-h-[250px] max-h-[750px] shadow-md z-50
+    }
+}

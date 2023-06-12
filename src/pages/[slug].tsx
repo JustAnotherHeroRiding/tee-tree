@@ -8,7 +8,7 @@ import { PostView } from "~/components/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeftLong, faXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
@@ -46,13 +46,16 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const [followingCount, setFollowingCount] = useState(0);
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
 
+
+  const [showForm, setShowForm] = useState(false);
+
   // Query followers using the enabled option
   const { data: followersData } = api.follow.getFollowersById.useQuery(
     { followedUserId: data?.id },
     { enabled: shouldFetchFollowers }
   );
 
-  const { data: followingData  } = api.follow.getFollowingById.useQuery(
+  const { data: followingData } = api.follow.getFollowingById.useQuery(
     { followingUserId: data?.id },
     { enabled: shouldFetchFollowers }
   );
@@ -122,6 +125,26 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       <PageLayout>
 
         <div className=" bg-slate-600 h-36 relative">
+          <div className={showForm ?
+            'modalparent' : 'hidden'}>
+            <div className="mx-auto  w-full px-6 pb-12 pt-4 modal bg-black
+        border border-indigo-200 rounded-3xl">
+              <h1 className='ml-8 text-2xl'>Edit Profile</h1>
+              <button className="absolute top-4 left-4 rounded-3xl
+          px-1 py-1 hover:bg-slate-900 hover:text-white
+          " onClick={() => setShowForm(!showForm)}>
+                <FontAwesomeIcon className="w-6 h-6 rounded-3xl" icon={faXmark} />
+              </button>
+              <button className="absolute top-4 right-4 rounded-3xl
+          px-1 py-1 hover:bg-slate-900 hover:text-white
+          " onClick={() => setShowForm(!showForm)}>
+                Save
+              </button>
+
+
+
+            </div>
+          </div>
           <div className="flex items-center justify-between">
             <Link href={"/"} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
         px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
@@ -145,12 +168,14 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             className="-mb-[64px] absolute bottom-0 left-0 ml-4 rounded-full border-2 border-black bg-black"
             width={128}
             height={128} />
-          
+
 
         </div>
         <div className="h-[64px]"></div>
-        <div className="p-4 text-2xl font-bold">
-          {`@${data.username ?? ""}`}
+        <div className="flex flex-row items-center justify-between">
+          <h1 className="p-4 text-2xl font-bold">{`@${data.username ?? ""}`}</h1>
+          <button onClick={() => setShowForm(!showForm)} className="border rounded-3xl hover:bg-slate-600
+           border-slate-400 px-4 py-2">Edit Profile</button>
         </div>
         {followersData ? (
           <div className="flex flex-row">
@@ -159,12 +184,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               <h1 className="text-bold text-2xl ml-2">{followerCount}</h1>
             </div>
             <div className="flex flex-row items-center ml-4 mb-4 text-slate-300">
-            <h1>Following</h1>
-            <h1 className="text-bold text-2xl ml-2">{followingCount}</h1>
+              <h1>Following</h1>
+              <h1 className="text-bold text-2xl ml-2">{followingCount}</h1>
+            </div>
           </div>
-          </div>
-          ):
-          <div className="flex items-center justify-center"><LoadingSpinner size={32}/></div>
+        ) :
+          <div className="flex items-center justify-center"><LoadingSpinner size={32} /></div>
         }
         <div className="border-b border-slate-400 w-full"></div>
         <ProfileFeed userId={data.id} />
