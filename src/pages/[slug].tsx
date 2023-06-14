@@ -226,14 +226,16 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         </div>
         {followersData ? (
           <div className="flex flex-row">
-            <div className="flex flex-row items-center ml-4 mb-4 text-slate-300">
+            <Link href={username ? `following/@${username}` : "/"}>
+              <div className="flex flex-row items-center ml-4 mb-4 text-slate-300 hover:text-white">
               <h1>Followers</h1>
-              <h1 className="text-bold text-2xl ml-2">{followerCount}</h1>
-            </div>
-            <div className="flex flex-row items-center ml-4 mb-4 text-slate-300">
+               <h1 className="text-bold text-2xl ml-2">{followerCount}</h1>
+            </div></Link>
+            <Link href={username ? `followers/@${username}` : "/"}>
+              <div className="flex flex-row items-center ml-4 mb-4 text-slate-300 hover:text-white">
               <h1>Following</h1>
               <h1 className="text-bold text-2xl ml-2">{followingCount}</h1>
-            </div>
+            </div></Link>
           </div>
         ) :
           <div className="flex items-center justify-center"><LoadingSpinner size={32} /></div>

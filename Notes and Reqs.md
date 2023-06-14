@@ -16,8 +16,12 @@
 
 Let's implement some features I have already implemented before in order to learn the stack.
 
-## Profile
-- Allow users to upload a background image for the profile background which will let the users select the part they want displayed just like twitter
+## Profile and Posts
+- Allow users to upload a background image for the profile background which will let the users select the part they want displayed just like twitter - Ended up using Clerk's auth component. 
+- This could be a fun challenge separate from the Clerk Auth Changes
 - Like and unlike #DONE 
 - Following users, this might be tricky as the users are stored in clerk #DONE 
-- Comments for tweets, likes and further comments for them too
+- Comments for tweets, further comments for them too. Implement twitter threads
+- Retweeting
+- Posting pictures and not just text
+- See who the user is following and is being followed by. This will be 2 separate pages with their own urls just like twitter.
