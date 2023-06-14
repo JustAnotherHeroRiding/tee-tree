@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeftLong, faXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { useUser } from "@clerk/nextjs";
+import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import type { Follow } from "@prisma/client";
 
@@ -115,6 +115,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     }
   });
 
+
   return (
     <>
       <Head>
@@ -127,21 +128,67 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className=" bg-slate-600 h-36 relative">
           <div className={showForm ?
             'modalparent' : 'hidden'}>
-            <div className="mx-auto  w-full px-6 pb-12 pt-4 modal bg-black
-        border border-indigo-200 rounded-3xl">
-              <h1 className='ml-8 text-2xl'>Edit Profile</h1>
-              <button className="absolute top-4 left-4 rounded-3xl
+            <div className="mx-auto  w-full py-4 modal bg-black
+        border border-indigo-200 rounded-3xl gray-thin-scrollbar overflow-y-auto">
+              <div className="fixed top-0 flex flex-row w-full">
+                <h1 className='ml-16 text-2xl mt-4'>Edit profile</h1>
+                <button className="absolute top-4 left-4 rounded-3xl
           px-1 py-1 hover:bg-slate-900 hover:text-white
           " onClick={() => setShowForm(!showForm)}>
-                <FontAwesomeIcon className="w-6 h-6 rounded-3xl" icon={faXmark} />
-              </button>
-              <button className="absolute top-4 right-4 rounded-3xl
-          px-1 py-1 hover:bg-slate-900 hover:text-white
-          " onClick={() => setShowForm(!showForm)}>
-                Save
-              </button>
+                  <FontAwesomeIcon className="w-6 h-6 rounded-3xl" icon={faXmark} />
+                </button>
+                {/* <button className="rounded-3xl absolute top-4 right-4
+          px-4 py-2 hover:bg-slate-600 hover:text-white bg-slate-800
+          " onClick={() => saveChanges()}>
+                  Save
+                </button> */}
+              </div>
+              <div className="mt-12 flex justify-center items-center">
+              <UserProfile  appearance={{
+           elements: {
+            card: 'bg-slate-200 min-w-[300px] lg:max-w-[750px]',
+            scrollBox: "",
+            navbarMobileMenuButton: 'text-slate-900',
+            headerTitle: 'text-slate-900',
+            headerSubtitle: 'text-slate-900',
+            profileSectionTitleText :'text-slate-900'
 
+          }
+        }}/>
+              </div>
+             {/*   <div className=" bg-slate-600 h-36 relative w-full mt-12">
+                <div className="-mb-[64px] absolute bottom-0 left-0 ml-4 rounded-full border-2 border-slate-300 bg-black">
+                    <label htmlFor="profilePicture" className="cursor-pointer">
+                    <input type="file" name="profilePicture" id="profilePicture" className="hidden" />
+                      <FontAwesomeIcon
+                        className="w-10 h-10 absolute bg-slate-700 left-1/2 top-1/2 p-2 bg-opacity-75 hover:bg-slate-800 rounded-full -translate-x-1/2 -translate-y-1/2"
+                        icon={faCameraRetro}
+                      />
+                    </label>
+                  <Image src={data.profilePicture}
+                    alt={`${data.username ?? ""}'s profile pic `}
+                    className="rounded-full border-2 border-black bg-black"
+                    width={128}
+                    height={128} />
+                </div>
 
+              </div>
+               <div className="edit-profile-form h-16 mt-20">
+                <label className="text-gray-400">Name</label>
+                <textarea className="bg-transparent border-none resize-none outline-none px-2" maxLength={50}></textarea>
+              </div>
+              <div className="edit-profile-form h-28">
+                <label className="text-gray-400">Bio</label>
+                <textarea className="bg-transparent outline-none border-none resize-none h-28" maxLength={160}></textarea>
+              </div>
+              <div className="edit-profile-form h-16">
+                <label className="text-gray-400">Location</label>
+                <textarea className="bg-transparent border-none resize-none outline-none" maxLength={50}></textarea>
+              </div>
+              <div className="edit-profile-form h-16">
+                <label className="text-gray-400">Website</label>
+                <textarea className="bg-transparent border-none resize-none outline-none" maxLength={50}></textarea>
+              </div> */}
 
             </div>
           </div>
@@ -174,7 +221,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="h-[64px]"></div>
         <div className="flex flex-row items-center justify-between">
           <h1 className="p-4 text-2xl font-bold">{`@${data.username ?? ""}`}</h1>
-          <button onClick={() => setShowForm(!showForm)} className="border rounded-3xl hover:bg-slate-600
+          <button onClick={() => setShowForm(!showForm)} className="border rounded-3xl hover:bg-slate-600 mr-2
            border-slate-400 px-4 py-2">Edit Profile</button>
         </div>
         {followersData ? (
