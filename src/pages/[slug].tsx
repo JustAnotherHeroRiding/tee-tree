@@ -144,19 +144,19 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                 </button> */}
               </div>
               <div className="mt-12 flex justify-center items-center">
-              <UserProfile  appearance={{
-           elements: {
-            card: 'bg-slate-200 min-w-[300px] lg:max-w-[750px]',
-            scrollBox: "",
-            navbarMobileMenuButton: 'text-slate-900',
-            headerTitle: 'text-slate-900',
-            headerSubtitle: 'text-slate-900',
-            profileSectionTitleText :'text-slate-900'
+                <UserProfile appearance={{
+                  elements: {
+                    card: 'min-w-[300px] lg:max-w-[750px]',
+                    scrollBox: "",
+                    navbarMobileMenuButton: '',
+                    headerTitle: '',
+                    headerSubtitle: '',
+                    profileSectionTitleText: ''
 
-          }
-        }}/>
+                  }
+                }} />
               </div>
-             {/*   <div className=" bg-slate-600 h-36 relative w-full mt-12">
+              {/*   <div className=" bg-slate-600 h-36 relative w-full mt-12">
                 <div className="-mb-[64px] absolute bottom-0 left-0 ml-4 rounded-full border-2 border-slate-300 bg-black">
                     <label htmlFor="profilePicture" className="cursor-pointer">
                     <input type="file" name="profilePicture" id="profilePicture" className="hidden" />
