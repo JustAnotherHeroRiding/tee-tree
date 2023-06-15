@@ -24,7 +24,7 @@ body {
 
     .gray-thin-scrollbar {
         @apply scrollbar-thin 
-        scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full
+        scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-white scrollbar-track-rounded-full
     }
 
     .edit-profile-form {

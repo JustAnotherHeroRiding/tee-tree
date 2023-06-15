@@ -13,8 +13,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
-import type { Follow } from "@prisma/client";
-
+import type { FollowerWithAuthor } from "~/server/api/routers/followers";
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
@@ -41,7 +40,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { user } = useUser();
 
   const [isFollowing, setIsFollowing] = useState(false);
-  const [followers, setFollowers] = useState<Follow[]>([]);
+  const [followers, setFollowers] = useState<FollowerWithAuthor[]>([]);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
@@ -79,8 +78,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
   // Check if the current user is following
   useEffect(() => {
-    function isCurrentUserFollowing(currentUserId: string, followers: Follow[]): boolean {
-      return followers.some((follower) => follower.followerId === currentUserId);
+    function isCurrentUserFollowing(currentUserId: string, followers: FollowerWithAuthor[]): boolean {
+      return followers.some((follower) => follower.follower.followerId === currentUserId);
     }
 
     if (user && followers.length > 0) {
@@ -137,11 +136,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           " onClick={() => setShowForm(!showForm)}>
                   <FontAwesomeIcon className="w-6 h-6 rounded-3xl" icon={faXmark} />
                 </button>
-                {/* <button className="rounded-3xl absolute top-4 right-4
-          px-4 py-2 hover:bg-slate-600 hover:text-white bg-slate-800
-          " onClick={() => saveChanges()}>
-                  Save
-                </button> */}
               </div>
               <div className="mt-12 flex justify-center items-center">
                 <UserProfile appearance={{
@@ -156,39 +150,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                   }
                 }} />
               </div>
-              {/*   <div className=" bg-slate-600 h-36 relative w-full mt-12">
-                <div className="-mb-[64px] absolute bottom-0 left-0 ml-4 rounded-full border-2 border-slate-300 bg-black">
-                    <label htmlFor="profilePicture" className="cursor-pointer">
-                    <input type="file" name="profilePicture" id="profilePicture" className="hidden" />
-                      <FontAwesomeIcon
-                        className="w-10 h-10 absolute bg-slate-700 left-1/2 top-1/2 p-2 bg-opacity-75 hover:bg-slate-800 rounded-full -translate-x-1/2 -translate-y-1/2"
-                        icon={faCameraRetro}
-                      />
-                    </label>
-                  <Image src={data.profilePicture}
-                    alt={`${data.username ?? ""}'s profile pic `}
-                    className="rounded-full border-2 border-black bg-black"
-                    width={128}
-                    height={128} />
-                </div>
-
-              </div>
-               <div className="edit-profile-form h-16 mt-20">
-                <label className="text-gray-400">Name</label>
-                <textarea className="bg-transparent border-none resize-none outline-none px-2" maxLength={50}></textarea>
-              </div>
-              <div className="edit-profile-form h-28">
-                <label className="text-gray-400">Bio</label>
-                <textarea className="bg-transparent outline-none border-none resize-none h-28" maxLength={160}></textarea>
-              </div>
-              <div className="edit-profile-form h-16">
-                <label className="text-gray-400">Location</label>
-                <textarea className="bg-transparent border-none resize-none outline-none" maxLength={50}></textarea>
-              </div>
-              <div className="edit-profile-form h-16">
-                <label className="text-gray-400">Website</label>
-                <textarea className="bg-transparent border-none resize-none outline-none" maxLength={50}></textarea>
-              </div> */}
 
             </div>
           </div>
@@ -226,12 +187,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         </div>
         {followersData ? (
           <div className="flex flex-row">
-            <Link href={username ? `following/@${username}` : "/"}>
+            <Link href={username ? `followers/@${username}` : "/"}>
               <div className="flex flex-row items-center ml-4 mb-4 text-slate-300 hover:text-white">
               <h1>Followers</h1>
                <h1 className="text-bold text-2xl ml-2">{followerCount}</h1>
             </div></Link>
-            <Link href={username ? `followers/@${username}` : "/"}>
+            <Link href={username ? `following/@${username}` : "/"}>
               <div className="flex flex-row items-center ml-4 mb-4 text-slate-300 hover:text-white">
               <h1>Following</h1>
               <h1 className="text-bold text-2xl ml-2">{followingCount}</h1>

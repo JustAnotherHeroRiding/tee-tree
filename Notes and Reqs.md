@@ -24,4 +24,5 @@ Let's implement some features I have already implemented before in order to lear
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Retweeting
 - Posting pictures and not just text
-- See who the user is following and is being followed by. This will be 2 separate pages with their own urls just like twitter.
+- See who the user is following and is being followed by. This will be 2 separate pages with their own urls just like twitter. #DONE 
+- Allow users to follow users from the following/followers pages
