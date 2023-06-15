@@ -129,7 +129,7 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
                   <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
          hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 
          ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
-                    onClick={() => mutate({ userToFollowId: data.id })}
+                    onClick={() => mutate({ userToFollowId: follower.author.id })}
                     disabled={isFollowingLoading}
                   >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
                 ) :

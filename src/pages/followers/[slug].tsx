@@ -122,19 +122,21 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
                 className="rounded-full border-2 border-black bg-black"
                 width={64}
                 height={64} />
+              <Link href={`/@${follower.author.username}`}>              
               <h2 className="mb ml-4">@{follower.author.username}</h2>
+              </Link>
               {follower.author.id !== user?.id && user &&
-              (followers ?
-                (
-                  <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
+                (followers ?
+                  (
+                    <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
          hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 
          ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
-                    onClick={() => mutate({ userToFollowId: data.id })}
-                    disabled={isFollowingLoading}
-                  >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
-                ) :
-                <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
-              
+                      onClick={() => mutate({ userToFollowId: follower.author.id })}
+                      disabled={isFollowingLoading}
+                    >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
+                  ) :
+                  <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
+
             </div>
           ))
           }
