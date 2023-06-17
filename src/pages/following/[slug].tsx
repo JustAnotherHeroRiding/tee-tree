@@ -25,6 +25,9 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
   const [followers, setFollowers] = useState<FollowedWithAuthor[]>([]);
   const [followersByCurrentUser, setFollowersByCurrentUser] = useState<FollowedWithAuthor[]>([]);
 
+  const [isLoadingFollowButton, setIsLoadingFollowButton] = useState(true);
+
+
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
 
 
@@ -61,7 +64,6 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
 
   
   function isCurrentUserFollowing(currentUserId: string, follower: FollowedWithAuthor[]): boolean {
-    console.log(follower[0])
     return (follower[0]?.followed.followerId === currentUserId);
   }
   
@@ -75,10 +77,12 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
       }, {} as { [key: string]: boolean });
 
       setIsFollowing(updatedIsFollowing);
+      setIsLoadingFollowButton(false);
+
     } else {
       setIsFollowing({});
     }
-  }, [user, followersByCurrentUser]);
+  }, [user, followersByCurrentUser, isLoadingFollowButton]);
 
   
   useEffect(() => {
@@ -88,6 +92,7 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
 
     if (hasUpdates) {
       setIsFollowing(updatedIsFollowing.current);
+
     }
   }, [updatedIsFollowing, isFollowing]);
 
@@ -158,16 +163,15 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
               <h2 className="mb ml-4">@{follower.author.username}</h2>
               </Link>
               {follower.author.id !== user?.id && user &&
-                (followers ?
+                (!isLoadingFollowButton ?
                   (
                     <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
-         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 ml-auto 
-         ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
+         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 ml-auto `}
                       onClick={() => mutate({ userToFollowId: follower.author.id })}
                       disabled={isFollowingLoading}
                     >{`${isFollowing[follower.author.id] ? "Unfollow" : "Follow"}`}</button>
                   ) :
-                  <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
+                  <div className="flex items-center justify-center mr-6 mt-6 ml-auto"><LoadingSpinner size={32} /></div>)}
 
             </div>
           ))
