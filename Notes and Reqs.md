@@ -21,8 +21,13 @@ Let's implement some features I have already implemented before in order to lear
 - This could be a fun challenge separate from the Clerk Auth Changes
 - Like and unlike #DONE 
 - Following users, this might be tricky as the users are stored in clerk #DONE 
-- Comments for tweets, further comments for them too. Implement twitter threads
-- Retweeting
-- Posting pictures and not just text
 - See who the user is following and is being followed by. This will be 2 separate pages with their own urls just like twitter. #DONE 
-- Allow users to follow users from the following/followers pages
+- Allow users to follow users from the following/followers pages #DONE 
+- Fix following or not following for the 2 pages for all the users
+
+
+## Posts
+- Editing posts
+- Posting pictures and not just text
+- Retweeting
+- Comments for tweets, further comments for them too. Implement twitter threads

@@ -182,8 +182,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="h-[64px]"></div>
         <div className="flex flex-row items-center justify-between">
           <h1 className="p-4 text-2xl font-bold">{`@${data.username ?? ""}`}</h1>
-          <button onClick={() => setShowForm(!showForm)} className="border rounded-3xl hover:bg-slate-600 mr-2
+          {data.id !== user?.id && user && (
+            <button onClick={() => setShowForm(!showForm)} className="border rounded-3xl hover:bg-slate-600 mr-2
            border-slate-400 px-4 py-2">Edit Profile</button>
+          )}
         </div>
         {followersData ? (
           <div className="flex flex-row">

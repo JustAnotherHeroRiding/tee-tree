@@ -11,7 +11,7 @@ import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
 
 
@@ -20,10 +20,12 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({ username });
   const { user } = useUser();
 
-  const [isFollowing, setIsFollowing] = useState(false);
 
   const [followers, setFollowers] = useState<FollowerWithAuthor[]>([]);
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
+
+  const [isFollowing, setIsFollowing] = useState({});
+
 
 
 
@@ -47,18 +49,37 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
     }
   }, [followersData]);
 
-  // Check if the current user is following
-  useEffect(() => {
-    function isCurrentUserFollowing(currentUserId: string, followers: FollowerWithAuthor[]): boolean {
-      return followers.some((follower) => follower.follower.followingId === currentUserId);
-    }
 
+  function isCurrentUserFollowing(currentUserId: string, followers: FollowerWithAuthor[]): boolean {
+    return followers.some((follower) => follower.follower.followingId === currentUserId);
+  }
+  
+  const updatedIsFollowing = useRef<{ [key: string]: boolean }>({ ...isFollowing });
+  
+  useEffect(() => {
     if (user && followers.length > 0) {
-      setIsFollowing(isCurrentUserFollowing(user.id, followers));
+      followers.forEach((follower) => {
+        const followingId = follower.follower.followingId;
+        updatedIsFollowing.current[followingId] = isCurrentUserFollowing(user.id, [follower]);
+      });
     } else {
-      setIsFollowing(false);
+      updatedIsFollowing.current = {};
     }
   }, [user, followers]);
+  
+  useEffect(() => {
+    const hasUpdates = Object.keys(updatedIsFollowing.current).some(
+      (key) => (isFollowing as { [key: string]: boolean })[key] !== updatedIsFollowing.current[key]
+    );
+    console.log(updatedIsFollowing)
+
+    if (hasUpdates) {
+      setIsFollowing(updatedIsFollowing.current);
+    }
+  }, [updatedIsFollowing, isFollowing]);
+  
+  
+  
 
   if (!data) return <div>404</div>;
 
@@ -129,7 +150,7 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
                 (followers ?
                   (
                     <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
-         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 
+         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 ml-auto
          ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
                       onClick={() => mutate({ userToFollowId: follower.author.id })}
                       disabled={isFollowingLoading}

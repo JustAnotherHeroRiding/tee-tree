@@ -7,11 +7,11 @@ import { PageLayout } from "~/components/layout";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeftLong   } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { FollowedWithAuthor } from "~/server/api/routers/followers";
 
 
@@ -20,9 +20,11 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({ username });
   const { user } = useUser();
 
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>({});
 
   const [followers, setFollowers] = useState<FollowedWithAuthor[]>([]);
+  const [followersByCurrentUser, setFollowersByCurrentUser] = useState<FollowedWithAuthor[]>([]);
+
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
 
 
@@ -30,6 +32,11 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
 
   const { data: followingData } = api.follow.getFollowingById.useQuery(
     { followingUserId: data?.id },
+    { enabled: shouldFetchFollowers }
+  );
+
+  const { data: followingDataCurrentUser } = api.follow.getFollowingById.useQuery(
+    { followingUserId: user?.id },
     { enabled: shouldFetchFollowers }
   );
 
@@ -44,33 +51,57 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
   useEffect(() => {
     if (followingData) {
       setFollowers(followingData);
+      if (followingDataCurrentUser) {
+        setFollowersByCurrentUser(followingDataCurrentUser);
+      }
     }
-  }, [followingData]);
+  }, [followingData, followingDataCurrentUser]);
+  
 
-  // Check if the current user is following
+
+  
+  function isCurrentUserFollowing(currentUserId: string, follower: FollowedWithAuthor[]): boolean {
+    console.log(follower[0])
+    return (follower[0]?.followed.followerId === currentUserId);
+  }
+  
+  const updatedIsFollowing = useRef<{ [key: string]: boolean }>({ ...isFollowing });
+  
   useEffect(() => {
-    function isCurrentUserFollowing(currentUserId: string, followers: FollowedWithAuthor[]): boolean {
-      return followers.some((follower) => follower.followed.followerId === currentUserId);
-    }
+    if (user && followersByCurrentUser.length > 0) {
+      const updatedIsFollowing = followersByCurrentUser.reduce((acc, follower) => {
+        acc[follower.followed.followingId] = isCurrentUserFollowing(user.id, [follower]);
+        return acc;
+      }, {} as { [key: string]: boolean });
 
-    if (user && followers.length > 0) {
-      setIsFollowing(isCurrentUserFollowing(user.id, followers));
+      setIsFollowing(updatedIsFollowing);
     } else {
-      setIsFollowing(false);
+      setIsFollowing({});
     }
-  }, [user, followers]);
+  }, [user, followersByCurrentUser]);
+
+  
+  useEffect(() => {
+    const hasUpdates = Object.keys(updatedIsFollowing.current).some(
+      (key) => (isFollowing as { [key: string]: boolean })[key] !== updatedIsFollowing.current[key]
+    );
+
+    if (hasUpdates) {
+      setIsFollowing(updatedIsFollowing.current);
+    }
+  }, [updatedIsFollowing, isFollowing]);
 
   if (!data) return <div>404</div>;
 
 
 
   const { mutate, isLoading: isFollowingLoading } = api.profile.followUser.useMutation({
-    onSuccess: () => {
-      console.log(`You are now following ${username}`);
-      if (isFollowing) {
-        setIsFollowing(false);
+    onSuccess: (_, variables) => {
+      const userToFollowId = variables.userToFollowId;
+      if (isFollowing[userToFollowId]) {
+        setIsFollowing({ ...isFollowing, [userToFollowId]: false });
       } else {
-        setIsFollowing(true);
+        setIsFollowing({ ...isFollowing, [userToFollowId]: true });
       }
     },
     onError: (e) => {
@@ -78,10 +109,11 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
       if (errorMessage && errorMessage[0]) {
         toast.error(errorMessage[0]);
       } else {
-        toast.error("Failed to Follow! Are you logged in?")
+        toast.error("Failed to Follow! Are you logged in?");
       }
     }
   });
+  
 
   if (!data) return <div>404</div>;
 
@@ -122,19 +154,21 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
                 className="rounded-full border-2 border-black bg-black"
                 width={64}
                 height={64} />
+              <Link href={`/@${follower.author.username}`}>              
               <h2 className="mb ml-4">@{follower.author.username}</h2>
+              </Link>
               {follower.author.id !== user?.id && user &&
-              (followers ?
-                (
-                  <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
-         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 
+                (followers ?
+                  (
+                    <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
+         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 ml-auto 
          ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
-                    onClick={() => mutate({ userToFollowId: follower.author.id })}
-                    disabled={isFollowingLoading}
-                  >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
-                ) :
-                <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
-              
+                      onClick={() => mutate({ userToFollowId: follower.author.id })}
+                      disabled={isFollowingLoading}
+                    >{`${isFollowing[follower.author.id] ? "Unfollow" : "Follow"}`}</button>
+                  ) :
+                  <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
+
             </div>
           ))
           }
