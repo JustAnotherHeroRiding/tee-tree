@@ -22,6 +22,9 @@ export const PostView = (props: PostWithUser) => {
 
   const { user } = useUser();
 
+  const [isEditing, setIsEditing] = useState(false);
+
+
 
   type Like = {
     authorId: string;
@@ -69,6 +72,15 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
+  function handleEditClick() {
+    setIsEditing(!isEditing);
+  }
+
+  function exitEditView() {
+    setIsEditing(false);
+  }
+  
+
 
   return (
     <div key={post.id}
@@ -84,8 +96,20 @@ export const PostView = (props: PostWithUser) => {
           <Link href={`/@${author.username}`}><span className="hover:text-white">{`@${author.username}`}</span></Link>
           <span className="font-thin">{` · ${dayjs(post.createdAt).fromNow()}`}</span>
         </div>
-        <Link className="hover:bg-slate-900 px-2 rounded-2xl py-1" href={`/post/${post.id}`}>
-          <span className="text-2xl">{post.content}</span>
+        <Link className="hover:bg-slate-900 px-2 rounded-2xl py-1" 
+        href={`/post/${post.id}`}
+        onClick={(event) => {
+          if (isEditing) {
+            event.preventDefault();
+          }
+        }}>
+          {isEditing ? (
+            <textarea
+            className="bg-transparent outline-none w-full h-fit resize-none"
+            defaultValue={post.content}/>
+          ): (
+            <span className="text-2xl">{post.content}</span>
+          )}
           <br />
         </Link>
         <div className="flex flex-row lg:gap-20 md:gap-16 sm:gap-12 gap-6">
@@ -103,7 +127,7 @@ export const PostView = (props: PostWithUser) => {
         <button> <FontAwesomeIcon icon={faRetweet} className="post-button-fontAwesome"/> </button>
         <button> <FontAwesomeIcon icon={faShare} className="post-button-fontAwesome"/> </button>
         {user?.id === author.id && (
-          <button className="border border-slate-400 rounded-3xl px-4 py-1 hover:bg-slate-700">
+          <button onClick={handleEditClick} className="border border-slate-400 rounded-3xl px-4 py-1 hover:bg-slate-700">
           Edit</button>
         )}
         
