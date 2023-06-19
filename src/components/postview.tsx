@@ -88,7 +88,7 @@ export const PostView = (props: PostWithUser) => {
           <span className="text-2xl">{post.content}</span>
           <br />
         </Link>
-        <div className="flex flex-row gap-20">
+        <div className="flex flex-row lg:gap-20 md:gap-16 sm:gap-12 gap-6">
         <button
         disabled={isLiking}
             onClick={() => mutate({postId: post.id})}
