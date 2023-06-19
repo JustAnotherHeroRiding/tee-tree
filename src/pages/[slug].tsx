@@ -12,7 +12,7 @@ import { faArrowLeftLong, faXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
 
 const ProfileFeed = (props: { userId: string }) => {
@@ -20,7 +20,9 @@ const ProfileFeed = (props: { userId: string }) => {
 
   if (isLoading) return <LoadingPage />
 
-  if (!data || data.length === 0) return <div>User has not posted</div>;
+  if (!data || data.length === 0) return <div className="justify-center items-center flex border m-6 px-4 py-2 rounded-2xl">
+    <h1 className=" font-bold text-2xl">User has not posted yet. </h1>
+    </div>;
 
   return <div className="flex flex-col">
     {data.map((fullPost) => (
@@ -47,6 +49,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
 
   const [showForm, setShowForm] = useState(false);
+
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Query followers using the enabled option
   const { data: followersData } = api.follow.getFollowersById.useQuery(
@@ -89,6 +93,34 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     }
   }, [user, followers]);
 
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setShowForm(false);
+      } else {
+        console.log("Clicked");
+      }
+    }
+  
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setShowForm(false);
+      }
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [modalRef]);
+  
+  
+  
+
+
   if (!data) return <div>404</div>;
 
 
@@ -114,6 +146,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     }
   });
 
+  
+
 
   return (
     <>
@@ -125,9 +159,11 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       <PageLayout>
 
         <div className=" bg-slate-600 h-36 relative">
-          <div className={showForm ?
-            'modalparent' : 'hidden'}>
-            <div className="mx-auto  w-full py-4 modal bg-black
+        <div
+  className={`modalparent transition-transform duration-300 ease-in-out transform ${
+    showForm ? 'scale-100 opacity-100 visible' : 'scale-0 opacity-0 invisible'
+  }`}>
+            <div ref={modalRef} className="mx-auto  w-full py-4 modal bg-black
         border border-indigo-200 rounded-3xl gray-thin-scrollbar overflow-y-auto">
               <div className="fixed top-0 flex flex-row w-full">
                 <h1 className='ml-16 text-2xl mt-4'>Edit profile</h1>
@@ -182,7 +218,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="h-[64px]"></div>
         <div className="flex flex-row items-center justify-between">
           <h1 className="p-4 text-2xl font-bold">{`@${data.username ?? ""}`}</h1>
-          {data.id !== user?.id && user && (
+          {data.id === user?.id && user && (
             <button onClick={() => setShowForm(!showForm)} className="border rounded-3xl hover:bg-slate-600 mr-2
            border-slate-400 px-4 py-2">Edit Profile</button>
           )}
