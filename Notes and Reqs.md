@@ -23,7 +23,7 @@ Let's implement some features I have already implemented before in order to lear
 - Following users, this might be tricky as the users are stored in clerk #DONE 
 - See who the user is following and is being followed by. This will be 2 separate pages with their own urls just like twitter. #DONE 
 - Allow users to follow users from the following/followers pages #DONE 
-- Fix following or not following for the 2 pages for all the users
+- Fix following or not following for the 2 pages for all the users #DONE 
 
 
 ## Posts
