@@ -133,7 +133,7 @@ function isCurrentUserFollowing(currentUserId: string, follower: FollowedWithAut
         <div className="">
           <div className="h-12 relative">
             <div className="flex items-center justify-between">
-              <h1 className="mt-4 ml-16 text-2xl">@{username}</h1>
+              <h1 className="mt-4 ml-20 text-2xl">@{username}</h1>
               <Link href={`/@${username}`} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
         px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
         transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>

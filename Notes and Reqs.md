@@ -32,6 +32,8 @@ Let's implement some features I have already implemented before in order to lear
 - Posting pictures and not just text
 - Retweeting
 - Comments for tweets, further comments for them too. Implement twitter threads
+- Sharing posts, meaning share a link on social media platforms
+- Possibly implement views
 
 
 ## Main Page

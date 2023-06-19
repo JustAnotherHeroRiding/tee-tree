@@ -4,6 +4,9 @@ import { api } from "~/utils/api";
 import { PostView } from "~/components/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { PageLayout } from "~/components/layout";
+import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 
@@ -23,6 +26,12 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
+      <div className=" bg-slate-600 h-16 relative">
+
+      <Link href={"/"} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
+        px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
+        transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
+        </div>
 
         <PostView {...data} />
       </PageLayout>

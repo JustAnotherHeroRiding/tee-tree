@@ -2,11 +2,14 @@
 import Image from "next/image";
 import { api, type RouterOutputs } from "~/utils/api";
 import dayjs from 'dayjs'
+import { faComment, faHeart, faShare, faRetweet } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
+
 
 dayjs.extend(relativeTime);
 
@@ -85,15 +88,26 @@ export const PostView = (props: PostWithUser) => {
           <span className="text-2xl">{post.content}</span>
           <br />
         </Link>
+        <div className="flex flex-row gap-20">
         <button
         disabled={isLiking}
             onClick={() => mutate({postId: post.id})}
-          className={`w-fit transform origin-center cursor-pointer text-3xl transition-all duration-300 
+          className={`w-fit transform origin-center cursor-pointer text-3xl flex items-center flex-row transition-all duration-300 
           ${liked ? "text-red-600" : "hover:text-red-300"
             } whitespace-normal ${isLiking ? "animate-pulse text-red-900 scale-125" : "hover:scale-110"}`}
         >
-          ♥ {likes}
+          <FontAwesomeIcon icon={faHeart} className="w-6 h-6 mr-2"/> <p>{likes}</p>
         </button>
+        
+        <button> <FontAwesomeIcon icon={faComment} className="post-button-fontAwesome"/> </button>
+        <button> <FontAwesomeIcon icon={faRetweet} className="post-button-fontAwesome"/> </button>
+        <button> <FontAwesomeIcon icon={faShare} className="post-button-fontAwesome"/> </button>
+        {user?.id === author.id && (
+          <button className="border border-slate-400 rounded-3xl px-4 py-1 hover:bg-slate-700">
+          Edit</button>
+        )}
+        
+        </div>
 
       </div>
     </div>
