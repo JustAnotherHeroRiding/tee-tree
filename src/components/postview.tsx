@@ -142,7 +142,8 @@ export const PostView = (props: PostWithUser) => {
             >
               *
             </p>
-            <Tooltip id="edited-tooltip" />
+            <Tooltip id="edited-tooltip" place="bottom" style={{borderRadius: "24px", 
+            backgroundColor: "rgb(51 65 85)"}} />
             </>
           )}
         </div>
@@ -187,6 +188,8 @@ export const PostView = (props: PostWithUser) => {
         </Link>
         <div className="flex flex-row gap-6 sm:gap-12 md:gap-16 lg:gap-20">
           <button
+          data-tooltip-id="like-tooltip"
+          data-tooltip-content="Like"
             disabled={isLiking}
             onClick={() => mutate({ postId: post.id })}
             className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
@@ -197,30 +200,46 @@ export const PostView = (props: PostWithUser) => {
             }`}
           >
             <FontAwesomeIcon icon={faHeart} className="mr-2 h-6 w-6" />{" "}
+            
             <p>{likes}</p>
           </button>
+          <Tooltip place="bottom" style={{borderRadius: "24px", 
+          backgroundColor: "rgb(51 65 85)"}} id="like-tooltip" />
 
-          <button>
+          <button
+          data-tooltip-id="comment-tooltip"
+          data-tooltip-content="Comment">
             {" "}
             <FontAwesomeIcon
               icon={faComment}
               className="post-button-fontAwesome"
             />{" "}
           </button>
-          <button>
+          <Tooltip place="bottom" style={{borderRadius: "24px", 
+          backgroundColor: "rgb(51 65 85)"}} id="comment-tooltip" />
+          <button
+          data-tooltip-id="retweet-tooltip"
+          data-tooltip-content="Retweet">
             {" "}
             <FontAwesomeIcon
               icon={faRetweet}
               className="post-button-fontAwesome"
             />{" "}
           </button>
-          <button>
+          <Tooltip place="bottom" style={{borderRadius: "24px", 
+          backgroundColor: "rgb(51 65 85)"}} id="retweet-tooltip" />
+          <button 
+          data-tooltip-id="share-tooltip"
+          data-tooltip-content="Share"
+          >
             {" "}
             <FontAwesomeIcon
               icon={faShare}
               className="post-button-fontAwesome"
             />{" "}
           </button>
+          <Tooltip place="bottom" style={{borderRadius: "24px", 
+          backgroundColor: "rgb(51 65 85)"}} id="share-tooltip" />
           {user?.id === author.id && (
             <button
               onClick={handleEditClick}
