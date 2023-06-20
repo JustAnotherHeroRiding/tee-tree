@@ -41,5 +41,5 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Main Page
 - Search bar for profiles / posts
-- Lazy load
+- ## Lazy load
 - Infinite scrolling

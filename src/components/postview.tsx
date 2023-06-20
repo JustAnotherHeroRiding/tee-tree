@@ -236,8 +236,8 @@ export const PostView = (props: PostWithUser) => {
           )}
           <br />
         </Link>
-        <div className={`flex flex-row ${user?.id === author.id ? "gap-6 sm:gap-12 md:gap-16" : 
-        "gap-6 sm:gap-12 md:gap-16"} `}>
+        <div className={`flex flex-row ${user?.id === author.id ? "gap-2 sm:gap-12 md:gap-16" : 
+        "gap-2 sm:gap-12 md:gap-16"} `}>
           <button
             data-tooltip-id="like-tooltip"
             data-tooltip-content="Like"
@@ -314,6 +314,8 @@ export const PostView = (props: PostWithUser) => {
             style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
             id="editPost-tooltip"
           />
+          {!isDeletingPost ? (
+            <>
             <button onClick={() => deletePost({postId: post.id})}
              data-tooltip-id="delete-tooltip" data-tooltip-content="Delete"
              className="text-red-500 hover:text-red-700">
@@ -323,6 +325,11 @@ export const PostView = (props: PostWithUser) => {
             style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
             id="delete-tooltip"
           />
+          </> 
+          ) : (
+            <LoadingSpinner/>
+          )}
+            
             </>
           )}
         </div>
