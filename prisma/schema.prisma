@@ -32,8 +32,7 @@ model Post {
 
     likes     Like[]
 
-
-
+    isEdited  Boolean  @default(false)
     @@index([authorId])
 }
 

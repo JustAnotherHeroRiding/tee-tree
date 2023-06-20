@@ -17,7 +17,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@prisma/client": "^4.14.0",
+    "@prisma/client": "^4.16.0",
     "@t3-oss/env-nextjs": "^0.3.1",
     "@tanstack/react-query": "^4.29.7",
     "@trpc/client": "^10.26.0",
@@ -31,6 +31,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
+    "react-tooltip": "^5.14.0",
     "superjson": "1.12.2",
     "zod": "^3.21.4"
   },
@@ -48,7 +49,7 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
-    "prisma": "^4.15.0",
+    "prisma": "^4.16.0",
     "tailwind-scrollbar": "^3.0.4",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.4"

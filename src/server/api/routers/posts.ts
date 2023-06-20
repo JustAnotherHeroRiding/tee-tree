@@ -169,7 +169,7 @@ export const postsRouter = createTRPCRouter({
       // Update the post
       const updatedPost = await ctx.prisma.post.update({
         where: { id: input.postId },
-        data: { content: input.content },
+        data: { content: input.content, isEdited: true },
       });
 
       return updatedPost;

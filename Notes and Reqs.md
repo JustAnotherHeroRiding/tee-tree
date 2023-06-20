@@ -28,7 +28,7 @@ Let's implement some features I have already implemented before in order to lear
 
 
 ## Posts
-- Editing posts
+- Editing posts #DONE 
 - Posting pictures and not just text
 - Retweeting
 - Comments for tweets, further comments for them too. Implement twitter threads

@@ -15,6 +15,7 @@ import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { LoadingSpinner } from "./loading";
+import { Tooltip } from "react-tooltip";
 
 dayjs.extend(relativeTime);
 
@@ -133,6 +134,17 @@ export const PostView = (props: PostWithUser) => {
           <span className="font-thin">{` · ${dayjs(
             post.createdAt
           ).fromNow()}`}</span>
+          {post.isEdited && (
+            <>
+            <p className="text-3xl text-slate-100"
+              data-tooltip-id="edited-tooltip"
+              data-tooltip-content="This post was edited."
+            >
+              *
+            </p>
+            <Tooltip id="edited-tooltip" />
+            </>
+          )}
         </div>
         <Link
           className={`${
@@ -166,7 +178,7 @@ export const PostView = (props: PostWithUser) => {
             </div>
           ) : isEditingPostUpdating ? (
             <div className="mx-auto flex justify-center">
-            <LoadingSpinner size={32} />
+              <LoadingSpinner size={32} />
             </div>
           ) : (
             <span className="text-2xl">{post.content}</span>
