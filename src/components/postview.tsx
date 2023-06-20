@@ -94,7 +94,31 @@ export const PostView = (props: PostWithUser) => {
         if (errorMessage && errorMessage[0]) {
           toast.error(errorMessage[0]);
         } else {
-          toast.error("Failed to Like! Are you logged in?");
+          toast.error("Failed to Edit! Are you the author?");
+        }
+      },
+    });
+
+
+    const { mutate: deletePost, isLoading: isDeletingPost } =
+    api.posts.deletePost.useMutation({
+      onSuccess: () => {
+        if (location.pathname === "/") {
+          void ctx.posts.getAll.invalidate();
+        } else if (location.pathname.startsWith("/post/")) {
+          void ctx.posts.getById.invalidate();
+        } else if (location.pathname.startsWith("/@")) {
+          void ctx.posts.getPostsByUserId.invalidate();
+        }
+
+        console.log("Post Deleted");
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Delete! Are you the author?");
         }
       },
     });
@@ -212,7 +236,8 @@ export const PostView = (props: PostWithUser) => {
           )}
           <br />
         </Link>
-        <div className="flex flex-row gap-6 sm:gap-12 md:gap-16 lg:gap-20">
+        <div className={`flex flex-row ${user?.id === author.id ? "gap-6 sm:gap-12 md:gap-16" : 
+        "gap-6 sm:gap-12 md:gap-16"} `}>
           <button
             data-tooltip-id="like-tooltip"
             data-tooltip-content="Like"
@@ -277,12 +302,28 @@ export const PostView = (props: PostWithUser) => {
             id="share-tooltip"
           />
           {user?.id === author.id && (
-            <button
+            <>
+            <button data-tooltip-id="editPost-tooltip" data-tooltip-content="Edit Post"
               onClick={handleEditClick}
               className="rounded-3xl border border-slate-400 px-4 py-1 hover:bg-slate-700"
             >
               {isEditing ? "Save" : "Edit"}
             </button>
+            <Tooltip
+            place="bottom"
+            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+            id="editPost-tooltip"
+          />
+            <button onClick={() => deletePost({postId: post.id})}
+             data-tooltip-id="delete-tooltip" data-tooltip-content="Delete"
+             className="text-red-500 hover:text-red-700">
+              <FontAwesomeIcon className="w-6 h-6" icon={faXmark}/></button>
+              <Tooltip
+            place="bottom"
+            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+            id="delete-tooltip"
+          />
+            </>
           )}
         </div>
       </div>

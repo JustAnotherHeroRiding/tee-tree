@@ -175,6 +175,31 @@ export const postsRouter = createTRPCRouter({
       return updatedPost;
     }),
 
+  deletePost: privateProcedure
+    .input(z.object({ postId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      // Check if the user is the author of the post
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.postId },
+      });
+
+      if (!post || post.authorId !== authorId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not authorized to delete this post",
+        });
+      }
+
+      // Delete the post
+      const deletedPost = await ctx.prisma.post.delete({
+        where: { id: input.postId },
+      });
+
+      return deletedPost;
+    }),
+
   likePost: privateProcedure
     .input(z.object({ postId: z.string() }))
     .mutation(async ({ ctx, input }) => {

@@ -29,7 +29,7 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Posts
 - Editing posts #DONE 
-- Deleting Posts
+- Deleting Posts. Clicking on the delete button should open a modal asking you to confirm before deleting the post.
 - Auto sizing text area and character counter #DONE 
 - Tooltips for edited posts and icons #DONE 
 - Posting pictures and not just text
