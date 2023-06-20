@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { LoadingSpinner } from "./loading";
 import { Tooltip } from "react-tooltip";
+import TextareaAutosize from "react-textarea-autosize";
 
 dayjs.extend(relativeTime);
 
@@ -117,6 +118,17 @@ export const PostView = (props: PostWithUser) => {
     }
   };
 
+  const [textLength, setTextLength] = useState(post.content.length);
+
+  
+
+
+  const handleTextareaChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setTextLength(event.target.textLength);
+  };
+
   return (
     <div key={post.id} className="flex gap-3 border-b border-slate-400 p-4">
       <Image
@@ -136,14 +148,21 @@ export const PostView = (props: PostWithUser) => {
           ).fromNow()}`}</span>
           {post.isEdited && (
             <>
-            <p className="text-3xl text-slate-100"
-              data-tooltip-id="edited-tooltip"
-              data-tooltip-content="This post was edited."
-            >
-              *
-            </p>
-            <Tooltip id="edited-tooltip" place="bottom" style={{borderRadius: "24px", 
-            backgroundColor: "rgb(51 65 85)"}} />
+              <p
+                className="text-3xl text-slate-100"
+                data-tooltip-id="edited-tooltip"
+                data-tooltip-content="This post was edited."
+              >
+                *
+              </p>
+              <Tooltip
+                id="edited-tooltip"
+                place="bottom"
+                style={{
+                  borderRadius: "24px",
+                  backgroundColor: "rgb(51 65 85)",
+                }}
+              />
             </>
           )}
         </div>
@@ -171,10 +190,17 @@ export const PostView = (props: PostWithUser) => {
                   icon={faXmark}
                 />
               </button>
-              <textarea
+              <h1 className="absolute right-8 top-0 rounded-3xl">
+                {textLength}/280
+              </h1>
+
+              <TextareaAutosize
+                maxLength={280}
                 ref={textareaRef}
-                className="h-fit w-full resize-none rounded-3xl border-slate-400 bg-slate-900 px-4 py-2 outline-none"
+                className="h-fit min-h-[60px] w-full resize-none 
+                rounded-3xl border-slate-400 bg-slate-900 px-4 pb-2 pt-4 outline-none"
                 defaultValue={post.content}
+                onChange={handleTextareaChange}
               />
             </div>
           ) : isEditingPostUpdating ? (
@@ -188,8 +214,8 @@ export const PostView = (props: PostWithUser) => {
         </Link>
         <div className="flex flex-row gap-6 sm:gap-12 md:gap-16 lg:gap-20">
           <button
-          data-tooltip-id="like-tooltip"
-          data-tooltip-content="Like"
+            data-tooltip-id="like-tooltip"
+            data-tooltip-content="Like"
             disabled={isLiking}
             onClick={() => mutate({ postId: post.id })}
             className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
@@ -200,46 +226,56 @@ export const PostView = (props: PostWithUser) => {
             }`}
           >
             <FontAwesomeIcon icon={faHeart} className="mr-2 h-6 w-6" />{" "}
-            
             <p>{likes}</p>
           </button>
-          <Tooltip place="bottom" style={{borderRadius: "24px", 
-          backgroundColor: "rgb(51 65 85)"}} id="like-tooltip" />
+          <Tooltip
+            place="bottom"
+            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+            id="like-tooltip"
+          />
 
           <button
-          data-tooltip-id="comment-tooltip"
-          data-tooltip-content="Comment">
+            data-tooltip-id="comment-tooltip"
+            data-tooltip-content="Comment"
+          >
             {" "}
             <FontAwesomeIcon
               icon={faComment}
               className="post-button-fontAwesome"
             />{" "}
           </button>
-          <Tooltip place="bottom" style={{borderRadius: "24px", 
-          backgroundColor: "rgb(51 65 85)"}} id="comment-tooltip" />
+          <Tooltip
+            place="bottom"
+            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+            id="comment-tooltip"
+          />
           <button
-          data-tooltip-id="retweet-tooltip"
-          data-tooltip-content="Retweet">
+            data-tooltip-id="retweet-tooltip"
+            data-tooltip-content="Retweet"
+          >
             {" "}
             <FontAwesomeIcon
               icon={faRetweet}
               className="post-button-fontAwesome"
             />{" "}
           </button>
-          <Tooltip place="bottom" style={{borderRadius: "24px", 
-          backgroundColor: "rgb(51 65 85)"}} id="retweet-tooltip" />
-          <button 
-          data-tooltip-id="share-tooltip"
-          data-tooltip-content="Share"
-          >
+          <Tooltip
+            place="bottom"
+            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+            id="retweet-tooltip"
+          />
+          <button data-tooltip-id="share-tooltip" data-tooltip-content="Share">
             {" "}
             <FontAwesomeIcon
               icon={faShare}
               className="post-button-fontAwesome"
             />{" "}
           </button>
-          <Tooltip place="bottom" style={{borderRadius: "24px", 
-          backgroundColor: "rgb(51 65 85)"}} id="share-tooltip" />
+          <Tooltip
+            place="bottom"
+            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+            id="share-tooltip"
+          />
           {user?.id === author.id && (
             <button
               onClick={handleEditClick}

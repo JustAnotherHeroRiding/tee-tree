@@ -11,6 +11,8 @@ import toast from "react-hot-toast";
 import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
 import Link from "next/link";
+import TextareaAutosize from "react-textarea-autosize";
+
 
 
 
@@ -29,6 +31,7 @@ const CreatePostWizard = () => {
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
       setInput("");
+      setTextLength(0);
       void ctx.posts.getAll.invalidate();
     },
     onError: (e) => {
@@ -40,11 +43,21 @@ const CreatePostWizard = () => {
       }
     }
   });
+  
+  const [textLength, setTextLength] = useState(0);
 
-
+  const handleTextareaChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setInput(event.target.value);
+    setTextLength(event.target.textLength);
+  };
+  
   if (!user) return null;
 
-  return <div className="flex gap-3 ">
+  
+
+  return <div className="flex gap-3 relative">
     <Image className="w-14 h-14 rounded-full"
       src={user.profileImageUrl}
       alt="Profile Image"
@@ -52,11 +65,14 @@ const CreatePostWizard = () => {
       height={56}
       priority={true}
     />
-    <input placeholder="Type Some emojis"
-      className="bg-transparent grow outline-none"
-      type="text"
+    <h1 className="absolute right-0 -top-4 rounded-3xl">
+                {textLength}/280
+              </h1>
+    <TextareaAutosize placeholder="Type Some emojis"
+      className="bg-transparent grow outline-none resize-none"
       value={input}
-      onChange={(e) => setInput(e.target.value)}
+      maxLength={280}
+      onChange={(e) => handleTextareaChange(e)}
       disabled={isPosting}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
@@ -68,7 +84,8 @@ const CreatePostWizard = () => {
       }}
     />
     {input !== "" && !isPosting && (
-      <button className="flex ml-auto px-4 mt-4 items-center rounded-3xl border border-slate-400 hover:bg-slate-700"
+      <button className="flex ml-auto px-4 py-1 mt-4 mb-auto items-center rounded-3xl 
+      border border-slate-400 hover:bg-slate-700"
         onClick={() => mutate({ content: input })}
       >Post</button>
     )}
