@@ -24,7 +24,7 @@ Let's implement some features I have already implemented before in order to lear
 - See who the user is following and is being followed by. This will be 2 separate pages with their own urls just like twitter. #DONE 
 - Allow users to follow users from the following/followers pages #DONE 
 - Fix following or not following for the 2 pages for all the users #DONE 
-- Clicking outside the modal or clicking escape should close the edit profile modal
+- Clicking outside the modal or clicking escape should close the edit profile modal #DONE 
 
 
 ## Posts
