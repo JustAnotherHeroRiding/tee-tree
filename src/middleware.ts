@@ -9,6 +9,8 @@ export default authMiddleware({
     "/trpc(.*)",
     "/post/:id",
     "/:slug",
+    "/following/:slug",
+    "/followers/:slug"
     
   ],
 });
