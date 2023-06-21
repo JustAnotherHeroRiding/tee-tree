@@ -36,4 +36,8 @@ body {
         @apply w-6 h-6 transition-all 
         duration-300 hover:scale-110 hover:text-slate-700 rounded-3xl
     }
+
+    .selector-on-symbol { 
+        @apply h-1 w-16 rounded-3xl bg-blue-500 mt-4
+    }
 }

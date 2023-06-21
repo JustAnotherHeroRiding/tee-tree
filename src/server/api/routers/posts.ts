@@ -12,6 +12,7 @@ import { Redis } from "@upstash/redis";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
 import type { Post, Like } from "@prisma/client";
 
+
 type ExtendedPost = Post & {
   likes: Like[];
 };
@@ -43,6 +44,8 @@ const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   });
 };
 
+
+
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -64,6 +67,20 @@ const EditPostInput = z.object({
     .min(1)
     .max(280),
 });
+
+const FollowedWithAuthorSchema = z.object({
+  followed: z.object({
+    id: z.string(),
+    followerId: z.string(),
+    followingId: z.string(),
+  }),
+  author: z.object({
+    username: z.string(),
+    id: z.string(),
+    profilePicture: z.string(),
+  }),
+});
+
 
 export const postsRouter = createTRPCRouter({
   getById: publicProcedure
@@ -119,6 +136,39 @@ export const postsRouter = createTRPCRouter({
         })
         .then(addUserDataToPosts)
     ),
+
+  getPostsFromFollowedUsers: publicProcedure
+  .input(
+    z.object({
+      followers: z.array(FollowedWithAuthorSchema)
+    })
+  )
+    .query(async ({ ctx, input }) => {
+      const currentUserId = ctx.userId;
+      const followers = input.followers;
+      if (!currentUserId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authorized",
+        });
+      }
+
+      const authorIds = followers.map((follower) => follower.author.id);
+      return await ctx.prisma.post
+        .findMany({
+          where: {
+            authorId: {
+              in: authorIds,
+            },
+          },
+          take: 100,
+          orderBy: [{ createdAt: "desc" }],
+          include: {
+            likes: true,
+          },
+        })
+        .then(addUserDataToPosts);
+    }),
 
   create: privateProcedure
     .input(

@@ -140,13 +140,14 @@ function isCurrentUserFollowing(currentUserId: string, follower: FollowedWithAut
 
             </div>
           </div>
-          <div className="flex flex-row justify-between border-b border-slate-400">
-            <div className="w-1/2 items-center flex flex-col justify-center my-6">
+          <div className="flex flex-row justify-between border-b border-slate-400 my-8">
+            <div className="w-1/2 items-center flex flex-col justify-center">
               <Link className="mx-auto" href={`/followers/@${username}`}>Followers</Link>
-              <span className="w-16 h-1 rounded-3xl bg-blue-600"></span>
+              <span className="selector-on-symbol"></span>
             </div>
             <div className="w-1/2 items-center flex flex-col justify-center">
               <Link className="" href={`/following/@${username}`}>Following</Link>
+              <hr className="mt-4"></hr>
             </div>
 
           </div>

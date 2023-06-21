@@ -29,17 +29,20 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Posts
 - Editing posts #DONE 
-- Deleting Posts. Clicking on the delete button should open a modal asking you to confirm before deleting the post.
+- Deleting Posts #DONE 
+- Clicking on the delete button should open a modal asking you to confirm before deleting the post.
 - Auto sizing text area and character counter #DONE 
 - Tooltips for edited posts and icons #DONE 
 - Posting pictures and not just text
 - Retweeting
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
-- Possibly implement views
+- Views per post
+- Emoji selector
 
 
 ## Main Page
 - Search bar for profiles / posts
 - ## Lazy load
 - Infinite scrolling
+- Page for posts from followed users

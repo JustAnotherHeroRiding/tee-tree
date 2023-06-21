@@ -121,7 +121,24 @@ export const followRouter = createTRPCRouter({
     return addUserDataToFollowing(followRecords);
   }),
 
+  getFollowingCurrentUser: publicProcedure
+  .query<FollowedWithAuthor[]>(async ({ ctx }) => {
+    const currentUserId = ctx.userId
+    if (!currentUserId) {
+    return [];
+    }
+    const followRecords = await ctx.prisma.follow.findMany({
+      where: { followerId: currentUserId },
+    });
 
+    if (!followRecords || followRecords.length === 0) {
+      return [];
+    }
 
+    // Extract the followerId from each Follow record
+    //const followerIds = followRecords.map(follower => follower.followerId);
+
+    return addUserDataToFollowing(followRecords);
+  }),
 
 });
