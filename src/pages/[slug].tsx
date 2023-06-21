@@ -174,7 +174,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                 </button>
               </div>
               <div className="mt-12 flex justify-center items-center">
-                <UserProfile appearance={{
+                {user ? (
+                  <UserProfile appearance={{
                   elements: {
                     card: 'min-w-[300px] lg:max-w-[750px]',
                     scrollBox: "",
@@ -185,6 +186,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
                   }
                 }} />
+                ): ""}
+                
               </div>
 
             </div>
