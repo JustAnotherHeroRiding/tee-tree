@@ -12,8 +12,7 @@ import { Redis } from "@upstash/redis";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
 import type { Post, Like } from "@prisma/client";
 
-
-type ExtendedPost = Post & {
+export type ExtendedPost = Post & {
   likes: Like[];
 };
 
@@ -43,8 +42,6 @@ const addUserDataToPosts = async (posts: ExtendedPost[]) => {
     };
   });
 };
-
-
 
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
@@ -81,7 +78,6 @@ const FollowedWithAuthorSchema = z.object({
   }),
 });
 
-
 export const postsRouter = createTRPCRouter({
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -116,6 +112,46 @@ export const postsRouter = createTRPCRouter({
     return addUserDataToPosts(posts);
   }),
 
+  getAllPaginated: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        // cursor is a reference to the last item in the previous batch
+        // it's used to fetch the next batch
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+        categoryId: z.number().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const posts = await ctx.prisma.post.findMany({
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: "desc",
+        },
+        include: {
+          likes: true, // Include the likes relation in the result
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (posts.length > limit) {
+        const nextItem = posts.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      const extendedPosts = await addUserDataToPosts(posts);
+      console.log("Extended Posts:", extendedPosts);
+      console.log("Next Cursor:", nextCursor);
+
+      return {
+        posts: extendedPosts,
+        nextCursor
+      };
+
+    }),
+
   getPostsByUserId: publicProcedure
     .input(
       z.object({
@@ -138,11 +174,11 @@ export const postsRouter = createTRPCRouter({
     ),
 
   getPostsFromFollowedUsers: publicProcedure
-  .input(
-    z.object({
-      followers: z.array(FollowedWithAuthorSchema)
-    })
-  )
+    .input(
+      z.object({
+        followers: z.array(FollowedWithAuthorSchema),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const currentUserId = ctx.userId;
       const followers = input.followers;

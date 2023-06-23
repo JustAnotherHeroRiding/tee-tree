@@ -12,6 +12,7 @@ import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
 import Link from "next/link";
 import TextareaAutosize from "react-textarea-autosize";
+import { PaginatedFeed } from "~/components/paginationtest";
 
 dayjs.extend(relativeTime);
 
@@ -225,7 +226,8 @@ const Home: NextPage = () => {
           </div>
         )}
       </div>
-      {homePage ? <Feed /> : <FollowingFeed />
+      {/* <Feed />  */}
+      {homePage ?  <PaginatedFeed />  : <FollowingFeed />
       }
     </PageLayout>
   );
