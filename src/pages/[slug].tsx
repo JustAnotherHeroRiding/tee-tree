@@ -98,8 +98,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     function handleClickOutside(event: MouseEvent) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         setShowForm(false);
-      } else {
-        console.log("Clicked");
       }
     }
   
@@ -212,7 +210,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           </div>
           <Image src={data.profilePicture}
             alt={`${data.username ?? ""}'s profile pic `}
-            className="-mb-[64px] absolute bottom-0 left-0 ml-4 rounded-full border-2 border-black bg-black"
+            className="-mb-[64px] h-32 w-32 absolute bottom-0 left-0 ml-4 rounded-full border-2 border-black bg-black"
             width={128}
             height={128} />
 
