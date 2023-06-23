@@ -32,6 +32,30 @@ export const PostView = (props: PostWithUser) => {
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const modalDeletePostRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalDeletePostRef.current && !modalDeletePostRef.current.contains(event.target as Node)) {
+        setShowDeleteModal(false);
+      }
+    }
+  
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setShowDeleteModal(false);
+      }
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [modalDeletePostRef]);
+
   type Like = {
     authorId: string;
   };
@@ -103,6 +127,7 @@ export const PostView = (props: PostWithUser) => {
     const { mutate: deletePost, isLoading: isDeletingPost } =
     api.posts.deletePost.useMutation({
       onSuccess: () => {
+        setShowDeleteModal(false)
         if (location.pathname === "/") {
           void ctx.posts.getAll.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
@@ -316,7 +341,7 @@ export const PostView = (props: PostWithUser) => {
           />
           {!isDeletingPost ? (
             <>
-            <button onClick={() => deletePost({postId: post.id})}
+            <button onClick={() => setShowDeleteModal(true)}
              data-tooltip-id="delete-tooltip" data-tooltip-content="Delete"
              className="text-red-500 hover:text-red-700">
               <FontAwesomeIcon className="w-6 h-6" icon={faXmark}/></button>
@@ -325,6 +350,22 @@ export const PostView = (props: PostWithUser) => {
             style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
             id="delete-tooltip"
           />
+          {showDeleteModal && (
+            <div className={`modalparent transition-transform duration-300 ease-in-out transform ${
+              showDeleteModal ? 'scale-100 opacity-100 visible' : 'scale-0 opacity-0 invisible'
+            }`}>
+            <div ref={modalDeletePostRef} className="mx-auto w-90 p-4 modalDeletePost bg-black h-32
+        border border-indigo-200 rounded-3xl flex flex-col">
+              <h1>Are you sure you want to delete this post?</h1>
+              <div className="flex flex-row justify-between mt-auto">
+              <button className="bg-red-700 rounded-3xl px-2 py-1 hover:bg-orange-600 hover:text-black" onClick={() => deletePost({postId: post.id})}>Delete</button>
+              <button className="rounded-3xl px-2 py-1 border hover:text-slate-400"  onClick={() => setShowDeleteModal(false)}>Cancel</button>
+              </div>
+
+            </div>
+          </div>
+          )}
+          
           </> 
           ) : (
             <LoadingSpinner/>
