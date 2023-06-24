@@ -181,7 +181,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                     headerTitle: '',
                     headerSubtitle: '',
                     profileSectionTitleText: ''
-
+                    
                   }
                 }} />
                 ): ""}

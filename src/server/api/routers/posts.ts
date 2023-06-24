@@ -16,6 +16,18 @@ export type ExtendedPost = Post & {
   likes: Like[];
 };
 
+export type PostAuthor = {
+  username: string;
+  id: string;
+  profilePicture: string;
+};
+
+export type PostWithAuthor = {
+  post: ExtendedPost;
+  author: PostAuthor;
+};
+
+
 const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   const users = (
     await clerkClient.users.getUserList({
@@ -142,14 +154,46 @@ export const postsRouter = createTRPCRouter({
         nextCursor = nextItem?.id;
       }
       const extendedPosts = await addUserDataToPosts(posts);
-      console.log("Extended Posts:", extendedPosts);
-      console.log("Next Cursor:", nextCursor);
 
       return {
         posts: extendedPosts,
         nextCursor
       };
 
+    }),
+    infiniteScroll: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        // cursor is a reference to the last item in the previous batch
+        // it's used to fetch the next batch
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+      })
+    )
+    .query(async({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const items = await ctx.prisma.post.findMany({
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: 'desc',
+        },
+        include: {
+          likes: true, // Include the likes relation in the result
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      const extendedPosts = await addUserDataToPosts(items);
+      return {
+        posts:extendedPosts,
+        nextCursor,
+      };
     }),
 
   getPostsByUserId: publicProcedure

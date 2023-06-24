@@ -1,21 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { LoadingPage } from "./loading";
 import { PostView } from "./postview";
+import type { PostWithAuthor } from "~/server/api/routers/posts";
+
 
 export const PaginatedFeed = () => {
   const [cursor, setCursor] = useState<string | undefined>();
+  const [posts, setPosts] = useState<PostWithAuthor[]>([]);
+
 
   const { data, isLoading, isError } = api.posts.getAllPaginated.useQuery({
     cursor,
-    limit: 10,
+    limit: 2,
   });
 
-  console.log(data);
+  useEffect(() => {
+  if (data?.posts) {
+    setPosts((prevPosts) => {
+      // Loop through data.posts and push each post to prevPosts
+      for (const post of data.posts) {
+        prevPosts.push(post);
+      }
+      return prevPosts;
+    });
+  }
+}, [data]);
+
+  
+  
+
 
   const handleNextPage = () => {
     if (data) {
       setCursor(data.nextCursor);
+      
     }
   };
 
@@ -30,6 +49,8 @@ export const PaginatedFeed = () => {
   if (isError || !data) {
     return <div>Error loading posts</div>;
   }
+
+  console.log(data);
 
   return (
     <div className="flex flex-col">
