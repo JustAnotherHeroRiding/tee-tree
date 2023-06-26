@@ -96,7 +96,7 @@ const CreatePostWizard = () => {
   );
 };
 
-const Feed = () => {
+/* const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
 
   if (postsLoading) return <LoadingPage />;
@@ -109,7 +109,7 @@ const Feed = () => {
       ))}
     </div>
   );
-};
+}; */
 
 
 const FollowingFeed = () => {
@@ -152,7 +152,7 @@ const Home: NextPage = () => {
   const username = user?.username;
 
   // Start fetching asap
-  api.posts.getAll.useQuery();
+  // api.posts.getAll.useQuery();
 
   // Return empty div if BOTH are not loaded, since user tends to load faster
   if (!userLoaded) return <LoadingPage />;
