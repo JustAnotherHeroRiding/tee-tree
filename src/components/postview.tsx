@@ -188,7 +188,7 @@ export const PostView = (props: PostWithUser) => {
         width={56}
         height={56}
       />
-      <div className="flex flex-col ">
+      <div className="flex flex-col w-full">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
             <span className="hover:text-white">{`@${author.username}`}</span>
@@ -230,7 +230,7 @@ export const PostView = (props: PostWithUser) => {
           {isEditing ? (
             <div className="relative">
               <button
-                className="absolute right-4 top-4 rounded-3xl
+                className="absolute right-2 top-4 rounded-3xl
           px-1 py-1 hover:bg-slate-700 hover:text-white
           "
                 onClick={() => setIsEditing(false)}
@@ -248,7 +248,7 @@ export const PostView = (props: PostWithUser) => {
                 maxLength={280}
                 ref={textareaRef}
                 className="h-fit min-h-[60px] w-full resize-none 
-                rounded-3xl border-slate-400 bg-slate-900 px-4 pb-2 pt-4 outline-none"
+                rounded-3xl border-slate-400 bg-slate-900 pl-4 pr-8 pb-2 pt-4 outline-none"
                 defaultValue={post.content}
                 onChange={handleTextareaChange}
               />
