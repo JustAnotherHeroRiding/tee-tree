@@ -178,7 +178,7 @@ export const postsRouter = createTRPCRouter({
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          id: 'desc',
+          createdAt: 'desc',
         },
         include: {
           likes: true, // Include the likes relation in the result
@@ -216,6 +216,45 @@ export const postsRouter = createTRPCRouter({
         })
         .then(addUserDataToPosts)
     ),
+    infiniteScrollPostsByUserId: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        // cursor is a reference to the last item in the previous batch
+        // it's used to fetch the next batch
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+        userId: z.string(),
+
+      })
+    )
+    .query(async({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const items = await ctx.prisma.post.findMany({
+        where: {
+          authorId: input.userId,
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          likes: true, // Include the likes relation in the result
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      const extendedPosts = await addUserDataToPosts(items);
+      return {
+        posts:extendedPosts,
+        nextCursor,
+      };
+    }),
 
     infiniteScrollFollowerUsersPosts: publicProcedure
     .input(

@@ -14,8 +14,8 @@ export const InfiniteScrollFollowingFeed = () => {
   
     const { data, fetchNextPage, isLoading: postsLoading, isFetchingNextPage } =
       api.posts.infiniteScrollFollowerUsersPosts.useInfiniteQuery(
-        { followers: followingData ?? [], limit:4 },
-        
+        { followers: followingData ?? [], 
+            limit:4 },
         {
           getNextPageParam: (lastPage) => lastPage.nextCursor,
           enabled: !!followingData,

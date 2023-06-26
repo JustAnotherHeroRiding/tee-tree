@@ -2,11 +2,9 @@ import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import { LoadingPage, LoadingSpinner } from "~/components/loading";
+import { LoadingSpinner } from "~/components/loading";
 import { PageLayout } from "~/components/layout";
-import { PostView } from "~/components/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeftLong, faXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
@@ -14,8 +12,9 @@ import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
+import { InfiniteScrollProfileFeed } from "~/components/infiniteScrollProfileFeed";
 
-const ProfileFeed = (props: { userId: string }) => {
+/* const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
 
   if (isLoading) return <LoadingPage />
@@ -32,7 +31,7 @@ const ProfileFeed = (props: { userId: string }) => {
   </div>
 
 }
-
+ */
 
 
 
@@ -241,7 +240,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           <div className="flex items-center justify-center"><LoadingSpinner size={32} /></div>
         }
         <div className="border-b border-slate-400 w-full"></div>
-        <ProfileFeed userId={data.id} />
+        <InfiniteScrollProfileFeed userId={data.id} />
       </PageLayout>
     </>
   );
