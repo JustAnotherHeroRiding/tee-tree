@@ -1,5 +1,11 @@
 # Create T3 App
 
+
+## Tee-Tree
+### What is this?
+
+This is my attempt at building a fully realized twitter clone with all of the features being cloned in order to learn the technologies used in the T3 Stack.
+
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
 ## What's next? How do I make an app with this?
