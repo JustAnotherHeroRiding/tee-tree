@@ -44,6 +44,9 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Main Page
 - Search bar for profiles / posts
-- ## Lazy load
-- Infinite scrolling
+- ## Lazy load #DONE 
+- Infinite scrolling #DONE 
 - Page for posts from followed users #DONE 
+- Infinite scrolling for profile feed 
+- Infinite scrolling for Following feed #DONE 
+- Improve following page performance, it is really slow probably because of the two requests , it seems to have been a temporary issue, it is faster now after i added the followers api call in the home page #DONE 

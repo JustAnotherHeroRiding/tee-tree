@@ -12,7 +12,7 @@ export const InfiniteScrollFeed = () => {
     fetchNextPage,
     isLoading: postsLoading,
     isFetchingNextPage: isFetchingNextPage,
-  } = api.posts.infiniteScroll.useInfiniteQuery(
+  } = api.posts.infiniteScrollAllPosts.useInfiniteQuery(
     {
       limit: 4,
     },

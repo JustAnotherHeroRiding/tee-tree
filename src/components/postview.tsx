@@ -82,7 +82,8 @@ export const PostView = (props: PostWithUser) => {
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
       if (location.pathname === "/") {
-        void ctx.posts.getAll.invalidate();
+        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+        void ctx.posts.infiniteScrollAllPosts?.invalidate();
       } else if (location.pathname.startsWith("/post/")) {
         void ctx.posts.getById.invalidate();
       } else if (location.pathname.startsWith("/@")) {
@@ -104,7 +105,7 @@ export const PostView = (props: PostWithUser) => {
     api.posts.editPost.useMutation({
       onSuccess: () => {
         if (location.pathname === "/") {
-          void ctx.posts.getAll.invalidate();
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
@@ -129,7 +130,7 @@ export const PostView = (props: PostWithUser) => {
       onSuccess: () => {
         setShowDeleteModal(false)
         if (location.pathname === "/") {
-          void ctx.posts.getAll.invalidate();
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
         } else if (location.pathname.startsWith("/@")) {

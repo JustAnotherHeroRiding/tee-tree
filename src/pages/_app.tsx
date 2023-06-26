@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
 import { dark } from '@clerk/themes';
+import { HomePageProvider } from "~/components/HomePageContext";
 
 
 
@@ -15,13 +16,16 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       baseTheme: dark
     }}>
+      <HomePageProvider>
       <Head>
         <title>Tee-tree</title>
         <meta name="description" content="First t3 stack app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      
       <Toaster position="bottom-center" />
       <Component {...pageProps} />
+    </HomePageProvider>
     </ClerkProvider>
   )
 };
