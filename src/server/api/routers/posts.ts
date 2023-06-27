@@ -347,46 +347,20 @@ export const postsRouter = createTRPCRouter({
           .regex(/^(?:[\w\W]*?[a-zA-Z0-9][\w\W]*){1,280}$/)
           .min(1)
           .max(280),
-        image: z.unknown().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      // Make sure to replace 'demo' with your actual cloud_name
-      const imageUploadUrl =
-        "https://api.cloudinary.com/v1_1/demo/image/upload";
-
       const { success } = await ratelimit.limit(authorId);
 
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      
-      if (input.image) {
-        // Create a FormData instance to send the file to the Cloudinary API
-        const formData = new FormData();
-        formData.append("file", input.image as Blob, 'image.jpg');
-        formData.append("upload_preset", "ml_default"); // replace 'your_preset' with your actual preset
-
-        // Use fetch (or axios, if you prefer) to send a POST request to the Cloudinary API
-        const imageResponse = await fetch(imageUploadUrl, {
-          method: "POST",
-          body: formData,
-        });
-
-        // Extract the JSON from the response
-        const imageResponseJson = await imageResponse.json();
-
-        // Assuming the response contains a 'public_id' field
-        if (!imageResponseJson?.public_id)
-          throw new Error("Upload to Cloudinary failed!");
-      }
 
       // Now use the 'public_id' in your Prisma create call as the 'imageUrl'
       const post = await ctx.prisma.post.create({
         data: {
           authorId,
           content: input.content,
-          imageUrl: imageResponseJson?.public_id,
         },
       });
 

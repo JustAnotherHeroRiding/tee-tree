@@ -5,13 +5,12 @@ import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { LoadingSpinner } from "~/components/loading";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
 import { faFaceSmile, faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Cloudinary } from "@cloudinary/url-gen";
-import { AdvancedImage } from "@cloudinary/react";
 
 dayjs.extend(relativeTime);
 
@@ -25,9 +24,39 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { user } = useUser();
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
 
-  const myImage = cld.image("cld-sample-2");
+  // const myImage = cld.image("cld-sample-2");
+  // Make sure to replace 'demo' with your actual cloud_name
+  const imageUploadUrl =
+  "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
-
+  
+  
+  useEffect(() => {
+    const imageUpload = async (image: File | undefined) => {
+      if (image) {
+        const formData = new FormData();
+        formData.append("file", image , 'image.jpg');
+        formData.append("upload_preset", "kcgwkpy1"); 
+    
+        const imageResponse = await fetch(imageUploadUrl, {
+          method: "POST",
+          body: formData,
+        });
+    
+        const imageResponseJson = await imageResponse?.json();
+    
+        if (!imageResponseJson?.public_id){
+          throw new Error("Upload to Cloudinary failed!");
+        }
+        else {
+          return imageResponseJson;
+        }
+      }
+    }
+    if (imageFile) {
+      //imageUpload(imageFile);
+    }
+  }, [imageFile]);
 
   const [input, setInput] = useState("");
 
@@ -64,17 +93,9 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   if (!user) return null;
 
-  console.log(imageFile)
-
   return (
     <>
       <div className="relative mb-4 flex gap-3 border-b border-slate-400 pb-4">
-        <AdvancedImage
-          cldImg={myImage}
-          width={56}
-          height={56}
-          alt="cloudinary example"
-        />
         <Image
           className="h-14 w-14 rounded-full"
           src={user.profileImageUrl}
@@ -106,7 +127,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           <button
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 
       px-4 py-1 hover:bg-slate-700"
-            onClick={() => mutate({ content: input, image: imageFile })}
+            onClick={() => mutate({ content: input })}
           >
             Post
           </button>
