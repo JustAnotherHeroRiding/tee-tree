@@ -46,4 +46,8 @@ body {
     .selector-on-symbol { 
         @apply h-1 w-16 rounded-3xl bg-blue-500 mt-4 border-none
     }
+
+    .CreatePostWizard-Icons {
+        @apply w-6 h-6 hover:text-slate-300 cursor-pointer
+    }
 }

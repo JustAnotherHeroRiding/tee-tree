@@ -43,7 +43,6 @@ Let's implement some features I have already implemented before in order to lear
 
 
 ## Main Page
-- Search bar for profiles / posts
 - ## Lazy load #DONE 
 - Infinite scrolling #DONE 
 - Page for posts from followed users #DONE 
@@ -51,3 +50,9 @@ Let's implement some features I have already implemented before in order to lear
 - Infinite scrolling for Following feed #DONE 
 - Improve following page performance, it is really slow probably because of the two requests , it seems to have been a temporary issue, it is faster now after i added the followers api call in the home page #DONE 
 - Try to use the global homePage state context to decide which data to invalidate upon liking
+
+## Search bar for profiles / posts
+- Return posts that contain the query in the post body
+- Return profiles if user selects people
+- If the query starts with @ then show profiles first but still show posts afterwards
+- For the profiles show 3 profiles and a show more tab, for posts implement useInfiniteQuery

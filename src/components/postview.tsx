@@ -163,6 +163,7 @@ export const PostView = (props: PostWithUser) => {
   const handleEditClick = () => {
     if (!isEditing) {
       setIsEditing(true);
+      setTextLength(post.content.length);
     } else {
       handleSaveClick(textareaRef.current?.value as string);
     }
@@ -230,7 +231,7 @@ export const PostView = (props: PostWithUser) => {
           {isEditing ? (
             <div className="relative">
               <button
-                className="absolute right-2 top-4 rounded-3xl
+                className="absolute right-0 top-4 rounded-3xl
           px-1 py-1 hover:bg-slate-700 hover:text-white
           "
                 onClick={() => setIsEditing(false)}
@@ -247,7 +248,7 @@ export const PostView = (props: PostWithUser) => {
               <TextareaAutosize
                 maxLength={280}
                 ref={textareaRef}
-                className="h-fit min-h-[60px] w-full resize-none 
+                className="h-full min-h-[80px] w-full resize-none 
                 rounded-3xl border-slate-400 bg-slate-900 pl-4 pr-8 pb-2 pt-4 outline-none"
                 defaultValue={post.content}
                 onChange={handleTextareaChange}

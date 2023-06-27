@@ -14,6 +14,8 @@ import TextareaAutosize from "react-textarea-autosize";
 import { InfiniteScrollFeed } from "~/components/infinitescroll";
 import { useHomePage } from "~/components/HomePageContext";
 import { InfiniteScrollFollowingFeed } from "~/components/infiniteScrollFollowerUsersFeed";
+import { faFaceSmile, faImage} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 dayjs.extend(relativeTime);
 
@@ -60,7 +62,8 @@ const CreatePostWizard: React.FC<CreatePostWizardProps> = ({ homePage }) => {
   if (!user) return null;
 
   return (
-    <div className="relative flex gap-3">
+    <>
+    <div className="relative flex gap-3 border-b border-slate-400 mb-4 pb-4">
       <Image
         className="h-14 w-14 rounded-full"
         src={user.profileImageUrl}
@@ -95,13 +98,21 @@ const CreatePostWizard: React.FC<CreatePostWizardProps> = ({ homePage }) => {
           Post
         </button>
       )}
+      
 
       {isPosting && (
         <div className="flex items-center justify-center">
           <LoadingSpinner size={20} />
         </div>
       )}
+      
     </div>
+    <div className="flex flex-row gap-2 items-center">
+    <FontAwesomeIcon className="CreatePostWizard-Icons" icon={faImage}/>
+    <Image className="bg-white rounded hover:bg-slate-300" src="/gif.png" alt="emoji" width={24} height={24} priority={true}/>
+    <FontAwesomeIcon className="CreatePostWizard-Icons" icon={faFaceSmile}/>
+  </div>
+  </>
   );
 };
 
@@ -112,8 +123,6 @@ const Home: NextPage = () => {
   const { homePage, setHomePage } = useHomePage();
 
   api.follow.getFollowingCurrentUser.useQuery();
-
-  console.log(homePage)
 
 
   const username = user?.username;
