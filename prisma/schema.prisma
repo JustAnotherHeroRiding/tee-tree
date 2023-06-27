@@ -24,17 +24,19 @@ model Like {
 }
 
 model Post {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  content   String   @db.VarChar(255)
 
-    content  String @db.VarChar(255)
-    authorId String
+  imageUrl  String?  // new field for image URL
+  videoUrl String? // url for cloudinary
 
-    likes     Like[]
-
-    isEdited  Boolean  @default(false)
-    @@index([authorId])
+  authorId  String
+  likes     Like[]
+  isEdited  Boolean  @default(false)
+  @@index([authorId])
 }
+
 
 model Follow {
   id          String @id @default(cuid())

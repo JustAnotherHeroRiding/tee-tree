@@ -157,11 +157,10 @@ export const postsRouter = createTRPCRouter({
 
       return {
         posts: extendedPosts,
-        nextCursor
+        nextCursor,
       };
-
     }),
-    infiniteScrollAllPosts: publicProcedure
+  infiniteScrollAllPosts: publicProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -171,14 +170,14 @@ export const postsRouter = createTRPCRouter({
         skip: z.number().optional(),
       })
     )
-    .query(async({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
       const items = await ctx.prisma.post.findMany({
         take: limit + 1,
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         include: {
           likes: true, // Include the likes relation in the result
@@ -191,7 +190,7 @@ export const postsRouter = createTRPCRouter({
       }
       const extendedPosts = await addUserDataToPosts(items);
       return {
-        posts:extendedPosts,
+        posts: extendedPosts,
         nextCursor,
       };
     }),
@@ -216,7 +215,7 @@ export const postsRouter = createTRPCRouter({
         })
         .then(addUserDataToPosts)
     ),
-    infiniteScrollPostsByUserId: publicProcedure
+  infiniteScrollPostsByUserId: publicProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -225,10 +224,9 @@ export const postsRouter = createTRPCRouter({
         cursor: z.string().nullish(),
         skip: z.number().optional(),
         userId: z.string(),
-
       })
     )
-    .query(async({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
       const items = await ctx.prisma.post.findMany({
         where: {
@@ -238,7 +236,7 @@ export const postsRouter = createTRPCRouter({
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         include: {
           likes: true, // Include the likes relation in the result
@@ -251,12 +249,12 @@ export const postsRouter = createTRPCRouter({
       }
       const extendedPosts = await addUserDataToPosts(items);
       return {
-        posts:extendedPosts,
+        posts: extendedPosts,
         nextCursor,
       };
     }),
 
-    infiniteScrollFollowerUsersPosts: publicProcedure
+  infiniteScrollFollowerUsersPosts: publicProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -267,7 +265,7 @@ export const postsRouter = createTRPCRouter({
         followers: z.array(FollowedWithAuthorSchema),
       })
     )
-    .query(async({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
       const currentUserId = ctx.userId;
       const followers = input.followers;
@@ -283,14 +281,14 @@ export const postsRouter = createTRPCRouter({
       const items = await ctx.prisma.post.findMany({
         where: {
           authorId: {
-            in: authorIds
+            in: authorIds,
           },
         },
         take: limit + 1,
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         include: {
           likes: true, // Include the likes relation in the result
@@ -303,7 +301,7 @@ export const postsRouter = createTRPCRouter({
       }
       const extendedPosts = await addUserDataToPosts(items);
       return {
-        posts:extendedPosts,
+        posts: extendedPosts,
         nextCursor,
       };
     }),
@@ -349,21 +347,46 @@ export const postsRouter = createTRPCRouter({
           .regex(/^(?:[\w\W]*?[a-zA-Z0-9][\w\W]*){1,280}$/)
           .min(1)
           .max(280),
+        image: z.unknown().optional(),
       })
     )
-
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
+      // Make sure to replace 'demo' with your actual cloud_name
+      const imageUploadUrl =
+        "https://api.cloudinary.com/v1_1/demo/image/upload";
+
       const { success } = await ratelimit.limit(authorId);
-      console.log(success);
 
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      
+      if (input.image) {
+        // Create a FormData instance to send the file to the Cloudinary API
+        const formData = new FormData();
+        formData.append("file", input.image as Blob, 'image.jpg');
+        formData.append("upload_preset", "ml_default"); // replace 'your_preset' with your actual preset
 
+        // Use fetch (or axios, if you prefer) to send a POST request to the Cloudinary API
+        const imageResponse = await fetch(imageUploadUrl, {
+          method: "POST",
+          body: formData,
+        });
+
+        // Extract the JSON from the response
+        const imageResponseJson = await imageResponse.json();
+
+        // Assuming the response contains a 'public_id' field
+        if (!imageResponseJson?.public_id)
+          throw new Error("Upload to Cloudinary failed!");
+      }
+
+      // Now use the 'public_id' in your Prisma create call as the 'imageUrl'
       const post = await ctx.prisma.post.create({
         data: {
           authorId,
           content: input.content,
+          imageUrl: imageResponseJson?.public_id,
         },
       });
 

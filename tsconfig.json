@@ -28,6 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-  ],
+, "cloudinary.js"  ],
   "exclude": ["node_modules"]
 }
