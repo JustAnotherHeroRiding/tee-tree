@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
 import { faFaceSmile, faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Cloudinary } from "@cloudinary/url-gen";
+import { filesize } from "filesize";
 
 dayjs.extend(relativeTime);
 
@@ -22,13 +22,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
 }) => {
   const { user } = useUser();
-  const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
 
   // const myImage = cld.image("cld-sample-2");
   // Make sure to replace 'demo' with your actual cloud_name
   const imageUploadUrl =
     "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
+
+  interface ImageResponse {
+    public_id: string;
+  }
 
   const imageUpload = async (image: File | undefined) => {
     if (image) {
@@ -41,25 +44,51 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         body: formData,
       });
 
-      const imageResponseJson = await imageResponse?.json();
-
-      if (!imageResponseJson?.public_id) {
-        throw new Error("Upload to Cloudinary failed!");
+      if (imageResponse) {
+        const imageResponseJson = (await imageResponse.json()) as ImageResponse;
+        console.log(imageResponseJson);
+        if (!imageResponseJson?.public_id) {
+          throw new Error("Upload to Cloudinary failed!");
+        } else {
+          return imageResponseJson;
+        }
       } else {
-        return imageResponseJson;
+        toast.error("Upload to Cloudinary failed!");
       }
     }
   };
-  if (imageFile) {
-    //imageUpload(imageFile);
-  }
+
+  useEffect(() => {
+    console.log(filesize(imageFile?.size || 0));
+  }, [imageFile]);
 
   const [input, setInput] = useState("");
 
   const ctx = api.useContext();
+  const { mutate: mutateAddImageToPost } = api.posts.addImageToPost.useMutation({
+    onSuccess: () => {
+      setImageFile(undefined);
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to upload the image.");
+      }
+    },
+  });
+
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async (post) => {
+      if (imageFile) {
+        const imageResponseJson = await imageUpload(imageFile);
+        if (imageResponseJson) {
+          mutateAddImageToPost({ id: post.id, publicId: imageResponseJson.public_id });
+        }
+      }
+
       setInput("");
       setTextLength(0);
       if (homePage) {
@@ -150,7 +179,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           />
           <FontAwesomeIcon className="CreatePostWizard-Icons" icon={faImage} />
         </label>
-
         <Image
           className="rounded bg-white hover:bg-slate-300"
           src="/gif.png"

@@ -17,6 +17,11 @@ import { useUser } from "@clerk/nextjs";
 import { LoadingSpinner } from "./loading";
 import { Tooltip } from "react-tooltip";
 import TextareaAutosize from "react-textarea-autosize";
+import { AdvancedImage } from "@cloudinary/react";
+import { Cloudinary, type CloudinaryImage } from "@cloudinary/url-gen";
+// Import required actions and qualifiers.
+import {thumbnail} from "@cloudinary/url-gen/actions/resize";
+import {byRadius} from "@cloudinary/url-gen/actions/roundCorners";
 
 dayjs.extend(relativeTime);
 
@@ -24,6 +29,8 @@ type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
 export const PostView = (props: PostWithUser) => {
   const { post, author } = props;
+  const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
+
 
   const [liked, setLiked] = useState(false);
 
@@ -34,6 +41,21 @@ export const PostView = (props: PostWithUser) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const modalDeletePostRef = useRef<HTMLDivElement>(null);
+
+  const [postImage , setPostImage] = useState<CloudinaryImage | null>(null);
+
+
+  useEffect(() => {
+    if (post.imageUrl) {
+      setPostImage(cld.image(post.imageUrl));
+      if (postImage) {
+        postImage.resize(thumbnail().width(250).height(150))  // Crop the image, focusing on the face.
+        .roundCorners(byRadius(20)); 
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[post.imageUrl])
+  
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -179,6 +201,7 @@ export const PostView = (props: PostWithUser) => {
   ) => {
     setTextLength(event.target.textLength);
   };
+ 
 
   return (
     <div key={post.id} className="flex gap-3 border-b border-slate-400 p-4">
@@ -263,6 +286,12 @@ export const PostView = (props: PostWithUser) => {
           )}
           <br />
         </Link>
+        {postImage ? (
+          <div className="border border-slate-400 rounded  mx-8">
+          <AdvancedImage cldImg={postImage}/>
+        </div>
+        ) : null}
+        
         <div className={`flex flex-row ${user?.id === author.id ? "gap-2 sm:gap-12 md:gap-16" : 
         "gap-2 sm:gap-12 md:gap-16"} `}>
           <button
