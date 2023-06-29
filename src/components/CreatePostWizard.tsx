@@ -27,36 +27,32 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   // const myImage = cld.image("cld-sample-2");
   // Make sure to replace 'demo' with your actual cloud_name
   const imageUploadUrl =
-  "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
+    "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
-  
-  
-  useEffect(() => {
-    const imageUpload = async (image: File | undefined) => {
-      if (image) {
-        const formData = new FormData();
-        formData.append("file", image , 'image.jpg');
-        formData.append("upload_preset", "kcgwkpy1"); 
-    
-        const imageResponse = await fetch(imageUploadUrl, {
-          method: "POST",
-          body: formData,
-        });
-    
-        const imageResponseJson = await imageResponse?.json();
-    
-        if (!imageResponseJson?.public_id){
-          throw new Error("Upload to Cloudinary failed!");
-        }
-        else {
-          return imageResponseJson;
-        }
+
+  const imageUpload = async (image: File | undefined) => {
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image, "image.jpg");
+      formData.append("upload_preset", "kcgwkpy1");
+
+      const imageResponse = await fetch(imageUploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      const imageResponseJson = await imageResponse?.json();
+
+      if (!imageResponseJson?.public_id) {
+        throw new Error("Upload to Cloudinary failed!");
+      } else {
+        return imageResponseJson;
       }
     }
-    if (imageFile) {
-      //imageUpload(imageFile);
-    }
-  }, [imageFile]);
+  };
+  if (imageFile) {
+    //imageUpload(imageFile);
+  }
 
   const [input, setInput] = useState("");
 
@@ -141,12 +137,17 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       </div>
       <div className="flex flex-row items-center gap-2">
         <label>
-          <input type="file" className="hidden" accept="image/*" onChange={(event) => {
-    if (event.target.files && event.target.files.length > 0) { // only proceed if files have been selected
-      setImageFile(event.target.files[0]);
-    }
-  }}
- />
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={(event) => {
+              if (event.target.files && event.target.files.length > 0) {
+                // only proceed if files have been selected
+                setImageFile(event.target.files[0]);
+              }
+            }}
+          />
           <FontAwesomeIcon className="CreatePostWizard-Icons" icon={faImage} />
         </label>
 
