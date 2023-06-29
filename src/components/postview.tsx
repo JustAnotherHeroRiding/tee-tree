@@ -20,8 +20,8 @@ import TextareaAutosize from "react-textarea-autosize";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary, type CloudinaryImage } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
-import {thumbnail} from "@cloudinary/url-gen/actions/resize";
-import {byRadius} from "@cloudinary/url-gen/actions/roundCorners";
+import {scale} from "@cloudinary/url-gen/actions/resize";
+import { byRadius } from "@cloudinary/url-gen/actions/roundCorners";
 
 dayjs.extend(relativeTime);
 
@@ -48,13 +48,15 @@ export const PostView = (props: PostWithUser) => {
   useEffect(() => {
     if (post.imageUrl) {
       setPostImage(cld.image(post.imageUrl));
-      if (postImage) {
-        postImage.resize(thumbnail().width(250).height(150))  // Crop the image, focusing on the face.
-        .roundCorners(byRadius(20)); 
-      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[post.imageUrl])
+
+  useEffect(() => {
+    if (postImage) {
+      postImage.resize(scale().width(400).height(400)).roundCorners(byRadius(4));
+    }
+  }, [postImage])
   
 
   useEffect(() => {
@@ -287,9 +289,9 @@ export const PostView = (props: PostWithUser) => {
           <br />
         </Link>
         {postImage ? (
-          <div className="border border-slate-400 rounded  mx-8">
+          <div className="rounded mx-auto my-4">
           <AdvancedImage cldImg={postImage}/>
-        </div>
+          </div>
         ) : null}
         
         <div className={`flex flex-row ${user?.id === author.id ? "gap-2 sm:gap-12 md:gap-16" : 
