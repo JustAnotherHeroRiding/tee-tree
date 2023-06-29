@@ -20,8 +20,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary, type CloudinaryImage } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
-import {scale} from "@cloudinary/url-gen/actions/resize";
-import { byRadius } from "@cloudinary/url-gen/actions/roundCorners";
+import {fill, scale} from "@cloudinary/url-gen/actions/resize";
 
 dayjs.extend(relativeTime);
 
@@ -54,7 +53,7 @@ export const PostView = (props: PostWithUser) => {
 
   useEffect(() => {
     if (postImage) {
-      postImage.resize(scale().width(400).height(400)).roundCorners(byRadius(4));
+      postImage.resize(fill().width(400).height(500)).format('auto').quality('auto');
     }
   }, [postImage])
   
@@ -289,7 +288,7 @@ export const PostView = (props: PostWithUser) => {
           <br />
         </Link>
         {postImage ? (
-          <div className="rounded mx-auto my-4">
+          <div className="rounded-md overflow-clip mx-auto my-4">
           <AdvancedImage cldImg={postImage}/>
           </div>
         ) : null}

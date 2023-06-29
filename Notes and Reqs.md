@@ -33,7 +33,8 @@ Let's implement some features I have already implemented before in order to lear
 - Clicking on the delete button should open a modal asking you to confirm before deleting the post. #DONE 
 - Auto sizing text area and character counter #DONE 
 - Tooltips for edited posts and icons #DONE 
-- Posting pictures and not just text
+- Posting pictures and not just text #DONE 
+- Lazy loading and responsiveness for pictures [Cloudinary Docs](https://cloudinary.com/documentation/react_image_transformations)
 - Retweeting
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
