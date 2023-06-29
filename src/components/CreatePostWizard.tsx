@@ -67,7 +67,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const ctx = api.useContext();
   const { mutate: mutateAddImageToPost } = api.posts.addImageToPost.useMutation({
     onSuccess: () => {
+      if (homePage || !imageFile) {
+        void ctx.posts.infiniteScrollAllPosts.invalidate();
+      } else {
+        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+      }
       setImageFile(undefined);
+
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content;
@@ -91,7 +97,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
       setInput("");
       setTextLength(0);
-      if (homePage) {
+      if (homePage || !imageFile) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
       } else {
         void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
