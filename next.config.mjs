@@ -9,7 +9,8 @@ const config = {
   reactStrictMode: true,
   images: {
     domains: ['images.clerk.dev',
-    'www.gravatar.com']
+    'www.gravatar.com',
+  "res.cloudinary.com"]
   },
 
   /**

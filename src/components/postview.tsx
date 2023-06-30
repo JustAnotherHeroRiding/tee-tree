@@ -17,19 +17,19 @@ import { useUser } from "@clerk/nextjs";
 import { LoadingSpinner } from "./loading";
 import { Tooltip } from "react-tooltip";
 import TextareaAutosize from "react-textarea-autosize";
-import { AdvancedImage } from "@cloudinary/react";
-import { Cloudinary, type CloudinaryImage } from "@cloudinary/url-gen";
+import { AdvancedImage, lazyload } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
-import {fill} from "@cloudinary/url-gen/actions/resize";
+import { fill } from "@cloudinary/url-gen/actions/resize";
+import React from "react";
 
 dayjs.extend(relativeTime);
 
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
-export const PostView = (props: PostWithUser) => {
+const PostViewComponent = (props: PostWithUser) => {
   const { post, author } = props;
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
-
 
   const [liked, setLiked] = useState(false);
 
@@ -41,36 +41,22 @@ export const PostView = (props: PostWithUser) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const modalDeletePostRef = useRef<HTMLDivElement>(null);
 
-  const [postImage , setPostImage] = useState<CloudinaryImage | null>(null);
-
-
-  useEffect(() => {
-    if (post.imageUrl) {
-      setPostImage(cld.image(post.imageUrl));
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[post.imageUrl])
-
-  useEffect(() => {
-    if (postImage) {
-      postImage.resize(fill().height(500)).format('auto').quality('auto');
-    }
-  }, [postImage])
-  
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (modalDeletePostRef.current && !modalDeletePostRef.current.contains(event.target as Node)) {
+      if (
+        modalDeletePostRef.current &&
+        !modalDeletePostRef.current.contains(event.target as Node)
+      ) {
         setShowDeleteModal(false);
       }
     }
-  
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setShowDeleteModal(false);
       }
     }
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -147,11 +133,10 @@ export const PostView = (props: PostWithUser) => {
       },
     });
 
-
-    const { mutate: deletePost, isLoading: isDeletingPost } =
+  const { mutate: deletePost, isLoading: isDeletingPost } =
     api.posts.deletePost.useMutation({
       onSuccess: () => {
-        setShowDeleteModal(false)
+        setShowDeleteModal(false);
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
@@ -194,16 +179,11 @@ export const PostView = (props: PostWithUser) => {
 
   const [textLength, setTextLength] = useState(post.content.length);
 
-  
-
-
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setTextLength(event.target.textLength);
   };
-  
- 
 
   return (
     <div key={post.id} className="flex gap-3 border-b border-slate-400 p-4">
@@ -214,7 +194,7 @@ export const PostView = (props: PostWithUser) => {
         width={56}
         height={56}
       />
-      <div className="flex flex-col w-full">
+      <div className="flex w-full flex-col">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
             <span className="hover:text-white">{`@${author.username}`}</span>
@@ -274,7 +254,7 @@ export const PostView = (props: PostWithUser) => {
                 maxLength={280}
                 ref={textareaRef}
                 className="h-full min-h-[80px] w-full resize-none 
-                rounded-3xl border-slate-400 bg-slate-900 pl-4 pr-8 pb-2 pt-4 outline-none"
+                rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
                 defaultValue={post.content}
                 onChange={handleTextareaChange}
               />
@@ -288,14 +268,33 @@ export const PostView = (props: PostWithUser) => {
           )}
           <br />
         </Link>
-        {postImage ? (
-          <div className="rounded-md overflow-clip mx-auto my-4">
-          <AdvancedImage style={{width: "100%", height: "auto"}} cldImg={postImage}/>
+        {post.imageUrl && (
+          <div className="mx-auto my-4 w-full overflow-clip rounded-md border border-slate-400">
+            <div className="relative h-[500px]">
+              <AdvancedImage
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  width: "100%", height: "500px"
+                }}
+                cldImg={cld
+                  .image(post.imageUrl)
+                  .resize(fill())
+                  .format("auto")
+                  .quality("auto")}
+                  plugins={[lazyload({rootMargin: '10px 20px 10px 30px', threshold: 0.25})]}/>
+            </div>
           </div>
-        ) : null}
-        
-        <div className={`flex flex-row ${user?.id === author.id ? "gap-2 sm:gap-12 md:gap-16" : 
-        "gap-2 sm:gap-12 md:gap-16"} `}>
+        )}
+
+        <div
+          className={`flex flex-row ${
+            user?.id === author.id
+              ? "gap-2 sm:gap-12 md:gap-16"
+              : "gap-2 sm:gap-12 md:gap-16"
+          } `}
+        >
           <button
             data-tooltip-id="like-tooltip"
             data-tooltip-content="Like"
@@ -361,49 +360,75 @@ export const PostView = (props: PostWithUser) => {
           />
           {user?.id === author.id && (
             <>
-            <button data-tooltip-id="editPost-tooltip" data-tooltip-content="Edit Post"
-              onClick={handleEditClick}
-              className="rounded-3xl border border-slate-400 px-4 py-1 hover:bg-slate-700"
-            >
-              {isEditing ? "Save" : "Edit"}
-            </button>
-            <Tooltip
-            place="bottom"
-            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
-            id="editPost-tooltip"
-          />
-          {!isDeletingPost ? (
-            <>
-            <button onClick={() => setShowDeleteModal(true)}
-             data-tooltip-id="delete-tooltip" data-tooltip-content="Delete"
-             className="text-red-500 hover:text-red-700">
-              <FontAwesomeIcon className="w-6 h-6" icon={faXmark}/></button>
+              <button
+                data-tooltip-id="editPost-tooltip"
+                data-tooltip-content="Edit Post"
+                onClick={handleEditClick}
+                className="rounded-3xl border border-slate-400 px-4 py-1 hover:bg-slate-700"
+              >
+                {isEditing ? "Save" : "Edit"}
+              </button>
               <Tooltip
-            place="bottom"
-            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
-            id="delete-tooltip"
-          />
-          {showDeleteModal && (
-            <div className={`modalparent transition-transform duration-300 ease-in-out transform ${
-              showDeleteModal ? 'scale-100 opacity-100 visible' : 'scale-0 opacity-0 invisible'
-            }`}>
-            <div ref={modalDeletePostRef} className="mx-auto w-90 p-4 modalDeletePost bg-black h-32
-        border border-indigo-200 rounded-3xl flex flex-col">
-              <h1>Are you sure you want to delete this post?</h1>
-              <div className="flex flex-row justify-between mt-auto">
-              <button className="bg-red-700 rounded-3xl px-2 py-1 hover:bg-orange-600 hover:text-black" onClick={() => deletePost({postId: post.id})}>Delete</button>
-              <button className="rounded-3xl px-2 py-1 border hover:text-slate-400"  onClick={() => setShowDeleteModal(false)}>Cancel</button>
-              </div>
-
-            </div>
-          </div>
-          )}
-          
-          </> 
-          ) : (
-            <LoadingSpinner/>
-          )}
-            
+                place="bottom"
+                style={{
+                  borderRadius: "24px",
+                  backgroundColor: "rgb(51 65 85)",
+                }}
+                id="editPost-tooltip"
+              />
+              {!isDeletingPost ? (
+                <>
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    data-tooltip-id="delete-tooltip"
+                    data-tooltip-content="Delete"
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FontAwesomeIcon className="h-6 w-6" icon={faXmark} />
+                  </button>
+                  <Tooltip
+                    place="bottom"
+                    style={{
+                      borderRadius: "24px",
+                      backgroundColor: "rgb(51 65 85)",
+                    }}
+                    id="delete-tooltip"
+                  />
+                  {showDeleteModal && (
+                    <div
+                      className={`modalparent transform transition-transform duration-300 ease-in-out ${
+                        showDeleteModal
+                          ? "visible scale-100 opacity-100"
+                          : "invisible scale-0 opacity-0"
+                      }`}
+                    >
+                      <div
+                        ref={modalDeletePostRef}
+                        className="w-90 modalDeletePost mx-auto flex h-32 flex-col
+        rounded-3xl border border-indigo-200 bg-black p-4"
+                      >
+                        <h1>Are you sure you want to delete this post?</h1>
+                        <div className="mt-auto flex flex-row justify-between">
+                          <button
+                            className="rounded-3xl bg-red-700 px-2 py-1 hover:bg-orange-600 hover:text-black"
+                            onClick={() => deletePost({ postId: post.id })}
+                          >
+                            Delete
+                          </button>
+                          <button
+                            className="rounded-3xl border px-2 py-1 hover:text-slate-400"
+                            onClick={() => setShowDeleteModal(false)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <LoadingSpinner />
+              )}
             </>
           )}
         </div>
@@ -411,3 +436,7 @@ export const PostView = (props: PostWithUser) => {
     </div>
   );
 };
+
+PostViewComponent.displayName = "PostView";
+
+export const PostView = React.memo(PostViewComponent);

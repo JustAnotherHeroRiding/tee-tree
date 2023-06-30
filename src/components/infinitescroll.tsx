@@ -44,10 +44,13 @@ export const InfiniteScrollFeed = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
-          void handleFetchNextPage();
+           void handleFetchNextPage();
         }
       },
-      { threshold: 1 }
+      { root: null, // viewport
+        rootMargin: '0px',
+        threshold: 1.0
+      }
     );
 
     const currentLastPostElement = lastPostElementRef.current;
@@ -58,7 +61,8 @@ export const InfiniteScrollFeed = () => {
 
     return () => {
       if (currentLastPostElement) {
-        observer.unobserve(currentLastPostElement);
+
+        observer.observe(currentLastPostElement);
       }
     };
   }, [lastPostElementRef, nextCursor, fetchNextPage]);
@@ -78,7 +82,7 @@ export const InfiniteScrollFeed = () => {
             postIndex === page.posts.length - 1;
 
           return isLastPost ? (
-              <div ref={lastPostElementRef} key={fullPost.post.id} >
+              <div ref={lastPostElementRef} key={fullPost.post.id} className="bg-red-600" >
                 <PostView {...fullPost} />
               </div>
           ) : (
