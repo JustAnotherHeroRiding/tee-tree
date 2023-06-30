@@ -20,7 +20,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { AdvancedImage, lazyload } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
-import { fill } from "@cloudinary/url-gen/actions/resize";
+import { fill, scale } from "@cloudinary/url-gen/actions/resize";
 import React from "react";
 
 dayjs.extend(relativeTime);
@@ -270,18 +270,21 @@ const PostViewComponent = (props: PostWithUser) => {
         </Link>
         {post.imageUrl && (
           <div className="mx-auto my-4 w-full">
-            <div className="relative h-[500px] w-auto overflow-clip rounded-md border border-slate-400">
+            <div className="relative h-[500px] w-auto border-slate-200">
               <AdvancedImage
                 style={{
-                  position: "absolute",
-                  top: "0",
-                  left: "0",
                   height: "500px",
-                  width: 'auto'
+                  borderWidth: "1px",
+                  borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
+                  borderRadius: '0.375rem',
+                  borderStyle: 'solid',
+                  overflow: 'clip',
+                  twBorderOpacity: '1',
+
                }}
                 cldImg={cld
                   .image(post.imageUrl)
-                  .resize(fill())
+                  .resize(scale())
                   .format("auto")
                   .quality("auto")}
                   plugins={[lazyload({rootMargin: '10px 20px 10px 30px', threshold: 0.25})]}/>
