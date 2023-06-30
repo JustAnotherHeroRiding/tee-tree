@@ -8,7 +8,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
-import { faFaceSmile, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faFaceSmile, faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filesize } from "filesize";
 
@@ -195,10 +195,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           />
           <FontAwesomeIcon className="CreatePostWizard-Icons" icon={faImage} />
         </label>
-        {previewUrl && (
-  <Image className="rounded bg-white hover:bg-slate-300" width={100} height={100} src={previewUrl} alt="Preview" />
-)}
-
         <Image
           className="rounded bg-white hover:bg-slate-300"
           src="/gif.png"
@@ -212,6 +208,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           icon={faFaceSmile}
         />
       </div>
+      {previewUrl && (
+        <div className="w-[300px] overflow-auto relative mx-auto">
+          <FontAwesomeIcon onClick={() => setPreviewUrl("")} icon={faXmark} 
+          className="absolute top-2 w-7 h-7 p-1 right-2 cursor-pointer hover:text-slate-300 bg-gray-600 rounded-3xl"/>
+  <Image className="rounded border border-slate-400" width={350} height={350} src={previewUrl} alt="Preview" />
+  </div>
+)}
     </>
   );
 };
