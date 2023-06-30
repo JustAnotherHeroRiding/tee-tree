@@ -197,7 +197,7 @@ const PostViewComponent = (props: PostWithUser) => {
       <div className="flex w-full flex-col">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
-            <span className="hover:text-white">{`@${author.username}`}</span>
+            <span className="hover:text-white hover:underline">{`@${author.username}`}</span>
           </Link>
           <span className="font-thin">{` · ${dayjs(
             post.createdAt

@@ -29,6 +29,7 @@
     "@upstash/redis": "^1.21.0",
     "cloudinary-core": "^2.13.0",
     "cloudinary-video-player": "^1.9.10",
+    "compressorjs": "^1.2.1",
     "dayjs": "^1.11.8",
     "filesize": "^10.0.7",
     "next": "^13.4.2",

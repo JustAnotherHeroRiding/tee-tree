@@ -11,6 +11,8 @@ import TextareaAutosize from "react-textarea-autosize";
 import { faFaceSmile, faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filesize } from "filesize";
+import Compressor from 'compressorjs';
+
 
 dayjs.extend(relativeTime);
 
@@ -34,31 +36,47 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   interface ImageResponse {
     public_id: string;
   }
+  const compressImage = async (image: File): Promise<File | Blob> => {
+    return new Promise((resolve, reject) => {
+      new Compressor(image, {
+        quality: 0.6,
+        success: (result) => resolve(result),
+        error: (err) => reject(err),
+      });
+    });
+  };
+  
 
   const imageUpload = async (image: File | undefined) => {
     if (image) {
-      const formData = new FormData();
-      formData.append("file", image, "image.jpg");
-      formData.append("upload_preset", "kcgwkpy1");
-
-      const imageResponse = await fetch(imageUploadUrl, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (imageResponse) {
-        const imageResponseJson = (await imageResponse.json()) as ImageResponse;
-        console.log(imageResponseJson);
-        if (!imageResponseJson?.public_id) {
-          throw new Error("Upload to Cloudinary failed!");
+      try {
+        const compressedImage = await compressImage(image);
+        const formData = new FormData();
+        formData.append("file", compressedImage, "image.jpg");
+        formData.append("upload_preset", "kcgwkpy1");
+  
+        const imageResponse = await fetch(imageUploadUrl, {
+          method: "POST",
+          body: formData,
+        });
+  
+        if (imageResponse.ok) {
+          const imageResponseJson = (await imageResponse.json()) as ImageResponse;
+          console.log(imageResponseJson);
+          if (!imageResponseJson?.public_id) {
+            toast.error("Upload to Cloudinary failed!");
+          } else {
+            return imageResponseJson;
+          }
         } else {
-          return imageResponseJson;
+          toast.error("Upload to Cloudinary failed!");
         }
-      } else {
-        toast.error("Upload to Cloudinary failed!");
+      } catch (err) {
+        toast.error("Upload failed.");
       }
     }
   };
+  
 
   useEffect(() => {
     console.log(filesize(imageFile?.size || 0));
