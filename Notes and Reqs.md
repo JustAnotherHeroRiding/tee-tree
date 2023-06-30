@@ -36,6 +36,7 @@ Let's implement some features I have already implemented before in order to lear
 - Posting pictures and not just text #DONE 
 - Lazy loading and responsiveness for pictures [Cloudinary Docs](https://cloudinary.com/documentation/react_image_transformations)
 - Retweeting #DONE 
+- Show the image that is about to be uploaded after it is set to imageFile
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
 - Views per post

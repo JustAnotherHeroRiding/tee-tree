@@ -22,12 +22,14 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
 }) => {
   const { user } = useUser();
+  
 
   // const myImage = cld.image("cld-sample-2");
   // Make sure to replace 'demo' with your actual cloud_name
   const imageUploadUrl =
     "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
   interface ImageResponse {
     public_id: string;
@@ -73,6 +75,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
       }
       setImageFile(undefined);
+      setPreviewUrl("");
 
     },
     onError: (e) => {
@@ -180,11 +183,22 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               if (event.target.files && event.target.files.length > 0) {
                 // only proceed if files have been selected
                 setImageFile(event.target.files[0]);
+            
+                // create a URL representing the file
+                const url = URL.createObjectURL(event.target.files[0] as Blob);
+            
+                // store the URL in the state
+                setPreviewUrl(url);
               }
             }}
+            
           />
           <FontAwesomeIcon className="CreatePostWizard-Icons" icon={faImage} />
         </label>
+        {previewUrl && (
+  <Image className="rounded bg-white hover:bg-slate-300" width={100} height={100} src={previewUrl} alt="Preview" />
+)}
+
         <Image
           className="rounded bg-white hover:bg-slate-300"
           src="/gif.png"
