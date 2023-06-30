@@ -20,7 +20,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { AdvancedImage, lazyload } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
-import { fill, scale } from "@cloudinary/url-gen/actions/resize";
+import { scale } from "@cloudinary/url-gen/actions/resize";
 import React from "react";
 
 dayjs.extend(relativeTime);
