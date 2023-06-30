@@ -269,15 +269,16 @@ const PostViewComponent = (props: PostWithUser) => {
           <br />
         </Link>
         {post.imageUrl && (
-          <div className="mx-auto my-4 w-full overflow-clip rounded-md border border-slate-400">
-            <div className="relative h-[500px]">
+          <div className="mx-auto my-4 w-full">
+            <div className="relative h-[500px] w-auto overflow-clip rounded-md border border-slate-400">
               <AdvancedImage
                 style={{
                   position: "absolute",
                   top: "0",
                   left: "0",
-                  width: "100%", height: "500px"
-                }}
+                  height: "500px",
+                  width: 'auto'
+               }}
                 cldImg={cld
                   .image(post.imageUrl)
                   .resize(fill())
