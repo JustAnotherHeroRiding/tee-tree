@@ -270,10 +270,11 @@ const PostViewComponent = (props: PostWithUser) => {
         </Link>
         {post.imageUrl && (
           <div className="mx-auto my-4 w-full">
-            <div className="relative h-[500px] w-auto border-slate-200">
+            <div className="relative h-[400px] w-auto border-slate-200">
               <AdvancedImage
                 style={{
-                  height: "500px",
+                  width: "400px",
+                  height: "400px",
                   borderWidth: "1px",
                   borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
                   borderRadius: '0.375rem',
