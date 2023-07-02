@@ -67,6 +67,31 @@ const PostViewComponent = (props: PostWithUser) => {
     };
   }, [modalDeletePostRef]);
 
+
+  const modalMediaFullRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalMediaFullRef.current && !modalMediaFullRef.current.contains(event.target as Node)) {
+        setShowMediaFullScreen(false);
+      }
+    }
+  
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setShowMediaFullScreen(false);
+      }
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [modalMediaFullRef]);
+
   type Like = {
     authorId: string;
   };
@@ -329,7 +354,8 @@ const PostViewComponent = (props: PostWithUser) => {
 
         {showMediaFullScreen && (
           <div className="modalparent">
-            <div className="modal relative  flex items-center justify-center p-4 max-w-[100vh] max-h-[100vh]">
+            <div ref={modalMediaFullRef} className="modal relative  flex items-center 
+            justify-center p-4 max-w-[100vh] max-h-[100vh] bg-black rounded-xl border border-slate-400">
                 <FontAwesomeIcon
                   icon={faXmark}
                   className="absolute right-12 top-6 h-7 w-7 rounded-3xl bg-black px-1 cursor-pointer"

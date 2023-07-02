@@ -274,7 +274,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           />
           <FontAwesomeIcon
           data-tooltip-id="ImageUpload-tooltip"
-          data-tooltip-content="Upload Image."
+          data-tooltip-content="Upload Image"
            className="CreatePostWizard-Icons" icon={faImage} />
           <Tooltip
                 id="ImageUpload-tooltip"
@@ -289,7 +289,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           <input
             type="file"
             className="hidden"
-            accept="image/*"
+            accept="image/gif"
             onChange={(event) => {
               if (event.target.files && event.target.files.length > 0) {
                 // only proceed if files have been selected
@@ -305,19 +305,39 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             
           />
         <Image
-          className="rounded bg-white hover:bg-slate-300"
+          className="rounded bg-white hover:bg-slate-300 cursor-pointer"
           src="/gif.png"
           alt="emoji"
           width={24}
           height={24}
           priority={true}
+          data-tooltip-id="gifUpload-tooltip"
+          data-tooltip-content="Upload Gif"
         />
+        <Tooltip
+                id="gifUpload-tooltip"
+                place="bottom"
+                style={{
+                  borderRadius: "24px",
+                  backgroundColor: "rgb(51 65 85)",
+                }}
+              />
                 </label>
 
         <FontAwesomeIcon
           className="CreatePostWizard-Icons"
           icon={faFaceSmile}
+          data-tooltip-id="emoji-tooltip"
+          data-tooltip-content="Emoji"
         />
+         <Tooltip
+                id="emoji-tooltip"
+                place="bottom"
+                style={{
+                  borderRadius: "24px",
+                  backgroundColor: "rgb(51 65 85)",
+                }}
+              />
       </div>
       {previewUrl && (
         <div className="w-[300px] overflow-auto relative mx-auto">
