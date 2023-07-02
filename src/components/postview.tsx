@@ -17,6 +17,7 @@ import { useUser } from "@clerk/nextjs";
 import { LoadingSpinner } from "./loading";
 import { Tooltip } from "react-tooltip";
 import TextareaAutosize from "react-textarea-autosize";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AdvancedImage, lazyload } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
@@ -288,12 +289,12 @@ const PostViewComponent = (props: PostWithUser) => {
                   twBorderOpacity: "1",
                 }}
                 cldImg={cld.image(post.imageUrl)}
-                plugins={[
+                /* plugins={[
                   lazyload({
                     rootMargin: "10px 20px 10px 30px",
                     threshold: 0.25,
                   }),
-                ]}
+                ]} */
               />
             </div>
           </div>
@@ -317,10 +318,10 @@ const PostViewComponent = (props: PostWithUser) => {
                   twBorderOpacity: "1",
                 }}
                 cldImg={cld.image(post.gifUrl)}
-                plugins={[lazyload({
+                /* plugins={[lazyload({
                   rootMargin: "10px 20px 10px 30px",
                   threshold: 0.25,
-                })]}
+                })]} */
               />
             </div>
           </div>
