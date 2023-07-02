@@ -266,7 +266,7 @@ const PostViewComponent = (props: PostWithUser) => {
               <LoadingSpinner size={32} />
             </div>
           ) : (
-            <span className="whitespace-pre-wrap text-2xl">{post.content}</span>
+            <span className="sm:whitespace-pre-wrap text-2xl">{post.content}</span>
           )}
           <br />
         </Link>
