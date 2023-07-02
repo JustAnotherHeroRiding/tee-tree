@@ -325,18 +325,17 @@ const PostViewComponent = (props: PostWithUser) => {
 
         {showMediaFullScreen && (
           <div className="modalparent">
-            <div className="modal ">
-              <div className="relative flex max-h-[60vh] max-w-[60vh] items-center justify-center">
+            <div className="modal relative  flex items-center justify-center">
                 <FontAwesomeIcon
                   icon={faXmark}
-                  className="absolute right-2 top-2 h-7 w-7 rounded-3xl bg-black px-1"
+                  className="absolute right-4 top-4 h-7 w-7 rounded-3xl bg-black px-1 cursor-pointer"
                   onClick={() => setShowMediaFullScreen(false)}
                 />
                 {post.gifUrl && (
                   <AdvancedImage
                     style={{
-                      width: "auto",
-                      height: "auto",
+                      width: "fit-content",
+                      height: "fit-content",
                       borderWidth: "1px",
                       borderColor:
                         "rgb(226 232 240 / var(--tw-border-opacity))",
@@ -352,8 +351,8 @@ const PostViewComponent = (props: PostWithUser) => {
                 {post.imageUrl && (
                   <AdvancedImage
                     style={{
-                      width: "auto",
-                      height: "auto",
+                      width: "fit-content",
+                      height: "fit-content",
                       borderWidth: "1px",
                       borderColor:
                         "rgb(226 232 240 / var(--tw-border-opacity))",
@@ -368,7 +367,6 @@ const PostViewComponent = (props: PostWithUser) => {
                 )}
               </div>
             </div>
-          </div>
         )}
 
         <div
