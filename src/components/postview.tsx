@@ -190,7 +190,7 @@ const PostViewComponent = (props: PostWithUser) => {
   return (
     <div key={post.id} className="flex gap-3 border-b border-slate-400 p-4 phone:relative">
       <Image
-        className="h-14 w-14 phone:w-10 phone:h-10 rounded-full phone:absolute phone:right-2"
+        className="h-14 w-14 phone:w-10 phone:h-10 rounded-full phone:absolute phone:right-2 phone:bottom-2"
         src={author.profilePicture}
         alt={`@${author.username}profile picture`}
         width={56}
