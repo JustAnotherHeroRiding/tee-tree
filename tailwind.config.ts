@@ -7,7 +7,7 @@ export default {
     
     extend: {
       screens: {
-        'phone': {'max': '370px'},
+        'phone': {'max': '375px'},
       },
       spacing: {
         '1/5': '20%',
