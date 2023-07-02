@@ -263,13 +263,13 @@ const PostViewComponent = (props: PostWithUser) => {
               <LoadingSpinner size={32} />
             </div>
           ) : (
-            <span className="text-2xl">{post.content}</span>
+            <span className="text-2xl whitespace-pre-wrap">{post.content}</span>
           )}
           <br />
         </Link>
         {post.imageUrl && (
           <div className="mx-auto my-4 w-full">
-            <div className="relative h-[400px] w-auto border-slate-200">
+            <div className="relative h-[400px] w-auto border-slate-200 flex justify-center">
               <AdvancedImage
                 style={{
                   width: "auto",
@@ -287,6 +287,27 @@ const PostViewComponent = (props: PostWithUser) => {
                   .image(post.imageUrl)}
                   
                   plugins={[lazyload({rootMargin: '10px 20px 10px 30px', threshold: 0.25})]}/>
+            </div>
+          </div>
+        )}
+        {post.gifUrl && (
+          <div className="mx-auto my-4 w-full">
+            <div className="relative h-[400px] w-auto border-slate-200 flex justify-center">
+              <AdvancedImage
+                style={{
+                  width: "auto",
+                  height: "auto",
+                  maxHeight: "400px",
+                  borderWidth: "1px",
+                  borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
+                  borderRadius: '0.375rem',
+                  borderStyle: 'solid',
+                  overflow: 'clip',
+               }}
+                cldImg={cld
+                  .image(post.gifUrl)}
+                  
+                  plugins={[lazyload()]}/>
             </div>
           </div>
         )}

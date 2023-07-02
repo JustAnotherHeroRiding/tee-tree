@@ -388,6 +388,28 @@ export const postsRouter = createTRPCRouter({
       const postsWithUserData = await addUserDataToPosts([updatedPost]);
       return postsWithUserData[0];
     }),
+
+    addGifToPost: privateProcedure
+    .input(z.object({ id: z.string(), publicId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const updatedPost = await ctx.prisma.post.update({
+        where: { id: input.id },
+        data: { gifUrl: input.publicId },
+        include: {
+          likes: true, // Include the likes relation in the result
+        },
+      });
+  
+      if (!updatedPost) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+  
+      const postsWithUserData = await addUserDataToPosts([updatedPost]);
+      return postsWithUserData[0];
+    }),
   
 
   editPost: privateProcedure

@@ -12,6 +12,7 @@ import { faFaceSmile, faImage, faXmark } from "@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filesize } from "filesize";
 import Compressor from 'compressorjs';
+import { Tooltip } from "react-tooltip";
 
 
 dayjs.extend(relativeTime);
@@ -30,8 +31,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   // Make sure to replace 'demo' with your actual cloud_name
   const imageUploadUrl =
     "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
+  const gifUploadUrl = "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
+
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
   const [previewUrl, setPreviewUrl] = useState<string>("");
+
+  const [gifFile, setGifFile] = useState<File | undefined>(undefined);
+
 
   interface ImageResponse {
     public_id: string;
@@ -62,7 +68,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   
         if (imageResponse.ok) {
           const imageResponseJson = (await imageResponse.json()) as ImageResponse;
-          console.log(imageResponseJson);
           if (!imageResponseJson?.public_id) {
             toast.error("Upload to Cloudinary failed!");
           } else {
@@ -76,6 +81,36 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     }
   };
+
+
+  const gifUpload = async (gif: File | undefined) => {
+    if (gif) {
+      try {
+        const formData = new FormData();
+        formData.append("file", gifFile as Blob, "gif.gif");
+        formData.append("upload_preset", "kcgwkpy1");
+  
+        const gifResponse = await fetch(gifUploadUrl, {
+          method: "POST",
+          body: formData,
+        });
+  
+        if (gifResponse.ok) {
+          const gifResponseJson = (await gifResponse.json()) as ImageResponse;
+          if (!gifResponseJson?.public_id) {
+            toast.error("Upload to Cloudinary failed!");
+          } else {
+            return gifResponseJson;
+          }
+        } else {
+          toast.error("Upload to Cloudinary failed!");
+        }
+      } catch (err) {
+        toast.error("Upload failed.");
+      }
+    }
+  };
+  
   
 
   useEffect(() => {
@@ -106,6 +141,27 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     },
   });
 
+  const { mutate: mutateAddGifToPost } = api.posts.addGifToPost.useMutation({
+    onSuccess: () => {
+      if (homePage || !gifFile) {
+        void ctx.posts.infiniteScrollAllPosts.invalidate();
+      } else {
+        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+      }
+      setGifFile(undefined);
+      setPreviewUrl("");
+
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to upload the gif`.");
+      }
+    },
+  });
+
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: async (post) => {
@@ -113,6 +169,11 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         const imageResponseJson = await imageUpload(imageFile);
         if (imageResponseJson) {
           mutateAddImageToPost({ id: post.id, publicId: imageResponseJson.public_id });
+        }
+      } else if (gifFile) {
+        const gifResponseJson = await gifUpload(gifFile);
+        if (gifResponseJson) {
+          mutateAddGifToPost({ id: post.id, publicId: gifResponseJson.public_id });
         }
       }
 
@@ -211,8 +272,38 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             }}
             
           />
-          <FontAwesomeIcon className="CreatePostWizard-Icons" icon={faImage} />
+          <FontAwesomeIcon
+          data-tooltip-id="ImageUpload-tooltip"
+          data-tooltip-content="Upload Image."
+           className="CreatePostWizard-Icons" icon={faImage} />
+          <Tooltip
+                id="ImageUpload-tooltip"
+                place="bottom"
+                style={{
+                  borderRadius: "24px",
+                  backgroundColor: "rgb(51 65 85)",
+                }}
+              />
         </label>
+        <label>
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={(event) => {
+              if (event.target.files && event.target.files.length > 0) {
+                // only proceed if files have been selected
+                setGifFile(event.target.files[0]);
+            
+                // create a URL representing the file
+                const url = URL.createObjectURL(event.target.files[0] as Blob);
+            
+                // store the URL in the state
+                setPreviewUrl(url);
+              }
+            }}
+            
+          />
         <Image
           className="rounded bg-white hover:bg-slate-300"
           src="/gif.png"
@@ -221,6 +312,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           height={24}
           priority={true}
         />
+                </label>
+
         <FontAwesomeIcon
           className="CreatePostWizard-Icons"
           icon={faFaceSmile}

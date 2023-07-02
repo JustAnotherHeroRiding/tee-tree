@@ -40,6 +40,7 @@ Let's implement some features I have already implemented before in order to lear
 - Add a cross to remove it #DONE 
 - Compressing images before uploading #DONE 
 - Images opening in full screen when clicked on
+- Uploading Gifs
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
 - Views per post

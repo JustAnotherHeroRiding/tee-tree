@@ -29,6 +29,7 @@ model Post {
   content   String   @db.VarChar(255)
 
   imageUrl  String?  // new field for image URL
+  gifUrl String?
   videoUrl String? // url for cloudinary
 
   authorId  String
