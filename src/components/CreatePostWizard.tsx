@@ -39,7 +39,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const compressImage = async (image: File): Promise<File | Blob> => {
     return new Promise((resolve, reject) => {
       new Compressor(image, {
-        quality: 0.6,
+        quality: 0.8,
         success: (result) => resolve(result),
         error: (err) => reject(err),
       });

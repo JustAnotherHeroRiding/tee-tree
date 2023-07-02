@@ -34,10 +34,12 @@ Let's implement some features I have already implemented before in order to lear
 - Auto sizing text area and character counter #DONE 
 - Tooltips for edited posts and icons #DONE 
 - Posting pictures and not just text #DONE 
-- Lazy loading and responsiveness for pictures [Cloudinary Docs](https://cloudinary.com/documentation/react_image_transformations)
+- Lazy loading and responsiveness for pictures [Cloudinary Docs](https://cloudinary.com/documentation/react_image_transformations) #DONE 
 - Retweeting 
 - Show the image that is about to be uploaded after it is set to imageFile #DONE 
 - Add a cross to remove it #DONE 
+- Compressing images before uploading #DONE 
+- Images opening in full screen when clicked on
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
 - Views per post
