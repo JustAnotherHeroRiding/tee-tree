@@ -40,6 +40,8 @@ const PostViewComponent = (props: PostWithUser) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const modalDeletePostRef = useRef<HTMLDivElement>(null);
 
+  const [showMediaFullScreen, setShowMediaFullScreen] = useState(false);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -263,13 +265,16 @@ const PostViewComponent = (props: PostWithUser) => {
               <LoadingSpinner size={32} />
             </div>
           ) : (
-            <span className="text-2xl whitespace-pre-wrap">{post.content}</span>
+            <span className="whitespace-pre-wrap text-2xl">{post.content}</span>
           )}
           <br />
         </Link>
         {post.imageUrl && (
           <div className="mx-auto my-4 w-full">
-            <div className="relative h-[400px] w-auto border-slate-200 flex justify-center">
+            <div
+              className="relative flex h-[400px] w-auto justify-center border-slate-200 cursor-pointer"
+              onClick={() => setShowMediaFullScreen(true)}
+            >
               <AdvancedImage
                 style={{
                   width: "auto",
@@ -277,22 +282,28 @@ const PostViewComponent = (props: PostWithUser) => {
                   maxHeight: "400px",
                   borderWidth: "1px",
                   borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                  borderRadius: '0.375rem',
-                  borderStyle: 'solid',
-                  overflow: 'clip',
-                  twBorderOpacity: '1',
-
-               }}
-                cldImg={cld
-                  .image(post.imageUrl)}
-                  
-                  plugins={[lazyload({rootMargin: '10px 20px 10px 30px', threshold: 0.25})]}/>
+                  borderRadius: "0.375rem",
+                  borderStyle: "solid",
+                  overflow: "clip",
+                  twBorderOpacity: "1",
+                }}
+                cldImg={cld.image(post.imageUrl)}
+                plugins={[
+                  lazyload({
+                    rootMargin: "10px 20px 10px 30px",
+                    threshold: 0.25,
+                  }),
+                ]}
+              />
             </div>
           </div>
         )}
         {post.gifUrl && (
           <div className="mx-auto my-4 w-full">
-            <div className="relative h-[400px] w-auto border-slate-200 flex justify-center">
+            <div
+              className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
+              onClick={() => setShowMediaFullScreen(true)}
+            >
               <AdvancedImage
                 style={{
                   width: "auto",
@@ -300,14 +311,62 @@ const PostViewComponent = (props: PostWithUser) => {
                   maxHeight: "400px",
                   borderWidth: "1px",
                   borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                  borderRadius: '0.375rem',
-                  borderStyle: 'solid',
-                  overflow: 'clip',
-               }}
-                cldImg={cld
-                  .image(post.gifUrl)}
-                  
-                  plugins={[lazyload()]}/>
+                  borderRadius: "0.375rem",
+                  borderStyle: "solid",
+                  overflow: "clip",
+                  twBorderOpacity: "1",
+                }}
+                cldImg={cld.image(post.gifUrl)}
+                plugins={[lazyload()]}
+              />
+            </div>
+          </div>
+        )}
+
+        {showMediaFullScreen && (
+          <div className="modalparent">
+            <div className="modal ">
+              <div className="relative flex max-h-[60vh] max-w-[60vh] items-center justify-center">
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  className="absolute right-2 top-2 h-7 w-7 rounded-3xl bg-black px-1"
+                  onClick={() => setShowMediaFullScreen(false)}
+                />
+                {post.gifUrl && (
+                  <AdvancedImage
+                    style={{
+                      width: "auto",
+                      height: "auto",
+                      borderWidth: "1px",
+                      borderColor:
+                        "rgb(226 232 240 / var(--tw-border-opacity))",
+                      borderRadius: "0.375rem",
+                      borderStyle: "solid",
+                      overflow: "clip",
+                      twBorderOpacity: "1",
+                    }}
+                    cldImg={cld.image(post.gifUrl)}
+                    plugins={[lazyload()]}
+                  />
+                )}
+                {post.imageUrl && (
+                  <AdvancedImage
+                    style={{
+                      width: "auto",
+                      height: "auto",
+                      borderWidth: "1px",
+                      borderColor:
+                        "rgb(226 232 240 / var(--tw-border-opacity))",
+                      borderRadius: "0.375rem",
+                      borderStyle: "solid",
+                      overflow: "clip",
+                      twBorderOpacity: "1",
+                    }}
+                    cldImg={cld.image(post.imageUrl)}
+                    plugins={[lazyload()]}
+                  />
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -42,7 +42,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@prisma/client": "^4.16.1",
+    "@prisma/client": "^4.16.2",
     "@types/eslint": "^8.37.0",
     "@types/node": "^18.16.0",
     "@types/prettier": "^2.7.2",
@@ -58,7 +58,7 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
-    "prisma": "^4.16.1",
+    "prisma": "^4.16.2",
     "tailwind-scrollbar": "^3.0.4",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.4"
