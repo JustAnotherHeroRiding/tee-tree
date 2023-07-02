@@ -317,7 +317,10 @@ const PostViewComponent = (props: PostWithUser) => {
                   twBorderOpacity: "1",
                 }}
                 cldImg={cld.image(post.gifUrl)}
-                plugins={[lazyload()]}
+                plugins={[lazyload({
+                  rootMargin: "10px 20px 10px 30px",
+                  threshold: 0.25,
+                })]}
               />
             </div>
           </div>
@@ -325,17 +328,17 @@ const PostViewComponent = (props: PostWithUser) => {
 
         {showMediaFullScreen && (
           <div className="modalparent">
-            <div className="modal relative  flex items-center justify-center">
+            <div className="modal relative  flex items-center justify-center p-4 max-w-[100vh] max-h-[100vh]">
                 <FontAwesomeIcon
                   icon={faXmark}
-                  className="absolute right-4 top-4 h-7 w-7 rounded-3xl bg-black px-1 cursor-pointer"
+                  className="absolute right-12 top-6 h-7 w-7 rounded-3xl bg-black px-1 cursor-pointer"
                   onClick={() => setShowMediaFullScreen(false)}
                 />
                 {post.gifUrl && (
                   <AdvancedImage
                     style={{
-                      width: "fit-content",
-                      height: "fit-content",
+                      maxWidth: "90vh",
+                      maxHeight: "90vh",
                       borderWidth: "1px",
                       borderColor:
                         "rgb(226 232 240 / var(--tw-border-opacity))",
@@ -345,14 +348,13 @@ const PostViewComponent = (props: PostWithUser) => {
                       twBorderOpacity: "1",
                     }}
                     cldImg={cld.image(post.gifUrl)}
-                    plugins={[lazyload()]}
                   />
                 )}
                 {post.imageUrl && (
                   <AdvancedImage
                     style={{
-                      width: "fit-content",
-                      height: "fit-content",
+                      maxWidth: "90vh",
+                      maxHeight: "90vh",
                       borderWidth: "1px",
                       borderColor:
                         "rgb(226 232 240 / var(--tw-border-opacity))",
@@ -362,7 +364,6 @@ const PostViewComponent = (props: PostWithUser) => {
                       twBorderOpacity: "1",
                     }}
                     cldImg={cld.image(post.imageUrl)}
-                    plugins={[lazyload()]}
                   />
                 )}
               </div>

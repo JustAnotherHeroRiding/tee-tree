@@ -41,6 +41,7 @@ Let's implement some features I have already implemented before in order to lear
 - Compressing images before uploading #DONE 
 - Images and gifs opening in full screen when clicked on
 - Uploading Gifs #DONE 
+- Placeholder for photos before they're loaded
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
 - Views per post
