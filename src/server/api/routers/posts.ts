@@ -11,6 +11,8 @@ import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
 import type { Post, Like } from "@prisma/client";
+import { env } from "~/env.mjs";
+import crypto from "crypto";
 
 export type ExtendedPost = Post & {
   likes: Like[];
@@ -26,6 +28,14 @@ export type PostWithAuthor = {
   post: ExtendedPost;
   author: PostAuthor;
 };
+
+// Function to generate the signature
+function generateSignature(publicId: string, apiSecret: string) {
+  const timestamp = Math.round(new Date().getTime() / 1000);
+  const stringToSign = `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+
+  return crypto.createHash("sha1").update(stringToSign).digest("hex");
+}
 
 const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   const users = (
@@ -53,6 +63,11 @@ const addUserDataToPosts = async (posts: ExtendedPost[]) => {
     };
   });
 };
+
+type ResponseData = {
+  result: string;
+};
+
 
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
@@ -453,16 +468,22 @@ export const postsRouter = createTRPCRouter({
         });
       }
 
+      // ...existing code...
+
       let mediaUpdate = {};
+      let public_id = null;
 
       switch (input.mediaType) {
         case "image":
+          public_id = post.imageUrl;
           mediaUpdate = { imageUrl: null };
           break;
         case "gif":
+          public_id = post.gifUrl;
           mediaUpdate = { gifUrl: null };
           break;
         case "video":
+          public_id = post.videoUrl;
           mediaUpdate = { videoUrl: null };
           break;
         default:
@@ -477,7 +498,40 @@ export const postsRouter = createTRPCRouter({
         },
       });
 
-      return updatedPost;
+      return { updatedPost, public_id }; // include public_id in the return value
+    }),
+
+  deleteMediaCloudinary: privateProcedure
+    .input(z.object({ publicId: z.string() }))
+    .mutation(async ({ input }) => {
+      const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
+      const publicId = input.publicId;
+      const timestamp = Math.round(new Date().getTime() / 1000);
+      const apiKey = env.CLOUDINARY_API_KEY;
+      const apiSecret = env.CLOUDINARY_API_SECRET;
+      const signature = generateSignature(publicId, apiSecret);
+
+      const formData = new FormData();
+      formData.append("public_id", publicId);
+      formData.append("signature", signature);
+      formData.append("api_key", apiKey);
+      formData.append("timestamp", timestamp.toString());
+
+      const response = await fetch(deleteImageUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data : ResponseData = await response.json() as ResponseData;
+      console.log(data);
+
+      if (!data) throw new Error("Failed to delete image from Cloudinary");
+
+      if (data.result === "ok") {
+        return { message: "Image deleted from Cloudinary" };
+      } else {
+        throw new Error("Failed to delete image from Cloudinary");
+      }
     }),
 
   deletePost: privateProcedure

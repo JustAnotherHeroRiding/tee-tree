@@ -28,7 +28,7 @@ dayjs.extend(relativeTime);
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
 const PostViewComponent = (props: PostWithUser) => {
-  const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
+  //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
   const { post, author } = props;
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
@@ -187,32 +187,29 @@ const PostViewComponent = (props: PostWithUser) => {
       },
     });
 
+
+  const {mutate: deleteMediaCloudinary, isLoading: isDeletingMediaCloudinary} = 
+  api.posts.deleteMediaCloudinary.useMutation({
+    onSuccess: () => {
+      console.log("Cloudinary Media Deleted");
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to delete Media on Cloudinary!");
+      }
+    },
+  });
+
   const { mutate: deleteMediaPost, isLoading: isDeletingMediaPost } =
     api.posts.deleteMediaPost.useMutation({
-      onSuccess: () => {
-        const formData = new FormData();
-        formData.append("public_id", imagePublicId);
-
-        fetch(deleteImageUrl, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Basic ${Buffer.from(
-              `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`
-            ).toString("base64")}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.result === "ok") {
-              console.log("Image deleted from Cloudinary");
-            } else {
-              console.error("Failed to delete image from Cloudinary", data);
-            }
-          })
-          .catch((err) => {
-            console.error("Failed to delete image from Cloudinary", err);
-          });
+      onSuccess: (data) => {
+        const publicId = data.public_id;
+        if (publicId) {
+          deleteMediaCloudinary({publicId: publicId});
+        }
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
@@ -228,7 +225,7 @@ const PostViewComponent = (props: PostWithUser) => {
         if (errorMessage && errorMessage[0]) {
           toast.error(errorMessage[0]);
         } else {
-          toast.error("Failed to Delete! Are you the author?");
+          toast.error("Failed to delete Media! Are you the author?");
         }
       },
     });
@@ -351,70 +348,92 @@ const PostViewComponent = (props: PostWithUser) => {
         </Link>
         {post.imageUrl && (
           <div className="mx-auto my-4 w-full">
-            <div
-              className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
-              onClick={() => setShowMediaFullScreen(true)}
-            >
-              <AdvancedImage
-                style={{
-                  width: "auto",
-                  height: "auto",
-                  maxHeight: "400px",
-                  borderWidth: "1px",
-                  borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                  borderRadius: "0.375rem",
-                  borderStyle: "solid",
-                  overflow: "clip",
-                  twBorderOpacity: "1",
+            {isDeletingMediaPost ? (
+              <LoadingSpinner />
+            ) : (
+              <div
+                className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
+                onClick={() => {
+                  if (!isEditing) {
+                    setShowMediaFullScreen(true);
+                  }
                 }}
-                cldImg={cld.image(post.imageUrl)}
-                /* plugins={[
+                              >
+                <AdvancedImage
+                  style={{
+                    width: "auto",
+                    height: "auto",
+                    maxHeight: "400px",
+                    borderWidth: "1px",
+                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
+                    borderRadius: "0.375rem",
+                    borderStyle: "solid",
+                    overflow: "clip",
+                    twBorderOpacity: "1",
+                  }}
+                  cldImg={cld.image(post.imageUrl)}
+                  /* plugins={[
                   lazyload({
                     rootMargin: "10px 20px 10px 30px",
                     threshold: 0.25,
                   }),
                 ]} */
-              />
-              {isEditing && (
-                <button
-                  className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
+                />
+                {isEditing && (
+                  <button
+                    onClick={() =>
+                      deleteMediaPost({ postId: post.id, mediaType: "image" })
+                    }
+                    className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
              border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
-                >
-                  Delete Image
-                </button>
-              )}
-            </div>
+                  >
+                    Delete Image
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
         {post.gifUrl && (
           <div className="mx-auto my-4 w-full">
-            <div
-              className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
-              onClick={() => setShowMediaFullScreen(true)}
-            >
-              <AdvancedImage
-                style={{
-                  width: "auto",
-                  height: "auto",
-                  maxHeight: "400px",
-                  borderWidth: "1px",
-                  borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                  borderRadius: "0.375rem",
-                  borderStyle: "solid",
-                  overflow: "clip",
-                  twBorderOpacity: "1",
+            {isDeletingMediaPost || isDeletingMediaCloudinary ? (
+              <LoadingSpinner />
+            ) : (
+              <div
+                className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
+                onClick={() => {
+                  if (!isEditing) {
+                    setShowMediaFullScreen(true);
+                  }
                 }}
-                cldImg={cld.image(post.gifUrl)}
-              />
-              {isEditing && (
-                <button
-                  className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
+                              >
+                <AdvancedImage
+                  style={{
+                    width: "auto",
+                    height: "auto",
+                    maxHeight: "400px",
+                    borderWidth: "1px",
+                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
+                    borderRadius: "0.375rem",
+                    borderStyle: "solid",
+                    overflow: "clip",
+                    twBorderOpacity: "1",
+                  }}
+                  cldImg={cld.image(post.gifUrl)}
+                />
+                {isEditing && (
+                  <button
+                    onClick={() =>
+                      deleteMediaPost({ postId: post.id, mediaType: "gif" })
+                    }
+                    className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
              border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
-                >
-                  Delete Gif
-                </button>
-              )}
-            </div>
+                  >
+                    Delete Gif
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
 

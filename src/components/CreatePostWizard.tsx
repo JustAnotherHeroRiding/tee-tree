@@ -221,7 +221,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           {textLength}/280
         </h1>
         <TextareaAutosize
-          placeholder="Type Some emojis"
+          placeholder="What's on your mind?"
           className="grow resize-none bg-transparent outline-none"
           value={input}
           maxLength={280}

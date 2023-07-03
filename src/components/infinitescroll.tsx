@@ -82,12 +82,12 @@ export const InfiniteScrollFeed = () => {
             postIndex === page.posts.length - 1;
 
           return isLastPost ? (
-            <>
-            <PostView key={fullPost.post.id} {...fullPost} />
+            <div key={fullPost.post.id}>
+            <PostView  {...fullPost} />
 
             <div ref={lastPostElementRef} className="h-[20vh]">
               </div>
-              </>
+              </div>
           ) : (
             <PostView {...fullPost} key={fullPost.post.id} />
           );
