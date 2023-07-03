@@ -43,8 +43,9 @@ Let's implement some features I have already implemented before in order to lear
 - Uploading Gifs #DONE 
 - Phone breakpoint #DONE 
 - Clicking outside the full screen photo or esc closes the full screen view #DONE 
-- Deleting an image from a post in edit view
-- Deleting an image should also delete it from the cloudinary storage too
+- Deleting an image from a post in edit view #DONE 
+- Deleting an image should also delete it from the cloudinary storage too #DONE 
+- Uploading media from edit view
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
 - Views per post
