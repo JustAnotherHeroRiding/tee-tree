@@ -42,7 +42,7 @@ Let's implement some features I have already implemented before in order to lear
 - Images and gifs opening in full screen when clicked on #DONE
 - Uploading Gifs #DONE 
 - Phone breakpoint #DONE 
-- Placeholder for photos before they're loaded
+- Clicking outside the full screen photo or esc closes the full screen view #DONE 
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
 - Views per post
