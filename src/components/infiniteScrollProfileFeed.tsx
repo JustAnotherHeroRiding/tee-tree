@@ -74,9 +74,10 @@ export const InfiniteScrollProfileFeed = (props: { userId: string }) => {
             postIndex === page.posts.length - 1;
 
           return isLastPost ? (
-            <div ref={lastPostElementRef} key={fullPost.post.id}>
-              <PostView {...fullPost} />
-            </div>
+            <>
+              <PostView key={fullPost.post.id} {...fullPost} />
+              <div ref={lastPostElementRef} className="h-[20vh]"></div>
+            </>
           ) : (
             <PostView {...fullPost} key={fullPost.post.id} />
           );

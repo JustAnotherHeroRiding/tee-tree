@@ -28,8 +28,7 @@ dayjs.extend(relativeTime);
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
 const PostViewComponent = (props: PostWithUser) => {
-
-  const url = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
+  const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
   const { post, author } = props;
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
@@ -188,9 +187,32 @@ const PostViewComponent = (props: PostWithUser) => {
       },
     });
 
-    const { mutate: deleteMediaPost, isLoading: isDeletingMediaPost } =
+  const { mutate: deleteMediaPost, isLoading: isDeletingMediaPost } =
     api.posts.deleteMediaPost.useMutation({
       onSuccess: () => {
+        const formData = new FormData();
+        formData.append("public_id", imagePublicId);
+
+        fetch(deleteImageUrl, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Basic ${Buffer.from(
+              `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`
+            ).toString("base64")}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result === "ok") {
+              console.log("Image deleted from Cloudinary");
+            } else {
+              console.error("Failed to delete image from Cloudinary", data);
+            }
+          })
+          .catch((err) => {
+            console.error("Failed to delete image from Cloudinary", err);
+          });
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
@@ -353,10 +375,16 @@ const PostViewComponent = (props: PostWithUser) => {
                   }),
                 ]} */
               />
+              {isEditing && (
+                <button
+                  className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
+             border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
+                >
+                  Delete Image
+                </button>
+              )}
             </div>
-            {isEditing && <button className="flex ml-auto rounded-3xl border
-             border-slate-400 px-4 py-1 mt-2 hover:bg-slate-700">Delete Image</button>}          
-             </div>
+          </div>
         )}
         {post.gifUrl && (
           <div className="mx-auto my-4 w-full">
@@ -378,9 +406,15 @@ const PostViewComponent = (props: PostWithUser) => {
                 }}
                 cldImg={cld.image(post.gifUrl)}
               />
+              {isEditing && (
+                <button
+                  className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
+             border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
+                >
+                  Delete Gif
+                </button>
+              )}
             </div>
-            {isEditing && <button className="flex ml-auto rounded-3xl border
-             border-slate-400 px-4 py-1 mt-2 hover:bg-slate-700">Delete Gif</button>}
           </div>
         )}
 

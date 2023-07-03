@@ -27,6 +27,7 @@
     "@trpc/server": "^10.26.0",
     "@upstash/ratelimit": "^0.4.3",
     "@upstash/redis": "^1.21.0",
+    "cloudinary": "^1.37.3",
     "cloudinary-core": "^2.13.0",
     "cloudinary-video-player": "^1.9.10",
     "compressorjs": "^1.2.1",
