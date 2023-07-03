@@ -27,7 +27,6 @@ export type PostWithAuthor = {
   author: PostAuthor;
 };
 
-
 const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   const users = (
     await clerkClient.users.getUserList({
@@ -367,7 +366,7 @@ export const postsRouter = createTRPCRouter({
       return post;
     }),
 
-    addImageToPost: privateProcedure
+  addImageToPost: privateProcedure
     .input(z.object({ id: z.string(), publicId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const updatedPost = await ctx.prisma.post.update({
@@ -377,19 +376,19 @@ export const postsRouter = createTRPCRouter({
           likes: true, // Include the likes relation in the result
         },
       });
-  
+
       if (!updatedPost) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Post not found",
         });
       }
-  
+
       const postsWithUserData = await addUserDataToPosts([updatedPost]);
       return postsWithUserData[0];
     }),
 
-    addGifToPost: privateProcedure
+  addGifToPost: privateProcedure
     .input(z.object({ id: z.string(), publicId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const updatedPost = await ctx.prisma.post.update({
@@ -399,18 +398,17 @@ export const postsRouter = createTRPCRouter({
           likes: true, // Include the likes relation in the result
         },
       });
-  
+
       if (!updatedPost) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Post not found",
         });
       }
-  
+
       const postsWithUserData = await addUserDataToPosts([updatedPost]);
       return postsWithUserData[0];
     }),
-  
 
   editPost: privateProcedure
     .input(EditPostInput)
@@ -433,6 +431,50 @@ export const postsRouter = createTRPCRouter({
       const updatedPost = await ctx.prisma.post.update({
         where: { id: input.postId },
         data: { content: input.content, isEdited: true },
+      });
+
+      return updatedPost;
+    }),
+
+  deleteMediaPost: privateProcedure
+    .input(z.object({ postId: z.string(), mediaType: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      // Check if the user is the author of the post
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.postId },
+      });
+
+      if (!post || post.authorId !== authorId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not authorized to edit this post",
+        });
+      }
+
+      let mediaUpdate = {};
+
+      switch (input.mediaType) {
+        case "image":
+          mediaUpdate = { imageUrl: null };
+          break;
+        case "gif":
+          mediaUpdate = { gifUrl: null };
+          break;
+        case "video":
+          mediaUpdate = { videoUrl: null };
+          break;
+        default:
+          throw new Error("Invalid media type");
+      }
+
+      const updatedPost = await ctx.prisma.post.update({
+        where: { id: input.postId },
+        data: {
+          ...mediaUpdate,
+          isEdited: true,
+        },
       });
 
       return updatedPost;

@@ -28,6 +28,9 @@ dayjs.extend(relativeTime);
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
 const PostViewComponent = (props: PostWithUser) => {
+
+  const url = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
+
   const { post, author } = props;
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
 
@@ -67,23 +70,24 @@ const PostViewComponent = (props: PostWithUser) => {
     };
   }, [modalDeletePostRef]);
 
-
   const modalMediaFullRef = useRef<HTMLDivElement>(null);
-
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (modalMediaFullRef.current && !modalMediaFullRef.current.contains(event.target as Node)) {
+      if (
+        modalMediaFullRef.current &&
+        !modalMediaFullRef.current.contains(event.target as Node)
+      ) {
         setShowMediaFullScreen(false);
       }
     }
-  
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setShowMediaFullScreen(false);
       }
     }
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -184,6 +188,29 @@ const PostViewComponent = (props: PostWithUser) => {
       },
     });
 
+    const { mutate: deleteMediaPost, isLoading: isDeletingMediaPost } =
+    api.posts.deleteMediaPost.useMutation({
+      onSuccess: () => {
+        if (location.pathname === "/") {
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
+        } else if (location.pathname.startsWith("/post/")) {
+          void ctx.posts.getById.invalidate();
+        } else if (location.pathname.startsWith("/@")) {
+          void ctx.posts.getPostsByUserId.invalidate();
+        }
+
+        console.log("Post Image Deleted");
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Delete! Are you the author?");
+        }
+      },
+    });
+
   function handleSaveClick(newContent: string) {
     // Call the editPost mutation with the post id and the new content
     editPost({
@@ -213,9 +240,12 @@ const PostViewComponent = (props: PostWithUser) => {
   };
 
   return (
-    <div key={post.id} className="flex gap-3 border-b border-slate-400 p-4 phone:relative">
+    <div
+      key={post.id}
+      className="flex gap-3 border-b border-slate-400 p-4 phone:relative"
+    >
       <Image
-        className="h-14 w-14 phone:w-10 phone:h-10 rounded-full phone:absolute phone:right-2 phone:bottom-2"
+        className="h-14 w-14 rounded-full phone:absolute phone:bottom-2 phone:right-2 phone:h-10 phone:w-10"
         src={author.profilePicture}
         alt={`@${author.username}profile picture`}
         width={56}
@@ -291,14 +321,16 @@ const PostViewComponent = (props: PostWithUser) => {
               <LoadingSpinner size={32} />
             </div>
           ) : (
-            <span className="sm:whitespace-pre-wrap text-2xl">{post.content}</span>
+            <span className="text-2xl sm:whitespace-pre-wrap">
+              {post.content}
+            </span>
           )}
           <br />
         </Link>
         {post.imageUrl && (
           <div className="mx-auto my-4 w-full">
             <div
-              className="relative flex h-[400px] w-auto justify-center border-slate-200 cursor-pointer"
+              className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
               onClick={() => setShowMediaFullScreen(true)}
             >
               <AdvancedImage
@@ -322,7 +354,9 @@ const PostViewComponent = (props: PostWithUser) => {
                 ]} */
               />
             </div>
-          </div>
+            {isEditing && <button className="flex ml-auto rounded-3xl border
+             border-slate-400 px-4 py-1 mt-2 hover:bg-slate-700">Delete Image</button>}          
+             </div>
         )}
         {post.gifUrl && (
           <div className="mx-auto my-4 w-full">
@@ -343,58 +377,58 @@ const PostViewComponent = (props: PostWithUser) => {
                   twBorderOpacity: "1",
                 }}
                 cldImg={cld.image(post.gifUrl)}
-                /* plugins={[lazyload({
-                  rootMargin: "10px 20px 10px 30px",
-                  threshold: 0.25,
-                })]} */
               />
             </div>
+            {isEditing && <button className="flex ml-auto rounded-3xl border
+             border-slate-400 px-4 py-1 mt-2 hover:bg-slate-700">Delete Gif</button>}
           </div>
         )}
 
         {showMediaFullScreen && (
           <div className="modalparent">
-            <div ref={modalMediaFullRef} className="modal relative flex w-fit items-center 
-            justify-center p-4 bg-black rounded-xl border border-slate-400">
-                <FontAwesomeIcon
-                  icon={faXmark}
-                  className="absolute right-12 top-6 h-7 w-7 rounded-3xl bg-black px-1 cursor-pointer"
-                  onClick={() => setShowMediaFullScreen(false)}
+            <div
+              ref={modalMediaFullRef}
+              className="modal relative flex w-fit items-center 
+            justify-center rounded-xl border border-slate-400 bg-black p-4"
+            >
+              <FontAwesomeIcon
+                icon={faXmark}
+                className="absolute right-12 top-6 h-7 w-7 cursor-pointer rounded-3xl bg-black px-1"
+                onClick={() => setShowMediaFullScreen(false)}
+              />
+              {post.gifUrl && (
+                <AdvancedImage
+                  style={{
+                    maxWidth: "70vw",
+                    maxHeight: "65vh",
+                    borderWidth: "1px",
+                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
+                    borderRadius: "0.375rem",
+                    borderStyle: "solid",
+                    overflow: "clip",
+                    twBorderOpacity: "1",
+                  }}
+                  cldImg={cld.image(post.gifUrl)}
                 />
-                {post.gifUrl && (
-                  <AdvancedImage
-                    style={{
-                      maxWidth: "70vw",
-                      maxHeight: "70vh",
-                      borderWidth: "1px",
-                      borderColor:
-                        "rgb(226 232 240 / var(--tw-border-opacity))",
-                      borderRadius: "0.375rem",
-                      borderStyle: "solid",
-                      overflow: "clip",
-                      twBorderOpacity: "1",
-                    }}
-                    cldImg={cld.image(post.gifUrl)}
-                  />
-                )}
-                {post.imageUrl && (
-                  <AdvancedImage
-                    style={{
-                      maxWidth: "70vw",
-                      maxHeight: "70vh",
-                      borderWidth: "1px",
-                      borderColor:
-                        "rgb(226 232 240 / var(--tw-border-opacity))",
-                      borderRadius: "0.375rem",
-                      borderStyle: "solid",
-                      overflow: "clip",
-                      twBorderOpacity: "1",
-                    }}
-                    cldImg={cld.image(post.imageUrl)}
-                  />
-                )}
-              </div>
+              )}
+              {post.imageUrl && (
+                <AdvancedImage
+                  style={{
+                    objectFit: "fill",
+                    maxWidth: "70vw",
+                    maxHeight: "65vh",
+                    borderWidth: "1px",
+                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
+                    borderRadius: "0.375rem",
+                    borderStyle: "solid",
+                    overflow: "clip",
+                    twBorderOpacity: "1",
+                  }}
+                  cldImg={cld.image(post.imageUrl)}
+                />
+              )}
             </div>
+          </div>
         )}
 
         <div

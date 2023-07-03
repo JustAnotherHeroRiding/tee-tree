@@ -262,6 +262,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               if (event.target.files && event.target.files.length > 0) {
                 // only proceed if files have been selected
                 setImageFile(event.target.files[0]);
+                setGifFile(undefined);
             
                 // create a URL representing the file
                 const url = URL.createObjectURL(event.target.files[0] as Blob);
@@ -294,6 +295,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               if (event.target.files && event.target.files.length > 0) {
                 // only proceed if files have been selected
                 setGifFile(event.target.files[0]);
+                setImageFile(undefined);
             
                 // create a URL representing the file
                 const url = URL.createObjectURL(event.target.files[0] as Blob);
