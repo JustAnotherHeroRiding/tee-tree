@@ -578,10 +578,10 @@ const PostViewComponent = (props: PostWithUser) => {
                 />
               </button>
               <button><TwitterShareButton
-              url={window.location.hostname + `/${post.id}`}
+              url={window.location.hostname + '/post' + `/${post.id}`}
             ><TwitterIcon size={32} round={true} /> Twitter</TwitterShareButton></button>
             <button><WhatsappShareButton
-              url={window.location.hostname + `/${post.id}`}
+              url={window.location.hostname + '/post' + `/${post.id}`}
             > <WhatsappIcon size={32} round={true} /> Whatsapp</WhatsappShareButton></button>
             </div>
             </div>
