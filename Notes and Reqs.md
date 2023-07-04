@@ -59,6 +59,9 @@ Let's implement some features I have already implemented before in order to lear
 ## Comments
  - Comments for tweets, further comments for them too. Implement twitter threads
 
+## Post View
+- Add a sticky div
+
 
 ## Main Page
 - ## Lazy load #DONE 
