@@ -60,7 +60,7 @@ Let's implement some features I have already implemented before in order to lear
  - Comments for tweets, further comments for them too. Implement twitter threads
 
 ## Post View
-- Add a sticky div
+- Add a sticky div #DONE 
 
 
 ## Main Page
