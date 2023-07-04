@@ -23,7 +23,7 @@ import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
 import React from "react";
 import { useHomePage } from "~/components/HomePageContext";
-import { FacebookShareButton, TwitterShareButton } from "react-share";
+import {  TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton } from "react-share";
 
 dayjs.extend(relativeTime);
 
@@ -565,11 +565,24 @@ const PostViewComponent = (props: PostWithUser) => {
           />
           {showShareModal && (
             <div className="modalparent">            
-            <div className="modal bg-black border border-slate-400">
+            <div className="modal bg-black border border-slate-400 w-fit grid grid-flow-col grid-cols-1 p-4">
+            <button
+                className="absolute right-0 top-4 rounded-3xl
+          px-1 py-1 hover:bg-slate-700 hover:text-white
+          "
+                onClick={() => setShowShareModal(false)}
+              >
+                <FontAwesomeIcon
+                  className="h-6 w-6 rounded-3xl"
+                  icon={faXmark}
+                />
+              </button>
               <button><TwitterShareButton
               url={window.location.hostname + `/${post.id}`}
-            > Twitter</TwitterShareButton></button>
-              
+            ><TwitterIcon size={32} round={true} /> Twitter</TwitterShareButton></button>
+            <button><WhatsappShareButton
+              url={window.location.hostname + `/${post.id}`}
+            > <WhatsappIcon size={32} round={true} /> Whatsapp</WhatsappShareButton></button>
             </div>
             </div>
             
