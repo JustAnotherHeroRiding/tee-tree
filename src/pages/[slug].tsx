@@ -172,7 +172,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
         transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
 
-<div className="flex flex-col mr-auto ml-16">
+<div className="flex flex-col mr-auto ml-16 mt-2">
           <h2 className="text-xl font-semibold">{username}</h2>
           <p>{`${postsCount} Posts`}</p>
           </div>

@@ -23,6 +23,7 @@ import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
 import React from "react";
 import { useHomePage } from "~/components/HomePageContext";
+import { FacebookShareButton, TwitterShareButton } from "react-share";
 
 dayjs.extend(relativeTime);
 
@@ -46,6 +47,8 @@ const PostViewComponent = (props: PostWithUser) => {
   const modalDeletePostRef = useRef<HTMLDivElement>(null);
 
   const [showMediaFullScreen, setShowMediaFullScreen] = useState(false);
+
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -128,11 +131,10 @@ const PostViewComponent = (props: PostWithUser) => {
         } else {
           void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
         }
-      }else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+      } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
         // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
         void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-      } 
-      else if (location.pathname.startsWith("/post/")) {
+      } else if (location.pathname.startsWith("/post/")) {
         void ctx.posts.getById.invalidate();
       } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollPostsByUserId.invalidate();
@@ -157,8 +159,7 @@ const PostViewComponent = (props: PostWithUser) => {
         } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-        }  
-        else if (location.pathname.startsWith("/post/")) {
+        } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
@@ -182,11 +183,10 @@ const PostViewComponent = (props: PostWithUser) => {
         setShowDeleteModal(false);
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
-        }else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-        }  
-        else if (location.pathname.startsWith("/post/")) {
+        } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
@@ -232,11 +232,10 @@ const PostViewComponent = (props: PostWithUser) => {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
-        }else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-        }  
-        else if (location.pathname.startsWith("/@")) {
+        } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
 
@@ -564,12 +563,28 @@ const PostViewComponent = (props: PostWithUser) => {
             style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
             id="retweet-tooltip"
           />
-          <button data-tooltip-id="share-tooltip" data-tooltip-content="Share">
-            {" "}
-            <FontAwesomeIcon
-              icon={faShare}
-              className="post-button-fontAwesome"
-            />{" "}
+          {showShareModal && (
+            <div className="modalparent">            
+            <div className="modal bg-black border border-slate-400">
+              <button><TwitterShareButton
+              url={window.location.hostname + `/${post.id}`}
+            > Twitter</TwitterShareButton></button>
+              
+            </div>
+            </div>
+            
+          )}
+           
+
+          <button onClick={() => setShowShareModal(true)}
+          data-tooltip-id="share-tooltip" 
+          data-tooltip-content="Share">
+           
+              {" "}
+              <FontAwesomeIcon
+                icon={faShare}
+                className="post-button-fontAwesome"
+              />{" "}
           </button>
           <Tooltip
             place="bottom"

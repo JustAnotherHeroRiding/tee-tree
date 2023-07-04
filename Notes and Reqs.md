@@ -28,7 +28,7 @@ Let's implement some features I have already implemented before in order to lear
 - Pinned posts for each profile
 - Sticky div at the top with the arrow to go back #DONE 
 - Page for Liked posts #DONE 
-
+- Username and posts counts on the stick div #DONE 
 
 ## Posts
 - Editing posts #DONE 
@@ -38,7 +38,6 @@ Let's implement some features I have already implemented before in order to lear
 - Tooltips for edited posts and icons #DONE 
 - Posting pictures and not just text #DONE 
 - Lazy loading and responsiveness for pictures [Cloudinary Docs](https://cloudinary.com/documentation/react_image_transformations) #DONE 
-- Retweeting 
 - Show the image that is about to be uploaded after it is set to imageFile #DONE 
 - Add a cross to remove it #DONE 
 - Compressing images before uploading #DONE 
@@ -50,11 +49,15 @@ Let's implement some features I have already implemented before in order to lear
 - Deleting an image should also delete it from the cloudinary storage too #DONE 
 - Improved delete post modal #DONE 
 - Uploading media from edit view
-- Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
 - Views per post
 - Emoji selector
 - Sharing audio files that can be played 
+- Retweets
+
+
+## Comments
+ - Comments for tweets, further comments for them too. Implement twitter threads
 
 
 ## Main Page

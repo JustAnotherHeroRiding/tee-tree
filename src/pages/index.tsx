@@ -39,7 +39,7 @@ const Home: NextPage = () => {
         {!isSignedIn && (
           <div className="flex w-full flex-col">
             <SignInButton>
-              <div className="ml-auto flex w-fit cursor-pointer rounded-3xl border border-slate-400 px-4 py-2 hover:bg-slate-700">
+              <div className="ml-auto mb-2 flex w-fit cursor-pointer rounded-3xl border border-slate-400 px-4 py-2 hover:bg-slate-700">
                 <h1>Sign In</h1>
               </div>
             </SignInButton>
