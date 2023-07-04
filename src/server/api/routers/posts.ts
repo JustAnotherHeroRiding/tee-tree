@@ -229,6 +229,22 @@ export const postsRouter = createTRPCRouter({
         })
         .then(addUserDataToPosts)
     ),
+
+    getPostsCountByUserId: publicProcedure
+    .input(
+      z.object({
+        userId: z.string().optional(),
+      })
+    )
+    .query(({ ctx, input }) =>
+      ctx.prisma.post
+        .count({
+          where: {
+            authorId: input.userId,
+          },
+        })
+    ),
+
   infiniteScrollPostsByUserId: publicProcedure
     .input(
       z.object({

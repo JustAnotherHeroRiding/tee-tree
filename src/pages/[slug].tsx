@@ -46,6 +46,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const [followingCount, setFollowingCount] = useState(0);
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
 
+  const [postsCount, setPostsCount] = useState(0);
+
+
   const [feedSelector] = useState<string>("posts");
 
 
@@ -118,7 +121,15 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   
   
   
+  const { data: fetchPostsCount } = api.posts.getPostsCountByUserId.useQuery({
+    userId: data?.id,
+  });
 
+  useEffect(() => {
+    if (fetchPostsCount) {
+      setPostsCount(fetchPostsCount);
+    }
+  }, [fetchPostsCount]);
 
   if (!data) return <div>404</div>;
 
@@ -160,6 +171,11 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <Link href={"/"} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
         px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
         transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
+
+<div className="flex flex-col mr-auto ml-16">
+          <h2 className="text-xl font-semibold">{username}</h2>
+          <p>{`${postsCount} Posts`}</p>
+          </div>
 
             {data.id !== user?.id && user &&
               (followersData ?
