@@ -26,6 +26,7 @@ Let's implement some features I have already implemented before in order to lear
 - Fix following or not following for the 2 pages for all the users #DONE 
 - Clicking outside the modal or clicking escape should close the edit profile modal #DONE 
 - Pinned posts for each profile
+- Sticky div at the top with the arrow to go back #DONE 
 - Page for Liked posts #DONE 
 
 
@@ -64,7 +65,7 @@ Let's implement some features I have already implemented before in order to lear
 - Infinite scrolling for Following feed #DONE 
 - Improve following page performance, it is really slow probably because of the two requests , it seems to have been a temporary issue, it is faster now after i added the followers api call in the home page #DONE 
 - Try to use the global homePage state context to decide which data to invalidate upon liking #DONE 
-- Home/following selector should always be on top and the posts underneath to be blurred
+- Home/following selector should always be on top and the posts underneath to be blurred #DONE 
 
 ## Search bar for profiles / posts
 - Return posts that contain the query in the post body

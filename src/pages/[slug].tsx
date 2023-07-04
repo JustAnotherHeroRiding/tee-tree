@@ -156,8 +156,28 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
+      <div className="flex sticky top-0 z-50 items-center justify-between backdrop-blur-sm pb-2">
+            <Link href={"/"} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
+        px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
+        transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
+
+            {data.id !== user?.id && user &&
+              (followersData ?
+                (
+                  <button className={`border rounded-3xl border-slate-400 px-4 py-1 transition-all duration-300
+         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 
+         ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
+                    onClick={() => mutate({ userToFollowId: data.id })}
+                    disabled={isFollowingLoading}
+                  >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
+                ) :
+                <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
+
+          </div>
+        
 
         <div className=" bg-slate-600 h-36 relative">
+          
         <div
   className={`modalparent transition-transform duration-300 ease-in-out transform ${
     showForm ? 'scale-100 opacity-100 visible' : 'scale-0 opacity-0 invisible'
@@ -191,24 +211,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
             </div>
           </div>
-          <div className="flex items-center justify-between">
-            <Link href={"/"} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
-        px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
-        transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
-
-            {data.id !== user?.id && user &&
-              (followersData ?
-                (
-                  <button className={`border rounded-3xl border-slate-400 px-4 py-2 transition-all duration-300
-         hover:bg-slate-900 bg-slate-800 hover:text-white mt-4 mr-4 
-         ${isFollowingLoading ? "animate-pulse text-blue-700 scale-110" : ""}`}
-                    onClick={() => mutate({ userToFollowId: data.id })}
-                    disabled={isFollowingLoading}
-                  >{`${isFollowing ? "Unfollow" : "Follow"}`}</button>
-                ) :
-                <div className="flex items-center justify-center mr-6 mt-6"><LoadingSpinner size={32} /></div>)}
-
-          </div>
+          
           <Image src={data.profilePicture}
             alt={`${data.username ?? ""}'s profile pic `}
             className="-mb-[64px] h-32 w-32 absolute bottom-0 left-0 ml-4 rounded-full border-2 border-black bg-black"
@@ -244,7 +247,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="border-b border-slate-400 w-full"></div>
         <div className="mb-8 flex flex-row justify-between border-b border-slate-400 mt-6">
                 <div className="flex w-1/2 flex-col items-center justify-center">
-                  <Link href={username ? `/${username}` : "/"}>
+                  <Link href={username ? `/@${username}` : "/"}>
                   <button
                     className={`mx-auto ${
                       feedSelector === "posts" ? "text-white" : "text-slate-400"
@@ -260,7 +263,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                   )}
                 </div>
                 <div className="flex w-1/2 flex-col items-center justify-center">
-                <Link href={username ? `/${username}/likes` : "/"}>
+                <Link href={username ? `/@${username}/likes` : "/"}>
 
                   <button
                     className={`mx-auto ${

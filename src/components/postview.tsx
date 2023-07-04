@@ -134,7 +134,7 @@ const PostViewComponent = (props: PostWithUser) => {
       } 
       else if (location.pathname.startsWith("/post/")) {
         void ctx.posts.getById.invalidate();
-      } else if (location.pathname.startsWith("/")) {
+      } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollPostsByUserId.invalidate();
       }
       console.log("Post Liked");
@@ -160,7 +160,7 @@ const PostViewComponent = (props: PostWithUser) => {
         }  
         else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
-        } else if (location.pathname.startsWith("/")) {
+        } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
 
@@ -188,7 +188,7 @@ const PostViewComponent = (props: PostWithUser) => {
         }  
         else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
-        } else if (location.pathname.startsWith("/")) {
+        } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         }
 

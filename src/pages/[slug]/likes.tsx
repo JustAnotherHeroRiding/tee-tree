@@ -244,7 +244,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="border-b border-slate-400 w-full"></div>
         <div className="mb-8 flex flex-row justify-between border-b border-slate-400 mt-6">
                 <div className="flex w-1/2 flex-col items-center justify-center">
-                  <Link href={username ? `/${username}` : "/"}>
+                  <Link href={username ? `/@${username}` : "/"}>
                   <button
                     className={`mx-auto ${
                       feedSelector === "posts" ? "text-white" : "text-slate-400"
@@ -260,7 +260,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                   )}
                 </div>
                 <div className="flex w-1/2 flex-col items-center justify-center">
-                <Link href={username ? `/${username}/likes` : "/"}>
+                <Link href={username ? `/@${username}/likes` : "/"}>
 
                   <button
                     className={`mx-auto ${
