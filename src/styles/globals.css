@@ -50,4 +50,8 @@ body {
     .CreatePostWizard-Icons {
         @apply w-6 h-6 hover:text-slate-300 cursor-pointer
     }
+
+    .infiniteScrollTriggerDiv {
+        @apply h-[30vh]
+    }
 }

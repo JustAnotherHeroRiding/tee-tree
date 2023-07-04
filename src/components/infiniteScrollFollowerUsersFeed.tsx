@@ -84,7 +84,7 @@ export const InfiniteScrollFollowingFeed = () => {
             <div key={fullPost.post.id}>
               <PostView {...fullPost} />
 
-              <div ref={lastPostElementRef} className="h-[20vh]"></div>
+              <div ref={lastPostElementRef} className="infiniteScrollTriggerDiv"></div>
             </div>
           ) : (
             <PostView {...fullPost} key={fullPost.post.id} />
