@@ -26,7 +26,7 @@ Let's implement some features I have already implemented before in order to lear
 - Fix following or not following for the 2 pages for all the users #DONE 
 - Clicking outside the modal or clicking escape should close the edit profile modal #DONE 
 - Pinned posts for each profile
-- Page for Liked posts
+- Page for Liked posts #DONE 
 
 
 ## Posts

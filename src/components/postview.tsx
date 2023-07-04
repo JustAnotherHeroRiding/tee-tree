@@ -128,10 +128,14 @@ const PostViewComponent = (props: PostWithUser) => {
         } else {
           void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
         }
-      } else if (location.pathname.startsWith("/post/")) {
+      }else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+        // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+        void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+      } 
+      else if (location.pathname.startsWith("/post/")) {
         void ctx.posts.getById.invalidate();
-      } else if (location.pathname.startsWith("/@")) {
-        void ctx.posts.getPostsByUserId.invalidate();
+      } else if (location.pathname.startsWith("/")) {
+        void ctx.posts.infiniteScrollPostsByUserId.invalidate();
       }
       console.log("Post Liked");
     },
@@ -150,10 +154,14 @@ const PostViewComponent = (props: PostWithUser) => {
       onSuccess: () => {
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
-        } else if (location.pathname.startsWith("/post/")) {
+        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        }  
+        else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
-        } else if (location.pathname.startsWith("/@")) {
-          void ctx.posts.getPostsByUserId.invalidate();
+        } else if (location.pathname.startsWith("/")) {
+          void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
 
         console.log("Post Edited");
@@ -174,10 +182,14 @@ const PostViewComponent = (props: PostWithUser) => {
         setShowDeleteModal(false);
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
-        } else if (location.pathname.startsWith("/post/")) {
+        }else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        }  
+        else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
-        } else if (location.pathname.startsWith("/@")) {
-          void ctx.posts.getPostsByUserId.invalidate();
+        } else if (location.pathname.startsWith("/")) {
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
         }
 
         console.log("Post Deleted");
@@ -220,8 +232,12 @@ const PostViewComponent = (props: PostWithUser) => {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
-        } else if (location.pathname.startsWith("/@")) {
-          void ctx.posts.getPostsByUserId.invalidate();
+        }else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        }  
+        else if (location.pathname.startsWith("/@")) {
+          void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
 
         console.log("Post Image Deleted");

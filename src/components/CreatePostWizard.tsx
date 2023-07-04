@@ -252,7 +252,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           </div>
         )}
       </div>
-      <div className="flex flex-row items-center gap-2">
+      <div className="flex flex-row items-center gap-2 border-b pb-4 border-slate-400">
         <label>
           <input
             type="file"

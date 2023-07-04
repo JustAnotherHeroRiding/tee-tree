@@ -46,7 +46,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const [followingCount, setFollowingCount] = useState(0);
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
 
-  const [feedSelector, setFeedSelector] = useState<string>("posts");
+  const [feedSelector] = useState<string>("posts");
 
 
   const [showForm, setShowForm] = useState(false);

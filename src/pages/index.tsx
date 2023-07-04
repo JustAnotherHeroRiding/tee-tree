@@ -34,7 +34,8 @@ const Home: NextPage = () => {
 
   return (
     <PageLayout>
-      <div className="flex border-b border-slate-400 p-4">
+      <div className="sticky top-0 z-50 backdrop-blur-lg">
+      <div className="flex border-b border-slate-400 px-4 pt-4">
         {!isSignedIn && (
           <div className="flex w-full flex-col">
             <SignInButton>
@@ -61,7 +62,7 @@ const Home: NextPage = () => {
               </SignOutButton>
             </div>
             {user && (
-              <div className="mb-8 flex flex-row justify-between border-b border-slate-400">
+              <div className="flex flex-row justify-between">
                 <div className="flex w-1/2 flex-col items-center justify-center">
                   <button
                     onClick={() => setHomePage(true)}
@@ -95,11 +96,16 @@ const Home: NextPage = () => {
               </div>
             )}
 
-            <CreatePostWizard homePage={homePage} />
           </div>
         )}
       </div>
-      {/* <Feed />  */}
+      </div>
+      {user && (
+        <div className="flex w-full flex-col p-4 mt-4">
+            <CreatePostWizard homePage={homePage} />
+            </div>
+
+      )}
       {homePage ? <InfiniteScrollFeed /> : <InfiniteScrollFollowingFeed />}
     </PageLayout>
   );

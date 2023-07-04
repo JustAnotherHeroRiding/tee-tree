@@ -4,7 +4,7 @@ import { LoadingPage, LoadingSpinner } from "./loading";
 import { PostView } from "./postview";
 import type { PostWithAuthor } from "~/server/api/routers/posts";
 
-export const InfiniteScrollProfileFeed = (props: { userId: string }) => {
+export const InfiniteScrollProfileLikedFeed = (props: { userId: string }) => {
   const [page, setPage] = useState(0);
 
   const {
@@ -12,7 +12,7 @@ export const InfiniteScrollProfileFeed = (props: { userId: string }) => {
     fetchNextPage,
     isLoading: postsLoading,
     isFetchingNextPage: isFetchingNextPage,
-  } = api.posts.infiniteScrollPostsByUserId.useInfiniteQuery(
+  } = api.posts.infiniteScrollPostsByUserIdLiked.useInfiniteQuery(
     {
       userId: props.userId,
       limit: 4,
