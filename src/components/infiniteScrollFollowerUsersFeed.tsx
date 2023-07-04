@@ -81,7 +81,7 @@ export const InfiniteScrollFollowingFeed = () => {
             postIndex === page.posts.length - 1;
 
           return isLastPost ? (
-            <div key={fullPost.post.id}>
+            <div key={fullPost.post.id} className="relative">
               <PostView {...fullPost} />
 
               <div ref={lastPostElementRef} className="infiniteScrollTriggerDiv"></div>
