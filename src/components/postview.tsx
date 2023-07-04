@@ -22,6 +22,7 @@ import { AdvancedImage, lazyload } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
 import React from "react";
+import { useHomePage } from "~/components/HomePageContext";
 
 dayjs.extend(relativeTime);
 
@@ -32,6 +33,7 @@ const PostViewComponent = (props: PostWithUser) => {
 
   const { post, author } = props;
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
+  const { homePage } = useHomePage();
 
   const [liked, setLiked] = useState(false);
 
@@ -121,8 +123,11 @@ const PostViewComponent = (props: PostWithUser) => {
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
       if (location.pathname === "/") {
-        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
-        void ctx.posts.infiniteScrollAllPosts?.invalidate();
+        if (homePage) {
+          void ctx.posts.infiniteScrollAllPosts?.invalidate();
+        } else {
+          void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+        }
       } else if (location.pathname.startsWith("/post/")) {
         void ctx.posts.getById.invalidate();
       } else if (location.pathname.startsWith("/@")) {
@@ -187,9 +192,10 @@ const PostViewComponent = (props: PostWithUser) => {
       },
     });
 
-
-  const {mutate: deleteMediaCloudinary, isLoading: isDeletingMediaCloudinary} = 
-  api.posts.deleteMediaCloudinary.useMutation({
+  const {
+    mutate: deleteMediaCloudinary,
+    isLoading: isDeletingMediaCloudinary,
+  } = api.posts.deleteMediaCloudinary.useMutation({
     onSuccess: () => {
       console.log("Cloudinary Media Deleted");
     },
@@ -208,7 +214,7 @@ const PostViewComponent = (props: PostWithUser) => {
       onSuccess: (data) => {
         const publicId = data.public_id;
         if (publicId) {
-          deleteMediaCloudinary({publicId: publicId});
+          deleteMediaCloudinary({ publicId: publicId });
         }
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
@@ -264,7 +270,7 @@ const PostViewComponent = (props: PostWithUser) => {
       className="flex gap-3 border-b border-slate-400 p-4 phone:relative"
     >
       <Image
-        className="h-14 w-14 rounded-full phone:absolute phone:bottom-2 phone:right-2 phone:h-10 phone:w-10"
+        className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
         src={author.profilePicture}
         alt={`@${author.username}profile picture`}
         width={56}
@@ -358,7 +364,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     setShowMediaFullScreen(true);
                   }
                 }}
-                              >
+              >
                 <AdvancedImage
                   style={{
                     width: "auto",
@@ -406,7 +412,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     setShowMediaFullScreen(true);
                   }
                 }}
-                              >
+              >
                 <AdvancedImage
                   style={{
                     width: "auto",
@@ -600,24 +606,28 @@ const PostViewComponent = (props: PostWithUser) => {
                     >
                       <div
                         ref={modalDeletePostRef}
-                        className="w-90 modalDeletePost mx-auto flex h-32 flex-col
-        rounded-3xl border border-indigo-200 bg-black p-4"
+                        className="modalDeletePost mx-auto flex h-fit w-96 flex-col
+        rounded-3xl border border-indigo-200 bg-black p-8"
                       >
-                        <h1>Are you sure you want to delete this post?</h1>
-                        <div className="mt-auto flex flex-row justify-between">
-                          <button
-                            className="rounded-3xl bg-red-700 px-2 py-1 hover:bg-orange-600 hover:text-black"
-                            onClick={() => deletePost({ postId: post.id })}
-                          >
-                            Delete
-                          </button>
-                          <button
-                            className="rounded-3xl border px-2 py-1 hover:text-slate-400"
-                            onClick={() => setShowDeleteModal(false)}
-                          >
-                            Cancel
-                          </button>
-                        </div>
+                        <h2 className="text-2xl font-semibold">Delete Post?</h2>
+
+                        <p className="text-gray-500">
+                          This can{`'`}t be undone and it will be removed from
+                          your profile, the timeline of any accounts that follow
+                          you, and from search results.
+                        </p>
+                        <button
+                          className="my-4 rounded-3xl bg-red-700 px-2 py-2 hover:bg-red-800"
+                          onClick={() => deletePost({ postId: post.id })}
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="rounded-3xl border px-2 py-2"
+                          onClick={() => setShowDeleteModal(false)}
+                        >
+                          Cancel
+                        </button>
                       </div>
                     </div>
                   )}

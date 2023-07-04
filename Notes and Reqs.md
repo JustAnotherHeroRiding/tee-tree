@@ -25,6 +25,8 @@ Let's implement some features I have already implemented before in order to lear
 - Allow users to follow users from the following/followers pages #DONE 
 - Fix following or not following for the 2 pages for all the users #DONE 
 - Clicking outside the modal or clicking escape should close the edit profile modal #DONE 
+- Pinned posts for each profile
+- Page for Liked posts
 
 
 ## Posts
@@ -45,6 +47,7 @@ Let's implement some features I have already implemented before in order to lear
 - Clicking outside the full screen photo or esc closes the full screen view #DONE 
 - Deleting an image from a post in edit view #DONE 
 - Deleting an image should also delete it from the cloudinary storage too #DONE 
+- Improved delete post modal #DONE 
 - Uploading media from edit view
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Sharing posts, meaning share a link on social media platforms
@@ -60,10 +63,24 @@ Let's implement some features I have already implemented before in order to lear
 - Infinite scrolling for profile feed #DONE 
 - Infinite scrolling for Following feed #DONE 
 - Improve following page performance, it is really slow probably because of the two requests , it seems to have been a temporary issue, it is faster now after i added the followers api call in the home page #DONE 
-- Try to use the global homePage state context to decide which data to invalidate upon liking
+- Try to use the global homePage state context to decide which data to invalidate upon liking #DONE 
+- Home/following selector should always be on top and the posts underneath to be blurred
 
 ## Search bar for profiles / posts
 - Return posts that contain the query in the post body
 - Return profiles if user selects people
 - If the query starts with @ then show profiles first but still show posts afterwards
 - For the profiles show 3 profiles and a show more tab, for posts implement useInfiniteQuery
+- Search by hashtags
+
+## Messaging
+- Separate page where users can message each other
+
+
+## Mentioning users
+- Mentioning users in posts which will then link to their profile
+
+
+## Trends and follow recommendations
+- See how much each hashtag has appeared in the last week and show the top trends
+- Separate trend page for expanded page

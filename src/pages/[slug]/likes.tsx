@@ -12,7 +12,6 @@ import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
-import { InfiniteScrollProfileFeed } from "~/components/infiniteScrollProfileFeed";
 
 /* const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
@@ -46,7 +45,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const [followingCount, setFollowingCount] = useState(0);
   const [shouldFetchFollowers, setShouldFetchFollowers] = useState(false);
 
-  const [feedSelector, setFeedSelector] = useState<string>("posts");
+  const [feedSelector, setFeedSelector] = useState<string>("liked");
 
 
   const [showForm, setShowForm] = useState(false);
@@ -277,8 +276,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                   )}
                 </div>
               </div>
-        <InfiniteScrollProfileFeed userId={data.id} />
-      </PageLayout>
+              <h1>Liked posts</h1>
+{/*         <InfiniteScrollProfileFeed userId={data.id} />
+ */}      </PageLayout>
     </>
   );
 };
