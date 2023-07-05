@@ -55,6 +55,8 @@ const PostViewComponent = (props: PostWithUser) => {
   const { homePage } = useHomePage();
 
   const [liked, setLiked] = useState(false);
+  const [retweeted, setRetweeted] = useState(false);
+
 
   const { user } = useUser();
 
@@ -122,22 +124,34 @@ const PostViewComponent = (props: PostWithUser) => {
     authorId: string;
   };
 
+  type Retweet = {
+    authorId: string;
+  };
+
+
   useEffect(() => {
     function authorLikedPost(authorId: string, likes: Like[]): boolean {
       return likes.some((like) => like.authorId === authorId);
     }
+    function authorRetweetedPost(authorId: string, retweets: Retweet[]): boolean {
+      return retweets.some((retweet) => retweet.authorId === authorId);
+    }
     if (user) {
       setLiked(authorLikedPost(user.id, post.likes));
+      setRetweeted(authorRetweetedPost(user.id, post.retweets));
     } else {
+      setRetweeted(false);
       setLiked(false);
     }
-  }, [user, post.likes]);
+  }, [user, post.likes, post.retweets]);
 
   const [likes, setLikes] = useState(0);
+  const [retweets, setRetweets] = useState(0);
 
   useEffect(() => {
     setLikes(post.likes.length);
-  }, [post.likes]);
+    setRetweets(post.retweets.length);
+  }, [post.likes, post.retweets.length]);
 
   const ctx = api.useContext();
 
@@ -165,6 +179,35 @@ const PostViewComponent = (props: PostWithUser) => {
         toast.error(errorMessage[0]);
       } else {
         toast.error("Failed to Like! Are you logged in?");
+      }
+    },
+  });
+
+
+  const { mutate: retweetPost, isLoading: isRetweeting } = api.posts.retweetPost.useMutation({
+    onSuccess: () => {
+      if (location.pathname === "/") {
+        if (homePage) {
+          void ctx.posts.infiniteScrollAllPosts?.invalidate();
+        } else {
+          void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+        }
+      } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+        // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+        void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+      } else if (location.pathname.startsWith("/post/")) {
+        void ctx.posts.getById.invalidate();
+      } else if (location.pathname.startsWith("/@")) {
+        void ctx.posts.infiniteScrollPostsByUserId.invalidate();
+      }
+      console.log("Retweeted post");
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to Retweet! Are you logged in?");
       }
     },
   });
@@ -574,14 +617,22 @@ const PostViewComponent = (props: PostWithUser) => {
           </button>
           
           <button
+          onClick={() => retweetPost({ postId: post.id })}
+          className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
+        ${retweeted ? "text-green-600" : "hover:text-green-300"} whitespace-normal ${
+            isRetweeting
+              ? "scale-125 animate-pulse text-green-900-900"
+              : "hover:scale-110"
+          }`}
             data-tooltip-id="retweet-tooltip"
             data-tooltip-content="Retweet"
           >
             {" "}
             <FontAwesomeIcon
               icon={faRetweet}
-              className="post-button-fontAwesome"
-            />{" "}
+              className="w-6 h-6 rounded-3xl"
+            />
+            <p className="ml-1">{retweets}</p>{" "}
           </button>
           <Tooltip
             place="bottom"

@@ -52,10 +52,18 @@ Let's implement some features I have already implemented before in order to lear
 - Sharing posts, meaning share a link on social media platforms #DONE 
 - Improving Share post Modal Css #DONE 
 - Copy link button #DONE 
+- Image preview loads on the same file being uploaded #DONE 
 - Views per post
 - Emoji selector
 - Sharing audio files that can be played 
-- Retweets
+
+
+## Retweets
+- Create the retweet model #DONE 
+- Retweet trpc mutation #DONE 
+- Setting retweet amount and checking if users can retweet #DONE 
+- Users can click to retweet a post, which will work similar to likes and be stored with the postId and the userId of the person who retweeted it #DONE 
+- In the following feed, there should be posts from followed users and posts that they have retweeted
 
 
 ## Comments

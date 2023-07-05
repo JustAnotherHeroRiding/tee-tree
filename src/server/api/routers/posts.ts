@@ -10,12 +10,13 @@ import {
 import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
-import type { Post, Like } from "@prisma/client";
+import type { Post, Like, Retweet } from "@prisma/client";
 import { env } from "~/env.mjs";
 import crypto from "crypto";
 
 export type ExtendedPost = Post & {
   likes: Like[];
+  retweets: Retweet[];
 };
 
 export type PostAuthor = {
@@ -111,7 +112,8 @@ export const postsRouter = createTRPCRouter({
       const post = await ctx.prisma.post.findUnique({
         where: { id: input.id },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true,  // Include the likes relation in the result
         },
       });
 
@@ -131,7 +133,8 @@ export const postsRouter = createTRPCRouter({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
       include: {
-        likes: true, // Include the likes relation in the result
+        likes: true,
+        retweets: true, // Include the likes relation in the result
       },
     });
 
@@ -159,7 +162,8 @@ export const postsRouter = createTRPCRouter({
           id: "desc",
         },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true,  // Include the likes relation in the result
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -194,7 +198,8 @@ export const postsRouter = createTRPCRouter({
           createdAt: "desc",
         },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true, // Include the likes relation in the result
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -224,7 +229,8 @@ export const postsRouter = createTRPCRouter({
           take: 100,
           orderBy: [{ createdAt: "desc" }],
           include: {
-            likes: true, // Include the likes relation in the result
+            likes: true,
+            retweets: true, // Include the likes relation in the result
           },
         })
         .then(addUserDataToPosts)
@@ -269,7 +275,8 @@ export const postsRouter = createTRPCRouter({
           createdAt: "desc",
         },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true, // Include the likes relation in the result
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -312,7 +319,8 @@ export const postsRouter = createTRPCRouter({
           createdAt: "desc",
         },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true, // Include the likes relation in the result
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -364,7 +372,8 @@ export const postsRouter = createTRPCRouter({
           createdAt: "desc",
         },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true, // Include the likes relation in the result
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -407,6 +416,7 @@ export const postsRouter = createTRPCRouter({
           orderBy: [{ createdAt: "desc" }],
           include: {
             likes: true,
+            retweets: true,
           },
         })
         .then(addUserDataToPosts);
@@ -447,7 +457,8 @@ export const postsRouter = createTRPCRouter({
         where: { id: input.id },
         data: { imageUrl: input.publicId },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true, // Include the likes relation in the result
         },
       });
 
@@ -469,7 +480,8 @@ export const postsRouter = createTRPCRouter({
         where: { id: input.id },
         data: { gifUrl: input.publicId },
         include: {
-          likes: true, // Include the likes relation in the result
+          likes: true,
+          retweets: true, // Include the likes relation in the result
         },
       });
 
@@ -639,6 +651,36 @@ export const postsRouter = createTRPCRouter({
       } else {
         // If the user hasn't liked the post yet, add a new like
         await ctx.prisma.like.create({
+          data: {
+            postId: input.postId,
+            authorId: authorId,
+          },
+        });
+      }
+
+      return { success: true };
+    }),
+    retweetPost: privateProcedure
+    .input(z.object({ postId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      const existingRetweet = await ctx.prisma.retweet.findFirst({
+        where: {
+          postId: input.postId,
+          authorId: authorId,
+        },
+      });
+
+      if (existingRetweet) {
+        console.log("existing like found");
+        // If the user already liked the post, remove the like
+        await ctx.prisma.retweet.delete({
+          where: { id: existingRetweet.id },
+        });
+      } else {
+        // If the user hasn't liked the post yet, add a new like
+        await ctx.prisma.retweet.create({
           data: {
             postId: input.postId,
             authorId: authorId,

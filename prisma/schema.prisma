@@ -23,6 +23,16 @@ model Like {
   @@index([postId])
 }
 
+model Retweet {
+  id        String  @id @default(cuid())
+  authorId  String
+  postId    String
+  post      Post    @relation(fields: [postId], references: [id])
+
+  @@index([authorId, postId], name: "UniqueRetweet")
+  @@index([postId])
+}
+
 model Post {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -34,6 +44,7 @@ model Post {
 
   authorId  String
   likes     Like[]
+  retweets Retweet[]
   isEdited  Boolean  @default(false)
   @@index([authorId])
 }
