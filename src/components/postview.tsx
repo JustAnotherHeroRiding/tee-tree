@@ -7,6 +7,7 @@ import {
   faShare,
   faRetweet,
   faXmark,
+  faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,7 +24,18 @@ import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
 import React from "react";
 import { useHomePage } from "~/components/HomePageContext";
-import {  TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton } from "react-share";
+import {
+  FacebookMessengerIcon,
+  FacebookMessengerShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  TelegramIcon,
+  TelegramShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
+} from "react-share";
 
 dayjs.extend(relativeTime);
 
@@ -564,40 +576,84 @@ const PostViewComponent = (props: PostWithUser) => {
             id="retweet-tooltip"
           />
           {showShareModal && (
-            <div className="modalparent">            
-            <div className="modal bg-black border border-slate-400 w-fit grid grid-flow-col grid-cols-1 p-4">
-            <button
-                className="absolute right-0 top-4 rounded-3xl
+            <div className="modalparent">
+              <div className="modal grid grid-flow-row grid-cols-1 border border-slate-400 rounded-lg
+               bg-black p-4 md:w-1/4">
+                <button
+                  className="absolute right-2 top-4 rounded-3xl
           px-1 py-1 hover:bg-slate-700 hover:text-white
           "
-                onClick={() => setShowShareModal(false)}
-              >
-                <FontAwesomeIcon
-                  className="h-6 w-6 rounded-3xl"
-                  icon={faXmark}
-                />
-              </button>
-              <button><TwitterShareButton
-              url={window.location.hostname + '/post' + `/${post.id}`}
-            ><TwitterIcon size={32} round={true} /> Twitter</TwitterShareButton></button>
-            <button><WhatsappShareButton
-              url={window.location.hostname + '/post' + `/${post.id}`}
-            > <WhatsappIcon size={32} round={true} /> Whatsapp</WhatsappShareButton></button>
+                  onClick={() => setShowShareModal(false)}
+                >
+                  <FontAwesomeIcon
+                    className="h-6 w-6 rounded-3xl"
+                    icon={faXmark}
+                  />
+                </button>
+                <div className="mt-auto grid grid-flow-row-dense grid-cols-3 px-6">
+                  <button className="flex flex-col">
+                    <FontAwesomeIcon icon={faCopy} className="h-8 w-8" />
+                    Copy Link
+                  </button>
+                  <button className="flex flex-col">
+                    <TwitterShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      <TwitterIcon size={32} round={true} /> 
+                    </TwitterShareButton>
+                    Twitter
+                  </button>
+                  <button className="flex flex-col">
+                    <WhatsappShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <WhatsappIcon size={32} round={true} /> 
+                    </WhatsappShareButton>
+                    Whatsapp
+                  </button>
+                  <button className="flex flex-col">
+                    <TelegramShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <TelegramIcon size={32} round={true} /> 
+                    </TelegramShareButton>
+                    Telegram
+                  </button>
+                  <button className="flex flex-col">
+                    <LinkedinShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <LinkedinIcon size={32} round={true} /> 
+                    </LinkedinShareButton>
+                    Linkedin
+                  </button>
+                  <button className="flex flex-col">
+                    <FacebookMessengerShareButton appId={1691535917984101}
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <FacebookMessengerIcon size={32} round={true} /> 
+                    </FacebookMessengerShareButton>
+                    Messenger
+                  </button>
+                </div>
+              </div>
             </div>
-            </div>
-            
           )}
-           
 
-          <button onClick={() => setShowShareModal(true)}
-          data-tooltip-id="share-tooltip" 
-          data-tooltip-content="Share">
-           
-              {" "}
-              <FontAwesomeIcon
-                icon={faShare}
-                className="post-button-fontAwesome"
-              />{" "}
+          <button
+            onClick={() => setShowShareModal(true)}
+            data-tooltip-id="share-tooltip"
+            data-tooltip-content="Share"
+          >
+            {" "}
+            <FontAwesomeIcon
+              icon={faShare}
+              className="post-button-fontAwesome"
+            />{" "}
           </button>
           <Tooltip
             place="bottom"

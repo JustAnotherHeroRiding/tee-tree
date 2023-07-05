@@ -49,7 +49,8 @@ Let's implement some features I have already implemented before in order to lear
 - Deleting an image should also delete it from the cloudinary storage too #DONE 
 - Improved delete post modal #DONE 
 - Uploading media from edit view
-- Sharing posts, meaning share a link on social media platforms
+- Sharing posts, meaning share a link on social media platforms #DONE 
+- Improving Share post Modal Css
 - Views per post
 - Emoji selector
 - Sharing audio files that can be played 
