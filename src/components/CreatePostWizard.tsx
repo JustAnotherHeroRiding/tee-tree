@@ -342,7 +342,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               />
       </div>
       {previewUrl && (
-        <div className="w-[300px] overflow-auto relative mx-auto">
+        <div className="w-[300px] overflow-auto relative mx-auto mt-6">
           <FontAwesomeIcon onClick={() => setPreviewUrl("")} icon={faXmark} 
           className="absolute top-2 w-7 h-7 p-1 right-2 cursor-pointer hover:text-slate-300 bg-gray-600 rounded-3xl"/>
   <Image className="rounded border border-slate-400" width={350} height={350} src={previewUrl} alt="Preview" />
