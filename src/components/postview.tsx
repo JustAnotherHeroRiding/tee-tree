@@ -25,14 +25,20 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import React from "react";
 import { useHomePage } from "~/components/HomePageContext";
 import {
-  FacebookMessengerIcon,
-  FacebookMessengerShareButton,
+  EmailIcon,
+  EmailShareButton,
   LinkedinIcon,
   LinkedinShareButton,
+  RedditIcon,
+  RedditShareButton,
   TelegramIcon,
   TelegramShareButton,
   TwitterIcon,
   TwitterShareButton,
+  ViberIcon,
+  ViberShareButton,
+  VKIcon,
+  VKShareButton,
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
@@ -590,7 +596,8 @@ const PostViewComponent = (props: PostWithUser) => {
                     icon={faXmark}
                   />
                 </button>
-                <div className="mt-auto grid grid-flow-row-dense grid-cols-3 px-6">
+                <h2 className="font-semibold mx-auto">Share with:</h2>
+                <div className="grid grid-flow-row-dense grid-cols-2 md:grid-cols-3 p-6 border rounded-3xl ">
                   <button className="flex flex-col">
                     <FontAwesomeIcon icon={faCopy} className="h-8 w-8" />
                     Copy Link
@@ -601,7 +608,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     >
                       <TwitterIcon size={32} round={true} /> 
                     </TwitterShareButton>
-                    Twitter
+                    <p className="phone:hidden">Twitter</p>                 
                   </button>
                   <button className="flex flex-col">
                     <WhatsappShareButton
@@ -610,7 +617,7 @@ const PostViewComponent = (props: PostWithUser) => {
                       {" "}
                       <WhatsappIcon size={32} round={true} /> 
                     </WhatsappShareButton>
-                    Whatsapp
+                    <p className="phone:hidden">Whatsapp</p>                 
                   </button>
                   <button className="flex flex-col">
                     <TelegramShareButton
@@ -619,7 +626,7 @@ const PostViewComponent = (props: PostWithUser) => {
                       {" "}
                       <TelegramIcon size={32} round={true} /> 
                     </TelegramShareButton>
-                    Telegram
+                    <p className="phone:hidden">Telegram</p>                 
                   </button>
                   <button className="flex flex-col">
                     <LinkedinShareButton
@@ -628,17 +635,45 @@ const PostViewComponent = (props: PostWithUser) => {
                       {" "}
                       <LinkedinIcon size={32} round={true} /> 
                     </LinkedinShareButton>
-                    Linkedin
+                    <p className="phone:hidden">Linkedin</p>                 
                   </button>
                   <button className="flex flex-col">
-                    <FacebookMessengerShareButton appId="1691535917984101"
+                    <EmailShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <FacebookMessengerIcon size={32} round={true} /> 
-                    </FacebookMessengerShareButton>
-                    Messenger
+                      <EmailIcon size={32} round={true} /> 
+                    </EmailShareButton>
+                    <p className="phone:hidden">Email</p>                 
                   </button>
+                  <button className="flex flex-col">
+                    <VKShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <VKIcon size={32} round={true} /> 
+                    </VKShareButton>
+                    <p className="phone:hidden">Vk</p>
+                  </button>
+                  <button className="flex flex-col">
+                    <RedditShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <RedditIcon size={32} round={true} /> 
+                    </RedditShareButton>
+                    <p className="phone:hidden">Reddit</p>
+                  </button>
+                  <button className="flex flex-col">
+                    <ViberShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <ViberIcon size={32} round={true} /> 
+                    </ViberShareButton>
+                    <p className="phone:hidden">Viber</p>
+                  </button>
+                  
                 </div>
               </div>
             </div>
