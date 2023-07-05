@@ -50,7 +50,8 @@ Let's implement some features I have already implemented before in order to lear
 - Improved delete post modal #DONE 
 - Uploading media from edit view
 - Sharing posts, meaning share a link on social media platforms #DONE 
-- Improving Share post Modal Css
+- Improving Share post Modal Css #DONE 
+- Copy link button #DONE 
 - Views per post
 - Emoji selector
 - Sharing audio files that can be played 

@@ -297,6 +297,17 @@ const PostViewComponent = (props: PostWithUser) => {
     setTextLength(event.target.textLength);
   };
 
+  async function copyToClipboard() {
+    const url = window.location.hostname + "/post" + `/${post.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("URL copied to clipboard");
+    } catch (err) {
+      toast.error("Failed to copy URL.");
+      console.error(err);
+    }
+  }
+
   return (
     <div
       key={post.id}
@@ -561,11 +572,7 @@ const PostViewComponent = (props: PostWithUser) => {
               className="post-button-fontAwesome"
             />{" "}
           </button>
-          <Tooltip
-            place="bottom"
-            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
-            id="comment-tooltip"
-          />
+          
           <button
             data-tooltip-id="retweet-tooltip"
             data-tooltip-content="Retweet"
@@ -583,8 +590,10 @@ const PostViewComponent = (props: PostWithUser) => {
           />
           {showShareModal && (
             <div className="modalparent">
-              <div className="modal grid grid-flow-row grid-cols-1 border border-slate-400 rounded-lg
-               bg-black p-4 md:w-1/4">
+              <div
+                className="modal grid grid-flow-row grid-cols-1 rounded-lg border border-slate-400
+               bg-black p-4 md:w-1/4"
+              >
                 <button
                   className="absolute right-2 top-4 rounded-3xl
           px-1 py-1 hover:bg-slate-700 hover:text-white
@@ -596,62 +605,75 @@ const PostViewComponent = (props: PostWithUser) => {
                     icon={faXmark}
                   />
                 </button>
-                <h2 className="font-semibold mx-auto">Share with:</h2>
-                <div className="grid grid-flow-row-dense grid-cols-2 md:grid-cols-3 p-6 border rounded-3xl ">
-                  <button className="flex flex-col">
+                <h2 className="mx-auto font-semibold">Share with:</h2>
+                <div className="grid grid-flow-row-dense grid-cols-2 rounded-3xl border p-6 md:grid-cols-3 ">
+                  <button
+                  data-tooltip-id="copyLink-tooltip"
+                  data-tooltip-content="Copy to Clipboard"
+                    className="flex flex-col"
+                    onClick={() => {
+                      void copyToClipboard();
+                    }}
+                  >
                     <FontAwesomeIcon icon={faCopy} className="h-8 w-8" />
                     Copy Link
                   </button>
+                  <Tooltip
+            place="left"
+            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)"}}
+            id="copyLink-tooltip"
+          />
+
                   <button className="flex flex-col">
                     <TwitterShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
-                      <TwitterIcon size={32} round={true} /> 
+                      <TwitterIcon size={32} round={true} />
                     </TwitterShareButton>
-                    <p className="phone:hidden">Twitter</p>                 
+                    <p className="phone:hidden">Twitter</p>
                   </button>
                   <button className="flex flex-col">
                     <WhatsappShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <WhatsappIcon size={32} round={true} /> 
+                      <WhatsappIcon size={32} round={true} />
                     </WhatsappShareButton>
-                    <p className="phone:hidden">Whatsapp</p>                 
+                    <p className="phone:hidden">Whatsapp</p>
                   </button>
                   <button className="flex flex-col">
                     <TelegramShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <TelegramIcon size={32} round={true} /> 
+                      <TelegramIcon size={32} round={true} />
                     </TelegramShareButton>
-                    <p className="phone:hidden">Telegram</p>                 
+                    <p className="phone:hidden">Telegram</p>
                   </button>
                   <button className="flex flex-col">
                     <LinkedinShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <LinkedinIcon size={32} round={true} /> 
+                      <LinkedinIcon size={32} round={true} />
                     </LinkedinShareButton>
-                    <p className="phone:hidden">Linkedin</p>                 
+                    <p className="phone:hidden">Linkedin</p>
                   </button>
                   <button className="flex flex-col">
                     <EmailShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <EmailIcon size={32} round={true} /> 
+                      <EmailIcon size={32} round={true} />
                     </EmailShareButton>
-                    <p className="phone:hidden">Email</p>                 
+                    <p className="phone:hidden">Email</p>
                   </button>
                   <button className="flex flex-col">
                     <VKShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <VKIcon size={32} round={true} /> 
+                      <VKIcon size={32} round={true} />
                     </VKShareButton>
                     <p className="phone:hidden">Vk</p>
                   </button>
@@ -660,7 +682,7 @@ const PostViewComponent = (props: PostWithUser) => {
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <RedditIcon size={32} round={true} /> 
+                      <RedditIcon size={32} round={true} />
                     </RedditShareButton>
                     <p className="phone:hidden">Reddit</p>
                   </button>
@@ -669,11 +691,10 @@ const PostViewComponent = (props: PostWithUser) => {
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
-                      <ViberIcon size={32} round={true} /> 
+                      <ViberIcon size={32} round={true} />
                     </ViberShareButton>
                     <p className="phone:hidden">Viber</p>
                   </button>
-                  
                 </div>
               </div>
             </div>
