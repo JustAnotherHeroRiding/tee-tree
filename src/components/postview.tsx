@@ -631,7 +631,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     Linkedin
                   </button>
                   <button className="flex flex-col">
-                    <FacebookMessengerShareButton appId={1691535917984101}
+                    <FacebookMessengerShareButton appId="1691535917984101"
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
                       {" "}
