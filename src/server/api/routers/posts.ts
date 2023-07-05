@@ -266,7 +266,16 @@ export const postsRouter = createTRPCRouter({
       const { limit, skip, cursor } = input;
       const items = await ctx.prisma.post.findMany({
         where: {
-          authorId: input.userId,
+          OR: [
+            { authorId: input.userId },
+            {
+              retweets: {
+                some: {
+                  authorId: input.userId,
+                },
+              },
+            },
+          ],
         },
         take: limit + 1,
         skip: skip,

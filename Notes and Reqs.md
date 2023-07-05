@@ -63,7 +63,9 @@ Let's implement some features I have already implemented before in order to lear
 - Retweet trpc mutation #DONE 
 - Setting retweet amount and checking if users can retweet #DONE 
 - Users can click to retweet a post, which will work similar to likes and be stored with the postId and the userId of the person who retweeted it #DONE 
-- In the following feed, there should be posts from followed users and posts that they have retweeted
+- In the profile  feed, there should be posts that the user has retweeted #DONE 
+- Add it for the following feed too
+- If the post is a retweet, there should be a banner on top showing this
 
 
 ## Comments
