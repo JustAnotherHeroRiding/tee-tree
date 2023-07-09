@@ -92,7 +92,7 @@ export const InfiniteScrollProfileFeed = (props: { userId: string, username: str
               ></div>
             </div>
           ) : (
-            <div  key={fullPost.post.id}>
+            <div key={fullPost.post.id}>
               {fullPost.author.id !== props.userId && (
                   <Link className="flex flex-row -mb-3 hover:underline" href={`/@${props.username}`}>
                   <FontAwesomeIcon icon={faRetweet} className="ml-12 my-auto h-4 w-4" />
