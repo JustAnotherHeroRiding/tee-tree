@@ -8,6 +8,7 @@ export default {
     extend: {
       screens: {
         'phone': {'max': '385px'},
+        'trendsbreakpoint' : {'max': '1231px'},
       },
       spacing: {
         '1/5': '20%',

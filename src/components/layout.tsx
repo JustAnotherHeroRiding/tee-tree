@@ -12,7 +12,7 @@ export const PageLayout = (props: PropsWithChildren) => {
         >
           {props.children}
         </div>
-        <div className="absolute right-[3%] w-1/5">
+        <div className="absolute right-[3%] w-1/5 trendsbreakpoint:hidden">
           <div className="sticky top-0 mb-4">
             <input
               type="text"
