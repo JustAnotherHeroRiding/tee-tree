@@ -80,7 +80,7 @@ export const InfiniteScrollProfileFeed = (props: {
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
               {fullPost.author.id !== props.userId && (
-                <RetweetedBy username={props.username} />
+                <RetweetedBy userName={props.username} id={undefined} />
               )}
 
               <PostView {...fullPost} />
@@ -92,7 +92,7 @@ export const InfiniteScrollProfileFeed = (props: {
           ) : (
             <div key={fullPost.post.id}>
               {fullPost.author.id !== props.userId && (
-                <RetweetedBy username={props.username} />
+                <RetweetedBy userName={props.username} id={undefined} />
               )}
 
               <PostView {...fullPost} />

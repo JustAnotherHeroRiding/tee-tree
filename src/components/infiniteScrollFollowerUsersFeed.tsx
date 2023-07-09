@@ -3,9 +3,11 @@ import { api } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "./loading";
 import type { PostWithAuthor } from "~/server/api/routers/posts";
 import { PostView } from "./postview";
+import { RetweetedBy } from "./RetweetedBy";
 
 export const InfiniteScrollFollowingFeed = () => {
   const [page, setPage] = useState(0);
+  const [followedUsers, setFollowedUsers] = useState<string[]>([]);
 
   const { data: followingData } = api.follow.getFollowingCurrentUser.useQuery();
 
@@ -29,6 +31,14 @@ export const InfiniteScrollFollowingFeed = () => {
       },
     }
   );
+
+  useEffect(() => {
+    if (followingData) {
+      setFollowedUsers(
+        followingData.map((follower) => follower.author.id)
+      );
+    }
+  }, [followingData]);
 
   const toShow = data?.pages[page]?.posts;
 
@@ -82,12 +92,30 @@ export const InfiniteScrollFollowingFeed = () => {
 
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
+              {followedUsers?.includes(fullPost.author.id) && (
+                <RetweetedBy userName={null} id={fullPost.author.id} />
+              )}
               <PostView {...fullPost} />
 
-              <div ref={lastPostElementRef} className="infiniteScrollTriggerDiv"></div>
+              <div
+                ref={lastPostElementRef}
+                className="infiniteScrollTriggerDiv"
+              ></div>
             </div>
           ) : (
-            <PostView {...fullPost} key={fullPost.post.id} />
+            <div key={fullPost.post.id}>
+              {followedUsers?.some((user) => user !== fullPost.author.id) && (
+                <RetweetedBy
+                userName={null}
+                  id={
+                    followedUsers.find((user) => user !== fullPost.author.id) ||
+                    "Oops"
+                  }
+                />
+              )}
+
+              <PostView {...fullPost} />
+            </div>
           );
         })
       )}

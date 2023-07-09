@@ -69,7 +69,6 @@ type ResponseData = {
   result: string;
 };
 
-
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -113,7 +112,7 @@ export const postsRouter = createTRPCRouter({
         where: { id: input.id },
         include: {
           likes: true,
-          retweets: true,  // Include the likes relation in the result
+          retweets: true, // Include the likes relation in the result
         },
       });
 
@@ -163,7 +162,7 @@ export const postsRouter = createTRPCRouter({
         },
         include: {
           likes: true,
-          retweets: true,  // Include the likes relation in the result
+          retweets: true, // Include the likes relation in the result
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -236,19 +235,18 @@ export const postsRouter = createTRPCRouter({
         .then(addUserDataToPosts)
     ),
 
-    getPostsCountByUserId: publicProcedure
+  getPostsCountByUserId: publicProcedure
     .input(
       z.object({
         userId: z.string().optional(),
       })
     )
     .query(({ ctx, input }) =>
-      ctx.prisma.post
-        .count({
-          where: {
-            authorId: input.userId,
-          },
-        })
+      ctx.prisma.post.count({
+        where: {
+          authorId: input.userId,
+        },
+      })
     ),
 
   infiniteScrollPostsByUserId: publicProcedure
@@ -300,7 +298,7 @@ export const postsRouter = createTRPCRouter({
       };
     }),
 
-    infiniteScrollPostsByUserIdLiked: publicProcedure
+  infiniteScrollPostsByUserIdLiked: publicProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -370,9 +368,22 @@ export const postsRouter = createTRPCRouter({
 
       const items = await ctx.prisma.post.findMany({
         where: {
-          authorId: {
-            in: authorIds,
-          },
+          OR: [
+            {
+              authorId: {
+                in: authorIds,
+              },
+            },
+            {
+              retweets: {
+                some: {
+                  authorId: {
+                    in: authorIds,
+                  },
+                },
+              },
+            },
+          ],
         },
         take: limit + 1,
         skip: skip,
@@ -382,7 +393,11 @@ export const postsRouter = createTRPCRouter({
         },
         include: {
           likes: true,
-          retweets: true, // Include the likes relation in the result
+          retweets: {
+            include: {
+              post: true, // Include the author of each Retweet object
+            },
+          },
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -390,7 +405,16 @@ export const postsRouter = createTRPCRouter({
         const nextItem = items.pop(); // return the last item from the array
         nextCursor = nextItem?.id;
       }
-      const extendedPosts = await addUserDataToPosts(items);
+
+      // Create a Set of posts, automatically removing duplicates
+      const uniquePosts = [
+        ...new Set(items.map((item) => JSON.stringify(item))),
+      ];
+
+      // Map back to original format
+      const posts = uniquePosts.map((post) => JSON.parse(post) as ExtendedPost);
+
+      const extendedPosts = await addUserDataToPosts(posts);
       return {
         posts: extendedPosts,
         nextCursor,
@@ -602,7 +626,7 @@ export const postsRouter = createTRPCRouter({
         body: formData,
       });
 
-      const data : ResponseData = await response.json() as ResponseData;
+      const data: ResponseData = (await response.json()) as ResponseData;
       console.log(data);
 
       if (!data) throw new Error("Failed to delete image from Cloudinary");
@@ -669,7 +693,7 @@ export const postsRouter = createTRPCRouter({
 
       return { success: true };
     }),
-    retweetPost: privateProcedure
+  retweetPost: privateProcedure
     .input(z.object({ postId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
