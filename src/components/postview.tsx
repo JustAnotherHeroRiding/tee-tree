@@ -341,7 +341,12 @@ const PostViewComponent = (props: PostWithUser) => {
   };
 
   async function copyToClipboard() {
-    const url = window.location.hostname + "/post" + `/${post.id}`;
+    let urlBase = window.location.hostname
+
+    if (window.location.hostname === "localhost") {
+      urlBase = "http://localhost:3000"
+    }
+    const url = urlBase + "/post" + `/${post.id}`;
     try {
       await navigator.clipboard.writeText(url);
       toast.success("URL copied to clipboard");
@@ -657,11 +662,11 @@ const PostViewComponent = (props: PostWithUser) => {
                   />
                 </button>
                 <h2 className="mx-auto font-semibold">Share with:</h2>
-                <div className="grid grid-flow-row-dense grid-cols-2 rounded-3xl border p-6 md:grid-cols-3 ">
+                <div className="grid grid-flow-row-dense grid-cols-2 rounded-3xl border p-6 md:grid-cols-3">
                   <button
                   data-tooltip-id="copyLink-tooltip"
                   data-tooltip-content="Copy to Clipboard"
-                    className="flex flex-col"
+                    className="flex flex-col items-center justify-center"
                     onClick={() => {
                       void copyToClipboard();
                     }}
@@ -675,7 +680,7 @@ const PostViewComponent = (props: PostWithUser) => {
             id="copyLink-tooltip"
           />
 
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <TwitterShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
@@ -683,7 +688,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </TwitterShareButton>
                     <p className="phone:hidden">Twitter</p>
                   </button>
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <WhatsappShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
@@ -692,7 +697,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </WhatsappShareButton>
                     <p className="phone:hidden">Whatsapp</p>
                   </button>
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <TelegramShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
@@ -701,7 +706,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </TelegramShareButton>
                     <p className="phone:hidden">Telegram</p>
                   </button>
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <LinkedinShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
@@ -710,7 +715,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </LinkedinShareButton>
                     <p className="phone:hidden">Linkedin</p>
                   </button>
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <EmailShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
@@ -719,7 +724,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </EmailShareButton>
                     <p className="phone:hidden">Email</p>
                   </button>
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <VKShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
@@ -728,7 +733,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </VKShareButton>
                     <p className="phone:hidden">Vk</p>
                   </button>
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <RedditShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
@@ -737,7 +742,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </RedditShareButton>
                     <p className="phone:hidden">Reddit</p>
                   </button>
-                  <button className="flex flex-col">
+                  <button className="flex flex-col items-center justify-center">
                     <ViberShareButton
                       url={window.location.hostname + "/post" + `/${post.id}`}
                     >
