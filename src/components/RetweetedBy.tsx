@@ -14,8 +14,7 @@ export const RetweetedBy = ({
   const [loading, setLoading] = useState(false);
   const [returnedUserName, setReturnedUserName] = useState(userName);
 
-
-  const { data: userData } = api.clerk.getUserById.useQuery({ userId: id });
+  const { data: userData } = api.clerk.getUserById.useQuery({ userId: id } , { enabled: !!id });
 
   useEffect(() => {
     const loadUserData = () => {

@@ -22,7 +22,6 @@ export const clerkRouter = createTRPCRouter({
                     message: "User not found"
                 });
             }
-            console.log(user.id);
             return filterUserForClient(user);
         }),
 });

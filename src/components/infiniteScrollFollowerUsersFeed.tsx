@@ -92,8 +92,14 @@ export const InfiniteScrollFollowingFeed = () => {
 
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
-              {followedUsers?.includes(fullPost.author.id) && (
-                <RetweetedBy userName={null} id={fullPost.author.id} />
+              {!followedUsers?.some((user) => user === fullPost.author.id) && (
+                <RetweetedBy
+                userName={null}
+                  id={
+                    followedUsers.find((user) => user !== fullPost.author.id) ||
+                    "Oops"
+                  }
+                />
               )}
               <PostView {...fullPost} />
 
@@ -104,7 +110,7 @@ export const InfiniteScrollFollowingFeed = () => {
             </div>
           ) : (
             <div key={fullPost.post.id}>
-              {followedUsers?.some((user) => user !== fullPost.author.id) && (
+              {!followedUsers?.some((user) => user === fullPost.author.id) && (
                 <RetweetedBy
                 userName={null}
                   id={
