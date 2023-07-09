@@ -7,13 +7,13 @@ export const PageLayout = (props: PropsWithChildren) => {
     <>
       <main className="relative flex h-screen justify-center">
         <div
-          className="gray-thin-scrollbar h-full w-full overflow-y-scroll  border-x border-slate-400 
+          className="gray-thin-scrollbar min-h-screen h-full w-full overflow-y-scroll  border-x border-slate-400 
             md:max-w-[650px] phone:border-none"
         >
           {props.children}
         </div>
         <div className="absolute right-[3%] w-1/5 trendsbreakpoint:hidden">
-          <div className="sticky top-0 mb-4">
+          <div className="sticky top-2 mb-6">
             <input
               type="text"
               placeholder="Search"
@@ -28,18 +28,6 @@ export const PageLayout = (props: PropsWithChildren) => {
           <div className="flex flex-col items-center justify-center gap-6">
             <div className="h-36 w-full items-center rounded-2xl border px-4 py-2 ">
               <h1 className="font-bold">Trends for you</h1>
-            </div>
-            <div className="h-36 w-full items-center rounded-2xl border px-4 py-2 ">
-              <h1 className="font-bold">Who to follow</h1>
-            </div>
-            <div className="h-36 w-full items-center rounded-2xl border px-4 py-2 ">
-              <h1 className="font-bold">Who to follow</h1>
-            </div>
-            <div className="h-36 w-full items-center rounded-2xl border px-4 py-2 ">
-              <h1 className="font-bold">Who to follow</h1>
-            </div>
-            <div className="h-36 w-full items-center rounded-2xl border px-4 py-2 ">
-              <h1 className="font-bold">Who to follow</h1>
             </div>
             <div className="h-36 w-full items-center rounded-2xl border px-4 py-2 ">
               <h1 className="font-bold">Who to follow</h1>
