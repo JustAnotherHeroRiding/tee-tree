@@ -65,7 +65,8 @@ Let's implement some features I have already implemented before in order to lear
 - Users can click to retweet a post, which will work similar to likes and be stored with the postId and the userId of the person who retweeted it #DONE 
 - In the profile  feed, there should be posts that the user has retweeted #DONE 
 - Add it for the following feed too
-- If the post is a retweet, there should be a banner on top showing this
+- Profile liked posts feed also
+- If the post is a retweet, there should be a banner on top showing this #DONE 
 
 
 ## Comments
