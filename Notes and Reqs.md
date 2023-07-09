@@ -29,6 +29,7 @@ Let's implement some features I have already implemented before in order to lear
 - Sticky div at the top with the arrow to go back #DONE 
 - Page for Liked posts #DONE 
 - Username and posts counts on the stick div #DONE 
+- Collage of images that the user has posted on the profile view on the right side
 
 ## Posts
 - Editing posts #DONE 
@@ -70,6 +71,7 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Comments
  - Comments for tweets, further comments for them too. Implement twitter threads
+ - Profile page should have a replies page
 
 ## Post View
 - Add a sticky div #DONE 
@@ -101,5 +103,8 @@ Let's implement some features I have already implemented before in order to lear
 
 
 ## Trends and follow recommendations
+- Since the trends will be shown in all pages, let's add them to the layout.tsx #DONE 
 - See how much each hashtag has appeared in the last week and show the top trends
-- Separate trend page for expanded page
+- Separate trend page for expanded view of trends and the posts containing those hashtags, this should just be a search query for posts containing that word if the user clicks the trend
+- If the user clicks on show more it should open a separate page with just the trends
+- The div on the side should not be shown if the url is /trends
