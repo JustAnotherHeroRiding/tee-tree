@@ -63,5 +63,7 @@ export default {
   },
   plugins: [
     tailwindScrollbar({ nocompatible: true }),
+    require('@tailwindcss/container-queries'),
+    
   ],
 } as Config;
