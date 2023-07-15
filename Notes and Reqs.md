@@ -99,7 +99,9 @@ Let's implement some features I have already implemented before in order to lear
 
 
 ## Mentioning users
-- Mentioning users in posts which will then link to their profile
+- If the word starts with an @ and is part of the list of users then then it should be blue
+- Clicking on the user will link to their profile
+- Hovering over if will open a card with the profile info
 
 
 ## Trends and follow recommendations

@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext, type FC } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { LoadingSpinner } from "./loading";
@@ -23,7 +23,8 @@ import { AdvancedImage, lazyload } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 // Import required actions and qualifiers.
 import React from "react";
-import { useHomePage } from "~/components/HomePageContext";
+import { useHomePage } from "~/components/Context/HomePageContext";
+import { UserContext } from "~/components/Context/UserContext";
 import {
   EmailIcon,
   EmailShareButton,
@@ -47,22 +48,40 @@ dayjs.extend(relativeTime);
 
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
-import type { FC } from 'react';
-
 type PostContentProps = {
   content: string;
 };
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
 
-  
-  const words = content.split(' ');
-  const coloredWords = words.map((word, index) => 
-    word.startsWith('#') ? 
-      <span key={index} className="text-Intone-300 hover:underline">{word}</span> :
-      <span key={index}>{word}</span>
-  );
+  const { userList, isLoading } = useContext(UserContext);
 
+  if (!userList) {
+    console.log("No users")
+  }
+
+
+
+
+  const words = content.split(' ');
+  const coloredWords = words.map((word, index) => {
+    if (word.startsWith('#')) {
+      return (
+        <span key={index} className="text-Intone-300 hover:underline">{word}</span>
+      );
+    } else if (word.startsWith('@') && userList && userList.some(user => user.username === word.slice(1))) {
+      const username = word.slice(1);
+      return (
+        <Link className="text-Intone-300 flex flex-row" key={index} href={`/@${username}`}>
+          @<p className="hover:underline">{username}</p>
+        </Link>
+      );
+    } else {
+      return (
+        <span key={index}>{word}</span>
+      );
+    }
+  });
   return (
     <span className="text-2xl sm:whitespace-pre-wrap">
       {coloredWords.reduce<React.ReactNode[]>((prev, curr, index) => 
@@ -74,6 +93,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
 
 
 const PostViewComponent = (props: PostWithUser) => {
+
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
   const { post, author } = props;
