@@ -24,4 +24,16 @@ export const clerkRouter = createTRPCRouter({
             }
             return filterUserForClient(user);
         }),
+
+        getAllUsers: publicProcedure.query(async () => {
+            const users = await clerkClient.users.getUserList();
+            if (!users) {
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Users not found"
+                });
+            }
+
+            return users.map(filterUserForClient);
+        }),
 });

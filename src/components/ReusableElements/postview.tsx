@@ -54,6 +54,8 @@ type PostContentProps = {
 };
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
+
+  
   const words = content.split(' ');
   const coloredWords = words.map((word, index) => 
     word.startsWith('#') ? 
