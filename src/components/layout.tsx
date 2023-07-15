@@ -28,8 +28,8 @@ export const PageLayout = (props: PropsWithChildren) => {
           </div>
           <div className="flex flex-col items-center justify-center gap-6@">
             {!location.pathname.startsWith("/trends") && (
-              <div className="w-full bg-twitter-100 items-center rounded-2xl px-4 py-2 mb-4">
-              <h1 className="font-bold text-2xl mb-4">Trends for you</h1>
+              <div className="w-full bg-twitter-100 items-center rounded-2xl mb-4">
+              <h1 className="font-bold text-2xl mb-2 px-4 pt-2">Trends for you</h1>
               <Trends />
             </div>
             )}

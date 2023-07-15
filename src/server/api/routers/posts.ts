@@ -140,6 +140,30 @@ export const postsRouter = createTRPCRouter({
     return addUserDataToPosts(posts);
   }),
 
+  getAllLastWeek: publicProcedure.query(async ({ ctx }) => {
+    // Get the date for one week ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
+    // Query the posts
+    const posts = await ctx.prisma.post.findMany({
+      orderBy: [{ createdAt: "desc" }],
+      where: {
+        // Only consider posts where createdAt is greater than or equal to one week ago
+        createdAt: {
+          gte: oneWeekAgo,
+        },
+      },
+      include: {
+        likes: true,
+        retweets: true // Include the likes relation in the result
+      },
+    });
+  
+      return addUserDataToPosts(posts);
+  }),
+  
+
   getAllPaginated: publicProcedure
     .input(
       z.object({
