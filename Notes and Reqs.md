@@ -104,7 +104,8 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Trends and follow recommendations
 - Since the trends will be shown in all pages, let's add them to the layout.tsx #DONE 
-- See how much each hashtag has appeared in the last week and show the top trends
+- See how much each hashtag has appeared in all posts and show the top trends #DONE 
+- Make it only query the last week
 - Separate trend page for expanded view of trends and the posts containing those hashtags, this should just be a search query for posts containing that word if the user clicks the trend
 - If the user clicks on show more it should open a separate page with just the trends
 - The div on the side should not be shown if the url is /trends

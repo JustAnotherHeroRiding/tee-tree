@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { LoadingSpinner } from "~/components/loading";
+import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";

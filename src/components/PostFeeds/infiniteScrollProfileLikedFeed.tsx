@@ -1,45 +1,28 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { api } from "~/utils/api";
-import { LoadingPage, LoadingSpinner } from "./loading";
+import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
+import { PostView } from "../ReusableElements/postview";
 import type { PostWithAuthor } from "~/server/api/routers/posts";
-import { PostView } from "./postview";
-import { RetweetedBy } from "./RetweetedBy";
 
-export const InfiniteScrollFollowingFeed = () => {
+export const InfiniteScrollProfileLikedFeed = (props: { userId: string }) => {
   const [page, setPage] = useState(0);
-  const [followedUsers, setFollowedUsers] = useState<string[]>([]);
-
-  const { data: followingData } = api.follow.getFollowingCurrentUser.useQuery();
 
   const {
     data,
     fetchNextPage,
     isLoading: postsLoading,
-    isFetchingNextPage,
-  } = api.posts.infiniteScrollFollowerUsersPosts.useInfiniteQuery(
-    { followers: followingData ?? [], limit: 4 },
+    isFetchingNextPage: isFetchingNextPage,
+  } = api.posts.infiniteScrollPostsByUserIdLiked.useInfiniteQuery(
+    {
+      userId: props.userId,
+      limit: 4,
+    },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
-      enabled: !!followingData,
-      onError: (error) => {
-        console.error("Error in getPostsFromFollowedUsers query:", error);
-      },
-      onSuccess: (data) => {
-        if (!data) {
-          console.error("Data is undefined in getPostsFromFollowedUsers query");
-        }
-      },
     }
   );
 
-  useEffect(() => {
-    if (followingData) {
-      setFollowedUsers(
-        followingData.map((follower) => follower.author.id)
-      );
-    }
-  }, [followingData]);
-
+  // data will be split in pages
   const toShow = data?.pages[page]?.posts;
 
   const nextCursor = data?.pages[page]?.nextCursor;
@@ -92,36 +75,11 @@ export const InfiniteScrollFollowingFeed = () => {
 
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
-              {!followedUsers?.some((user) => user === fullPost.author.id) && (
-                <RetweetedBy
-                userName={null}
-                  id={
-                    followedUsers.find((user) => user !== fullPost.author.id) ||
-                    "Oops"
-                  }
-                />
-              )}
               <PostView {...fullPost} />
-
-              <div
-                ref={lastPostElementRef}
-                className="infiniteScrollTriggerDiv"
-              ></div>
+              <div ref={lastPostElementRef} className="infiniteScrollTriggerDiv"></div>
             </div>
           ) : (
-            <div key={fullPost.post.id}>
-              {!followedUsers?.some((user) => user === fullPost.author.id) && (
-                <RetweetedBy
-                userName={null}
-                  id={
-                    followedUsers.find((user) => user !== fullPost.author.id) ||
-                    "Oops"
-                  }
-                />
-              )}
-
-              <PostView {...fullPost} />
-            </div>
+            <PostView {...fullPost} key={fullPost.post.id} />
           );
         })
       )}

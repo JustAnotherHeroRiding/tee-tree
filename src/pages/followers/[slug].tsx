@@ -2,7 +2,7 @@ import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import { LoadingSpinner } from "~/components/loading";
+import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 

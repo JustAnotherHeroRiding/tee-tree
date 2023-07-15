@@ -1,7 +1,7 @@
 import React, {  useState } from "react";
 import { api } from "~/utils/api";
-import { LoadingPage } from "./loading";
-import { PostView } from "./postview";
+import { LoadingPage } from "../ReusableElements/loading";
+import { PostView } from "../ReusableElements/postview";
 
 
 export const PaginatedFeed = () => {

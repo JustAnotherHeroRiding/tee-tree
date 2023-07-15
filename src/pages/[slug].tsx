@@ -2,7 +2,7 @@ import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import { LoadingSpinner } from "~/components/loading";
+import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,27 +12,7 @@ import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
-import { InfiniteScrollProfileFeed } from "~/components/infiniteScrollProfileFeed";
-
-/* const ProfileFeed = (props: { userId: string }) => {
-  const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
-
-  if (isLoading) return <LoadingPage />
-
-  if (!data || data.length === 0) return <div className="justify-center items-center flex border m-6 px-4 py-2 rounded-2xl">
-    <h1 className=" font-bold text-2xl">User has not posted yet. </h1>
-    </div>;
-
-  return <div className="flex flex-col">
-    {data.map((fullPost) => (
-      <PostView {...fullPost} key={fullPost.post.id} />
-    ))
-    }
-  </div>
-
-}
- */
-
+import { InfiniteScrollProfileFeed } from "~/components/PostFeeds/infiniteScrollProfileFeed";
 
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {

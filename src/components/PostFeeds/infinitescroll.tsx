@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api } from "~/utils/api";
-import { LoadingPage, LoadingSpinner } from "./loading";
-import { PostView } from "./postview";
+import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
+import { PostView } from "../ReusableElements/postview";
 import type { PostWithAuthor } from "~/server/api/routers/posts";
 
 export const InfiniteScrollFeed = () => {

@@ -4,13 +4,13 @@ import { api } from "~/utils/api";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { LoadingPage } from "~/components/loading";
+import { LoadingPage } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import Link from "next/link";
-import { InfiniteScrollFeed } from "~/components/infinitescroll";
+import { InfiniteScrollFeed } from "~/components/PostFeeds/infinitescroll";
 import { useHomePage } from "~/components/HomePageContext";
-import { InfiniteScrollFollowingFeed } from "~/components/infiniteScrollFollowerUsersFeed";
-import { CreatePostWizard } from "~/components/CreatePostWizard";
+import { InfiniteScrollFollowingFeed } from "~/components/PostFeeds/infiniteScrollFollowerUsersFeed";
+import { CreatePostWizard } from "~/components/ReusableElements/CreatePostWizard";
 
 dayjs.extend(relativeTime);
 

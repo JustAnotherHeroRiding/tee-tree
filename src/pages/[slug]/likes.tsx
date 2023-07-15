@@ -2,7 +2,7 @@ import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import { LoadingSpinner } from "~/components/loading";
+import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
-import { InfiniteScrollProfileLikedFeed } from "~/components/infiniteScrollProfileLikedFeed";
+import { InfiniteScrollProfileLikedFeed } from "~/components/PostFeeds/infiniteScrollProfileLikedFeed";
 
 /* const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });

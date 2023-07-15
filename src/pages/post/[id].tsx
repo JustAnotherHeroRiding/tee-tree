@@ -1,7 +1,7 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
-import { PostView } from "~/components/postview";
+import { PostView } from "~/components/ReusableElements/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { PageLayout } from "~/components/layout";
 import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
