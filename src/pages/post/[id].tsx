@@ -4,9 +4,7 @@ import { api } from "~/utils/api";
 import { PostView } from "~/components/ReusableElements/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { PageLayout } from "~/components/layout";
-import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import BackButton from "~/components/ReusableElements/BackButton";
 
 
 
@@ -27,9 +25,7 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
       </Head>
       <PageLayout>
       <div className="flex sticky top-0 z-50 h-16 items-center justify-between backdrop-blur-sm pb-2">
-      <Link href={"/"} ><FontAwesomeIcon className="w-8 h-8 rounded-3xl
-        px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
-        transform transition-all duration-300 hover:scale-125" icon={faArrowLeftLong} /></Link>
+      <BackButton />
     </div>
 
         <PostView {...data} />

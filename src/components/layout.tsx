@@ -2,8 +2,12 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { PropsWithChildren } from "react";
 import { Trends } from "./ReusableElements/Trends";
+import { useRouter } from "next/router";
 
 export const PageLayout = (props: PropsWithChildren) => {
+
+  const router = useRouter();
+  
   return (
     <>
       <main className="relative flex h-screen justify-center">
@@ -27,7 +31,7 @@ export const PageLayout = (props: PropsWithChildren) => {
             />
           </div>
           <div className="flex flex-col items-center justify-center gap-6@">
-            {!location.pathname.startsWith("/trends") && (
+          {!router.pathname.startsWith("/i/trends") && (
               <div className="w-full bg-twitter-100 items-center rounded-2xl mb-4">
               <h1 className="font-bold text-2xl mb-2 px-4 pt-2">Trends for you</h1>
               <Trends />

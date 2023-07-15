@@ -34,7 +34,7 @@ const Home: NextPage = () => {
 
   return (
     <PageLayout>
-      <div className="sticky top-0 z-50 backdrop-blur-lg">
+      <div className="sticky top-0 z-50 backdrop-blur-sm bg-transparent">
       <div className="flex border-b border-slate-400 px-4 pt-4">
         {!isSignedIn && (
           <div className="flex w-full flex-col">

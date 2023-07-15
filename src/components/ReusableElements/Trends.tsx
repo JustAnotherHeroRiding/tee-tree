@@ -1,8 +1,9 @@
 import { countHashtags } from "~/server/helpers/countHashtags";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "./loading";
+import Link from "next/link";
 
-export const Trends = ({ limit = 10 }) => {
+export const Trends = ({ limit = 10, sideBar = true }) => {
   const { data: posts, isLoading } = api.posts.getAllLastWeek.useQuery();
   
   if (!posts) {
@@ -32,8 +33,11 @@ export const Trends = ({ limit = 10 }) => {
         <p className="text-twitter-200">{count} {`${count === 1 ? "post" : "posts"}`}</p>
         </div>
       ))}
-      <button className="text-Intone-300 hover:bg-gray-900 rounded-b-2xl
-      text-start px-4 py-2">Show More</button>
+      {sideBar && (
+        <Link href="/i/trends" className="text-Intone-300 hover:bg-gray-900 rounded-b-2xl
+      text-start px-4 py-2">Show More</Link>
+      )}
+      
     </div>
   );
 };
