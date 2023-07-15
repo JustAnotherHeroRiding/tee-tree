@@ -53,47 +53,66 @@ type PostContentProps = {
 };
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
-
   const { userList, isLoading } = useContext(UserContext);
 
   if (!userList) {
-    console.log("No users")
+    console.log("No users");
   }
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
-
-
-  const words = content.split(' ');
+  const words = content.split(" ");
   const coloredWords = words.map((word, index) => {
-    if (word.startsWith('#')) {
+    if (word.startsWith("#")) {
       return (
-        <span key={index} className="text-Intone-300 hover:underline">{word}</span>
+        <span key={index} className="text-Intone-300 hover:underline">
+          {word}
+        </span>
       );
-    } else if (word.startsWith('@') && userList && userList.some(user => user.username === word.slice(1))) {
+    } else if (
+      word.startsWith("@") &&
+      userList &&
+      userList.some((user) => user.username === word.slice(1))
+    ) {
       const username = word.slice(1);
       return (
-        <Link className="text-Intone-300 flex flex-row" key={index} href={`/@${username}`}>
+        <span
+          key={index}
+          className="flex flex-row text-Intone-300 group relative"
+          onClick={() => (window.location.href = `/@${username}`)}
+        >
           @<p className="hover:underline">{username}</p>
-        </Link>
+          <div className="-translate-x-1/2 absolute top-8 z-10 right-0
+          rounded-2xl bg-black p-4 opacity-0 shadow-lg 
+          group-hover:block group-hover:opacity-100 transition-all ease-in-out duration-[300ms]">
+            <p>{username}</p>
+            <Image
+        className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
+        src={userList.find((user) => user.username === username)?.profilePicture as string}
+        alt={`@${username}profile picture`}
+        width={56}
+        height={56}
+      />
+          </div>
+        </span>
       );
     } else {
-      return (
-        <span key={index}>{word}</span>
-      );
+      return <span key={index}>{word}</span>;
     }
   });
   return (
     <span className="text-2xl sm:whitespace-pre-wrap">
-      {coloredWords.reduce<React.ReactNode[]>((prev, curr, index) => 
-        index === 0 ? [curr] : [...prev, ' ', curr], [])}
+      {coloredWords.reduce<React.ReactNode[]>(
+        (prev, curr, index) => (index === 0 ? [curr] : [...prev, " ", curr]),
+        []
+      )}
     </span>
   );
-  
 };
 
-
 const PostViewComponent = (props: PostWithUser) => {
-
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
   const { post, author } = props;
@@ -102,7 +121,6 @@ const PostViewComponent = (props: PostWithUser) => {
 
   const [liked, setLiked] = useState(false);
   const [retweeted, setRetweeted] = useState(false);
-
 
   const { user } = useUser();
 
@@ -174,12 +192,14 @@ const PostViewComponent = (props: PostWithUser) => {
     authorId: string;
   };
 
-
   useEffect(() => {
     function authorLikedPost(authorId: string, likes: Like[]): boolean {
       return likes.some((like) => like.authorId === authorId);
     }
-    function authorRetweetedPost(authorId: string, retweets: Retweet[]): boolean {
+    function authorRetweetedPost(
+      authorId: string,
+      retweets: Retweet[]
+    ): boolean {
       return retweets.some((retweet) => retweet.authorId === authorId);
     }
     if (user) {
@@ -229,34 +249,34 @@ const PostViewComponent = (props: PostWithUser) => {
     },
   });
 
-
-  const { mutate: retweetPost, isLoading: isRetweeting } = api.posts.retweetPost.useMutation({
-    onSuccess: () => {
-      if (location.pathname === "/") {
-        if (homePage) {
-          void ctx.posts.infiniteScrollAllPosts?.invalidate();
-        } else {
-          void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+  const { mutate: retweetPost, isLoading: isRetweeting } =
+    api.posts.retweetPost.useMutation({
+      onSuccess: () => {
+        if (location.pathname === "/") {
+          if (homePage) {
+            void ctx.posts.infiniteScrollAllPosts?.invalidate();
+          } else {
+            void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+          }
+        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (location.pathname.startsWith("/post/")) {
+          void ctx.posts.getById.invalidate();
+        } else if (location.pathname.startsWith("/@")) {
+          void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
-      } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
-        // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
-        void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-      } else if (location.pathname.startsWith("/post/")) {
-        void ctx.posts.getById.invalidate();
-      } else if (location.pathname.startsWith("/@")) {
-        void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-      }
-      console.log("Retweeted post");
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors.content;
-      if (errorMessage && errorMessage[0]) {
-        toast.error(errorMessage[0]);
-      } else {
-        toast.error("Failed to Retweet! Are you logged in?");
-      }
-    },
-  });
+        console.log("Retweeted post");
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Retweet! Are you logged in?");
+        }
+      },
+    });
 
   const { mutate: editPost, isLoading: isEditingPostUpdating } =
     api.posts.editPost.useMutation({
@@ -387,10 +407,10 @@ const PostViewComponent = (props: PostWithUser) => {
   };
 
   async function copyToClipboard() {
-    let urlBase = window.location.hostname
+    let urlBase = window.location.hostname;
 
     if (window.location.hostname === "localhost") {
-      urlBase = "http://localhost:3000"
+      urlBase = "http://localhost:3000";
     }
     const url = urlBase + "/post" + `/${post.id}`;
     try {
@@ -628,9 +648,7 @@ const PostViewComponent = (props: PostWithUser) => {
           </div>
         )}
 
-        <div
-          className={`flex flex-row gap-2 sm:gap-4 md:gap-8 lg:gap-12 `}
-        >
+        <div className={`flex flex-row gap-2 sm:gap-4 md:gap-8 lg:gap-12 `}>
           <button
             data-tooltip-id="like-tooltip"
             data-tooltip-content="Like"
@@ -662,23 +680,22 @@ const PostViewComponent = (props: PostWithUser) => {
               className="post-button-fontAwesome"
             />{" "}
           </button>
-          
+
           <button
-          onClick={() => retweetPost({ postId: post.id })}
-          className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
-        ${retweeted ? "text-green-600" : "hover:text-green-300"} whitespace-normal ${
-            isRetweeting
-              ? "scale-125 animate-pulse text-green-900-900"
-              : "hover:scale-110"
-          }`}
+            onClick={() => retweetPost({ postId: post.id })}
+            className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
+        ${
+          retweeted ? "text-green-600" : "hover:text-green-300"
+        } whitespace-normal ${
+              isRetweeting
+                ? "text-green-900-900 scale-125 animate-pulse"
+                : "hover:scale-110"
+            }`}
             data-tooltip-id="retweet-tooltip"
             data-tooltip-content="Retweet"
           >
             {" "}
-            <FontAwesomeIcon
-              icon={faRetweet}
-              className="w-6 h-6 rounded-3xl"
-            />
+            <FontAwesomeIcon icon={faRetweet} className="h-6 w-6 rounded-3xl" />
             <p className="ml-1">{retweets}</p>{" "}
           </button>
           <Tooltip
@@ -706,8 +723,8 @@ const PostViewComponent = (props: PostWithUser) => {
                 <h2 className="mx-auto font-semibold">Share with:</h2>
                 <div className="grid grid-flow-row-dense grid-cols-2 rounded-3xl border p-6 md:grid-cols-3">
                   <button
-                  data-tooltip-id="copyLink-tooltip"
-                  data-tooltip-content="Copy to Clipboard"
+                    data-tooltip-id="copyLink-tooltip"
+                    data-tooltip-content="Copy to Clipboard"
                     className="flex flex-col items-center justify-center"
                     onClick={() => {
                       void copyToClipboard();
@@ -717,10 +734,13 @@ const PostViewComponent = (props: PostWithUser) => {
                     Copy Link
                   </button>
                   <Tooltip
-            place="left"
-            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)"}}
-            id="copyLink-tooltip"
-          />
+                    place="left"
+                    style={{
+                      borderRadius: "24px",
+                      backgroundColor: "rgb(51 65 85)",
+                    }}
+                    id="copyLink-tooltip"
+                  />
 
                   <button className="flex flex-col items-center justify-center">
                     <TwitterShareButton

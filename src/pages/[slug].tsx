@@ -6,14 +6,13 @@ import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeftLong, faXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
 import { InfiniteScrollProfileFeed } from "~/components/PostFeeds/infiniteScrollProfileFeed";
-import BackButton from "~/components/ReusableElements/BackButton";
 
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
@@ -149,7 +148,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </Head>
       <PageLayout>
       <div className="flex sticky top-0 z-[10]  items-center justify-between backdrop-blur-sm pb-2">
-      <BackButton />
+      <Link href={"/"}>
+      <FontAwesomeIcon className="w-8 h-8 rounded-3xl
+        px-2 py-1 absolute top-4 left-4 hover:bg-slate-900 hover:text-white
+        transform transition-all duration-300 hover:scale-125" 
+        icon={faArrowLeftLong} />
+    </Link>
 
 
 <div className="flex flex-col mr-auto ml-16 mt-2">
