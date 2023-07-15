@@ -80,11 +80,11 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
       return (
         <span
           key={index}
-          className="flex flex-row text-Intone-300 group relative"
+          className="flex flex-row text-Intone-300 group relative w-fit overflow-visible"
           onClick={() => (window.location.href = `/@${username}`)}
         >
           @<p className="hover:underline">{username}</p>
-          <div className="-translate-x-1/2 absolute top-8 z-10 right-0
+          <div className="absolute top-12 left-20 z-10
           rounded-2xl bg-black p-4 opacity-0 shadow-lg 
           group-hover:block group-hover:opacity-100 transition-all ease-in-out duration-[300ms]">
             <p>{username}</p>

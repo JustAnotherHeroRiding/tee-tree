@@ -100,8 +100,9 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Mentioning users
 - If the word starts with an @ and is part of the list of users then then it should be blue #DONE 
-- Clicking on the user will link to their profile
-- Hovering over if will open a card with the profile info
+- Clicking on the user will link to their profile #DONE 
+- Hovering over if will open a card with the profile info #DONE 
+- It should also show follower/following numbers, user bio and the follow button
 - When making a post and staring a word with an @, a list of users should appear that we can tag
 
 
