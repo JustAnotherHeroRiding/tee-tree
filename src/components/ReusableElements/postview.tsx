@@ -78,10 +78,9 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
     ) {
       const username = word.slice(1);
       return (
-        <span
-          key={index}
+        <Link          key={index}
           className="flex flex-row text-Intone-300 group relative w-fit overflow-visible"
-          onClick={() => (window.location.href = `/@${username}`)}
+          href={`/@${username}`}
         >
           @<p className="hover:underline">{username}</p>
           <div className="absolute top-12 left-20 z-10
@@ -96,7 +95,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
         height={56}
       />
           </div>
-        </span>
+        </Link>
       );
     } else {
       return <span key={index}>{word}</span>;
