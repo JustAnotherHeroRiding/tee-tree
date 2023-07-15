@@ -47,6 +47,30 @@ dayjs.extend(relativeTime);
 
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
+import type { FC } from 'react';
+
+type PostContentProps = {
+  content: string;
+};
+
+export const PostContent: FC<PostContentProps> = ({ content }) => {
+  const words = content.split(' ');
+  const coloredWords = words.map((word, index) => 
+    word.startsWith('#') ? 
+      <span key={index} className="text-Intone-300 hover:underline">{word}</span> :
+      <span key={index}>{word}</span>
+  );
+
+  return (
+    <span className="text-2xl sm:whitespace-pre-wrap">
+      {coloredWords.reduce<React.ReactNode[]>((prev, curr, index) => 
+        index === 0 ? [curr] : [...prev, ' ', curr], [])}
+    </span>
+  );
+  
+};
+
+
 const PostViewComponent = (props: PostWithUser) => {
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
@@ -439,7 +463,7 @@ const PostViewComponent = (props: PostWithUser) => {
             </div>
           ) : (
             <span className="text-2xl sm:whitespace-pre-wrap">
-              {post.content}
+              <PostContent content={post.content} />
             </span>
           )}
           <br />
@@ -583,11 +607,7 @@ const PostViewComponent = (props: PostWithUser) => {
         )}
 
         <div
-          className={`flex flex-row ${
-            user?.id === author.id
-              ? "gap-2 sm:gap-12 md:gap-16"
-              : "gap-2 sm:gap-12 md:gap-16"
-          } `}
+          className={`flex flex-row gap-2 sm:gap-4 md:gap-8 lg:gap-12 `}
         >
           <button
             data-tooltip-id="like-tooltip"
