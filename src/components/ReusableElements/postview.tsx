@@ -78,24 +78,30 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
     ) {
       const username = word.slice(1);
       return (
-        <Link          key={index}
-          className="flex flex-row text-Intone-300 group relative w-fit overflow-visible"
-          href={`/@${username}`}
-        >
-          @<p className="hover:underline">{username}</p>
-          <div className="absolute top-12 left-20 z-10
-          rounded-2xl bg-black p-4 opacity-0 shadow-lg 
-          group-hover:block group-hover:opacity-100 transition-all ease-in-out duration-[300ms]">
-            <p>{username}</p>
-            <Image
-        className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
-        src={userList.find((user) => user.username === username)?.profilePicture as string}
-        alt={`@${username}profile picture`}
-        width={56}
-        height={56}
-      />
-          </div>
-        </Link>
+        <div key={index} className="relative w-auto">
+        <div className="inline-block group">
+          <Link
+            className="flex flex-row text-Intone-300"
+            href={`/@${username}`}
+          >
+            @<p className="hover:underline peer">{username}</p>
+            <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 left-20 z-10 rounded-2xl bg-black p-4 
+            transition-all ease-in-out duration-[500ms] hover:unde"
+            >
+              <p className="flex flex-row">@<p className="hover:underline peer">{username}</p></p>
+              <Image
+                  className="h-14 w-14 rounded-full"
+                  src={userList.find((user) => user.username === username)?.profilePicture as string}
+                  alt={`@${username} profile picture`}
+                  width={56}
+                  height={56}
+              />
+            </div>
+          </Link>
+        </div>
+      </div>
+      
+      
       );
     } else {
       return <span key={index}>{word}</span>;

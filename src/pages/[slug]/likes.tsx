@@ -167,7 +167,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           <Link href={`/@${username}`}>
             <FontAwesomeIcon
               className="absolute left-4 top-4
-        h-6 w-6 transform rounded-3xl px-2 py-1 transition-all
+        h-8 w-8 transform rounded-3xl px-2 py-1 transition-all
         duration-300 hover:scale-125 hover:bg-slate-900 hover:text-white"
               icon={faArrowLeftLong}
             />
