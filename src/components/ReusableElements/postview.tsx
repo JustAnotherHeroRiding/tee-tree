@@ -43,6 +43,7 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
+import { useRouter } from "next/router";
 
 dayjs.extend(relativeTime);
 
@@ -54,6 +55,8 @@ type PostContentProps = {
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
+
+  const router = useRouter();
   
 
   if (!userList) {
@@ -81,9 +84,13 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
       return (
         <span key={index} className="relative w-fit">
         <div className="inline-block group">
-          <Link
+          <span
             className="flex flex-row text-Intone-300 "
-            href={`/@${username}`}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              void router.push(`/@${username}`);
+          }}
           >
             @<p className="hover:underline peer">{username}</p>
             <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 left-20 z-10 rounded-2xl bg-black p-4 
@@ -98,7 +105,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                   height={56}
               />
             </div>
-          </Link>
+          </span>
         </div>
       </span>
       
@@ -444,7 +451,7 @@ const PostViewComponent = (props: PostWithUser) => {
       <div className="flex w-full flex-col">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
-            <span className="hover:text-white hover:underline">{`@${author.username}`}</span>
+            @<span className="hover:text-white hover:underline">{`${author.username}`}</span>
           </Link>
           <span className="font-thin">{` · ${dayjs(
             post.createdAt
