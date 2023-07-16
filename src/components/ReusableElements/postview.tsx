@@ -54,6 +54,7 @@ type PostContentProps = {
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
+  
 
   if (!userList) {
     console.log("No users");
@@ -78,17 +79,17 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
     ) {
       const username = word.slice(1);
       return (
-        <div key={index} className="relative w-auto">
+        <span key={index} className="relative w-fit">
         <div className="inline-block group">
           <Link
-            className="flex flex-row text-Intone-300"
+            className="flex flex-row text-Intone-300 "
             href={`/@${username}`}
           >
             @<p className="hover:underline peer">{username}</p>
             <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 left-20 z-10 rounded-2xl bg-black p-4 
             transition-all ease-in-out duration-[500ms] hover:unde"
             >
-              <p className="flex flex-row">@<p className="hover:underline peer">{username}</p></p>
+              <p className="flex flex-row">@<span className="hover:underline peer">{username}</span></p>
               <Image
                   className="h-14 w-14 rounded-full"
                   src={userList.find((user) => user.username === username)?.profilePicture as string}
@@ -99,7 +100,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
             </div>
           </Link>
         </div>
-      </div>
+      </span>
       
       
       );
@@ -123,6 +124,7 @@ const PostViewComponent = (props: PostWithUser) => {
   const { post, author } = props;
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
+
 
   const [liked, setLiked] = useState(false);
   const [retweeted, setRetweeted] = useState(false);
