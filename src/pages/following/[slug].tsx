@@ -153,6 +153,9 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
           </div>
         </div>
         <div>
+          {followers.length === 0 && (
+            <h1 className="text-center">This user is not following anybody :(</h1>
+          )}
           {followers.map((follower) => (
             <div className="relative flex flex-row py-4 px-2" key={follower.followed.id}>
               <Image src={follower.author.profilePicture}

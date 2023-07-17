@@ -153,6 +153,9 @@ function isCurrentUserFollowing(currentUserId: string, follower: FollowedWithAut
           </div>
         </div>
         <div>
+        {followers.length === 0 && (
+            <h1 className="text-center">This user is not followed by anybody :(</h1>
+          )}
           {followers.map((follower) => (
             <div className="relative flex flex-row py-4 px-2" key={follower.follower.id}>
               <Image src={follower.author.profilePicture}

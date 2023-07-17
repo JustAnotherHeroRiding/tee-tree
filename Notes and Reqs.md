@@ -105,8 +105,12 @@ Let's implement some features I have already implemented before in order to lear
 - Hovering over if will open a card with the profile info #DONE 
 - It should also show the follow button #DONE 
 - The follow button should correctly show as unfollow/follow and work as in the profile page #DONE 
-- Display the following numbers and link to the /user/following page
+- Display the following numbers and link to the /user/following page #DONE 
+- Fetch the numbers for each mentioned users
 - When making a post and staring a word with an @, a list of users should appear that we can tag
+
+## Reworking the post content and removing the link
+- Remove the link wrapping the entire post component and turn it into a span #DONE 
 
 
 ## Trends and follow recommendations

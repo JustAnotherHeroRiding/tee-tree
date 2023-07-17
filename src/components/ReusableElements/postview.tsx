@@ -158,13 +158,12 @@ api.profile.followUser.useMutation({
               event.preventDefault();
             }}
           >
-            @<p onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              void router.push(`/@${username}`);
-          }} className="hover:underline peer">{username}</p>
-            <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 z-10 rounded-2xl bg-black p-4 
-            transition-all ease-in-out duration-[500ms] border-slate-400 border"
+            @<Link 
+              href={`/@${username}`} 
+           className="hover:underline peer">{username}</Link>
+            <div className="invisible group-hover:visible scale-0 group-hover:scale-100 
+            absolute top-12 z-10 rounded-2xl bg-black p-4 
+            transition-all ease-in-out duration-[500ms] border-slate-400 border cursor-default"
             >
               <div className="flex flex-row justify-between min-w-[250px]">
               <Image
@@ -192,28 +191,25 @@ api.profile.followUser.useMutation({
               </div>
             ))}
             </div>
-              <p className="flex flex-row">@<span className="hover:underline">{username}</span></p>
+              <Link 
+              href={`/@${username}`}
+           className="flex flex-row">@<span className="hover:underline cursor-pointer">{username}</span></Link>
               <div className="flex flex-row">
-            <span onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              void router.push(`/followers/@${username}`);
-          }}>
+            <Link
+             href={`/followers/@${username}`}
+          >
               <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 cursor-pointer hover:text-white">
                 <h1>Followers</h1>
                 <h1 className="text-bold ml-2 text-2xl">{followerCount[mentionedUserId] || 0}</h1>
               </div>
-            </span>
-            <span onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              void router.push(`/following/@${username}`);
-          }}>
+            </Link>
+            <Link 
+              href={`/following/@${username}`}>
               <div className="mb-4 ml-4 flex flex-row items-center cursor-pointer text-slate-300 hover:text-white">
                 <h1>Following</h1>
                 <h1 className="text-bold ml-2 text-2xl">{0}</h1>
               </div>
-            </span>
+            </Link>
           </div>
             </div>
             
@@ -244,6 +240,9 @@ const PostViewComponent = (props: PostWithUser) => {
   const { post, author } = props;
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
+
+  const router = useRouter();
+
 
 
   const [liked, setLiked] = useState(false);
@@ -589,11 +588,14 @@ const PostViewComponent = (props: PostWithUser) => {
             </>
           )}
         </div>
-        <Link
+        <span
           className={`${
             !isEditing ? "hover:bg-slate-900" : ""
-          } rounded-2xl px-2 py-1 `}
-          href={`/post/${post.id}`}
+          } rounded-2xl px-2 py-1 select-all`}
+          onMouseUp={(event) => {
+            event.stopPropagation();
+            void router.push(`/post/${post.id}`);
+          }}
           onClick={(event) => {
             if (isEditing) {
               event.preventDefault();
@@ -636,7 +638,7 @@ const PostViewComponent = (props: PostWithUser) => {
             </span>
           )}
           <br />
-        </Link>
+        </span>
         {post.imageUrl && (
           <div className="mx-auto my-4 w-full">
             {isDeletingMediaPost ? (
