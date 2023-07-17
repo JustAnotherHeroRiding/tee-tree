@@ -30,6 +30,7 @@ Let's implement some features I have already implemented before in order to lear
 - Page for Liked posts #DONE 
 - Username and posts counts on the stick div #DONE 
 - Collage of images that the user has posted on the profile view on the right side
+- If a user has no followers or following then display a message
 
 ## Posts
 - Editing posts #DONE 
@@ -102,7 +103,9 @@ Let's implement some features I have already implemented before in order to lear
 - If the word starts with an @ and is part of the list of users then then it should be blue #DONE 
 - Clicking on the user will link to their profile #DONE 
 - Hovering over if will open a card with the profile info #DONE 
-- It should also show follower/following numbers, user bio and the follow button
+- It should also show the follow button #DONE 
+- The follow button should correctly show as unfollow/follow and work as in the profile page #DONE 
+- Display the following numbers and link to the /user/following page
 - When making a post and staring a word with an @, a list of users should appear that we can tag
 
 

@@ -64,9 +64,8 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { user } = useUser();
 
   const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>({});
-  const [followers, setFollowers] = useState<FollowedWithAuthor[]>([]);
-  const [followerCount, setFollowerCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
+  const [followerCount, setFollowerCount] = useState<{ [key: string]: number }>({});
+  const [followingCount, setFollowingCount] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
     if (followingData) {
@@ -80,35 +79,48 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   
 
   const { mutate, isLoading: isFollowingLoading } =
-  api.profile.followUser.useMutation({
-    onSuccess: (data, variables) => {
-      console.log(`You are now following the user.`);
-      
-      // Create a copy of the 'isFollowing' state
-      const newIsFollowing = { ...isFollowing };
-  
-      // Check if the current user is already following the user
-      if (isFollowing[variables.userToFollowId]) {
-        // If so, set 'isFollowing[userId]' to false to indicate that the current user has unfollowed the user
-        newIsFollowing[variables.userToFollowId] = false;
-        setIsFollowing(newIsFollowing);
-        setFollowerCount(followerCount - 1);
+api.profile.followUser.useMutation({
+  onSuccess: (data, variables) => {
+    console.log(`You are now following the user.`);
+    
+    // Create a copy of the 'isFollowing' and 'followerCount' states
+    const newIsFollowing = { ...isFollowing };
+    const newFollowerCount = { ...followerCount };
+
+    // Check if the current user is already following the user
+    if (isFollowing[variables.userToFollowId]) {
+      // If so, set 'isFollowing[userId]' to false to indicate that the current user has unfollowed the user
+      newIsFollowing[variables.userToFollowId] = false;
+      setIsFollowing(newIsFollowing);
+
+      // Decrement the follower count for this user
+      if (newFollowerCount[variables.userToFollowId]) {
+        newFollowerCount[variables.userToFollowId] -= 1;
       } else {
-        // Otherwise, set 'isFollowing[userId]' to true to indicate that the current user is now following the user
-        newIsFollowing[variables.userToFollowId] = true;
-        setIsFollowing(newIsFollowing);
-        setFollowerCount(followerCount + 1);
+        newFollowerCount[variables.userToFollowId] = 0; // assuming when not found, the followerCount should be 0
       }
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors.content;
-      if (errorMessage && errorMessage[0]) {
-        toast.error(errorMessage[0]);
-      } else {
-        toast.error("Failed to Follow! Are you logged in?");
-      }
-    },
-  });
+    } else {
+      // Otherwise, set 'isFollowing[userId]' to true to indicate that the current user is now following the user
+      newIsFollowing[variables.userToFollowId] = true;
+      setIsFollowing(newIsFollowing);
+
+      // Increment the follower count for this user
+      newFollowerCount[variables.userToFollowId] = (newFollowerCount[variables.userToFollowId] || 0) + 1;
+    }
+
+    // Update the 'followerCount' state
+    setFollowerCount(newFollowerCount);
+  },
+  onError: (e) => {
+    const errorMessage = e.data?.zodError?.fieldErrors.content;
+    if (errorMessage && errorMessage[0]) {
+      toast.error(errorMessage[0]);
+    } else {
+      toast.error("Failed to Follow! Are you logged in?");
+    }
+  },
+});
+
   
   
 
@@ -151,7 +163,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
               event.stopPropagation();
               void router.push(`/@${username}`);
           }} className="hover:underline peer">{username}</p>
-            <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 left-20 z-10 rounded-2xl bg-black p-4 
+            <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 z-10 rounded-2xl bg-black p-4 
             transition-all ease-in-out duration-[500ms] border-slate-400 border"
             >
               <div className="flex flex-row justify-between min-w-[250px]">
@@ -162,9 +174,10 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                   width={56}
                   height={56}
               />
+              
               { mentionedUserId !== user?.id &&
             user &&
-              (true ? (
+              (followingData ? (
               <button
                 className={`mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800 px-4
          py-1 transition-all duration-300 hover:bg-slate-900 hover:text-white 
@@ -172,6 +185,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                 onClick={() => mutate({ userToFollowId: mentionedUserId ? mentionedUserId : "" })}
                 disabled={false}
               >{`${isFollowing[mentionedUserId] ? "Unfollow" : "Follow"}`}</button>
+              
             ) : (
               <div className="mr-6 mt-6 flex items-center justify-center">
                 <LoadingSpinner size={32} />
@@ -179,7 +193,30 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
             ))}
             </div>
               <p className="flex flex-row">@<span className="hover:underline">{username}</span></p>
+              <div className="flex flex-row">
+            <span onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              void router.push(`/followers/@${username}`);
+          }}>
+              <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 cursor-pointer hover:text-white">
+                <h1>Followers</h1>
+                <h1 className="text-bold ml-2 text-2xl">{followerCount[mentionedUserId] || 0}</h1>
+              </div>
+            </span>
+            <span onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              void router.push(`/following/@${username}`);
+          }}>
+              <div className="mb-4 ml-4 flex flex-row items-center cursor-pointer text-slate-300 hover:text-white">
+                <h1>Following</h1>
+                <h1 className="text-bold ml-2 text-2xl">{0}</h1>
+              </div>
+            </span>
+          </div>
             </div>
+            
           </span>
         </div>
       </span>

@@ -249,7 +249,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         </div>
         {followersData ? (
           <div className="flex flex-row">
-            <Link href={username ? `followers/${username}` : "/"}>
+            <Link href={username ? `followers/@${username}` : "/"}>
               <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 hover:text-white">
                 <h1>Followers</h1>
                 <h1 className="text-bold ml-2 text-2xl">{followerCount}</h1>
