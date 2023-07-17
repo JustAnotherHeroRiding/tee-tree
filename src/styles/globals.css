@@ -52,6 +52,6 @@ body {
     }
 
     .infiniteScrollTriggerDiv {
-        @apply h-[25vh] absolute bottom-40
+        @apply h-[15vh] absolute bottom-40
     }
 }

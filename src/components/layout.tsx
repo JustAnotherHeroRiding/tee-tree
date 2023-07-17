@@ -17,17 +17,17 @@ export const PageLayout = (props: PropsWithChildren) => {
         >
           {props.children}
         </div>
-        <div className="absolute right-[3%] w-1/5 trendsbreakpoint:hidden">
-          <div className="sticky top-2 mb-6">
+        <div className="fixed right-[3%] overflow-y-scroll gray-thin-scrollbar max-h-[100vh] scrollbar-none w-1/5 trendsbreakpoint:hidden">
+          <div className="sticky bg-black top-0 py-2 mb-6">
             <input
               type="text"
               placeholder="Search"
               className="h-10 w-full rounded-full
-              border-2 border-Intone-300 pl-6 pr-4 py-2 bg-transparent outline-none"
+              border-2 border-Intone-300 pl-8 pr-4 py-2 bg-transparent outline-none"
             />
             <FontAwesomeIcon
               icon={faSearch}
-              className="absolute left-3 top-[14px] w-3 h-3 text-Intone-300"
+              className="absolute left-[4%] top-[38%] w-3 h-3 text-Intone-300"
             />
           </div>
           <div className="flex flex-col items-center justify-center gap-6@">

@@ -44,6 +44,7 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useRouter } from "next/router";
+import { FollowerWithAuthor } from "~/server/api/routers/followers";
 
 dayjs.extend(relativeTime);
 
@@ -57,6 +58,34 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
 
   const router = useRouter();
+  const { user: currentUser } = useUser();
+
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followers, setFollowers] = useState<FollowerWithAuthor[]>([]);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+
+  const { mutate, isLoading: isFollowingLoading } =
+  api.profile.followUser.useMutation({
+    onSuccess: () => {
+      console.log(`You are now following the user.`);
+      if (isFollowing) {
+        setIsFollowing(false);
+        setFollowerCount(followerCount - 1);
+      } else {
+        setFollowerCount(followerCount + 1);
+        setIsFollowing(true);
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to Follow! Are you logged in?");
+      }
+    },
+  });
   
 
   if (!userList) {
@@ -77,10 +106,13 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
       );
     } else if (
       word.startsWith("@") &&
-      userList &&
-      userList.some((user) => user.username === word.slice(1))
+      userList 
     ) {
-      const username = word.slice(1);
+      const user = userList.find((user) => user.username === word.slice(1));
+      if (user) {
+
+        const username = word.slice(1)
+        const mentionedUserId = user.id;
       return (
         <span key={index} className="relative w-fit">
         <div className="inline-block group">
@@ -94,9 +126,9 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
           >
             @<p className="hover:underline peer">{username}</p>
             <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 left-20 z-10 rounded-2xl bg-black p-4 
-            transition-all ease-in-out duration-[500ms] hover:unde"
+            transition-all ease-in-out duration-[500ms] border-slate-400 border"
             >
-              <p className="flex flex-row">@<span className="hover:underline peer">{username}</span></p>
+              <div className="flex flex-row justify-between min-w-[250px]">
               <Image
                   className="h-14 w-14 rounded-full"
                   src={userList.find((user) => user.username === username)?.profilePicture as string}
@@ -104,6 +136,23 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                   width={56}
                   height={56}
               />
+              { mentionedUserId !== currentUser?.id &&
+            user &&
+              (true ? (
+              <button
+                className={`mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800 px-4
+         py-1 transition-all duration-300 hover:bg-slate-900 hover:text-white 
+         ${isFollowingLoading ? "scale-110 animate-pulse text-blue-700" : ""}`}
+                onClick={() => mutate({ userToFollowId: mentionedUserId })}
+                disabled={false}
+              >{`${false ? "Unfollow" : "Follow"}`}</button>
+            ) : (
+              <div className="mr-6 mt-6 flex items-center justify-center">
+                <LoadingSpinner size={32} />
+              </div>
+            ))}
+            </div>
+              <p className="flex flex-row">@<span className="hover:underline">{username}</span></p>
             </div>
           </span>
         </div>
@@ -111,6 +160,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
       
       
       );
+    }
     } else {
       return <span key={index}>{word}</span>;
     }

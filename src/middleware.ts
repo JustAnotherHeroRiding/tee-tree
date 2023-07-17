@@ -10,7 +10,8 @@ export default authMiddleware({
     "/post/:id",
     "/:slug",
     "/following/:slug",
-    "/followers/:slug"
+    "/followers/:slug",
+    "/i/trends"
     
   ],
 });
