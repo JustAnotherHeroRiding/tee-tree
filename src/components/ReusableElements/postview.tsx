@@ -44,7 +44,7 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useRouter } from "next/router";
-import { FollowerWithAuthor } from "~/server/api/routers/followers";
+import type { FollowedWithAuthor } from "~/server/api/routers/followers";
 
 dayjs.extend(relativeTime);
 
@@ -57,24 +57,47 @@ type PostContentProps = {
 export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
 
-  const router = useRouter();
-  const { user: currentUser } = useUser();
+  const {data: followingData} =  api.follow.getFollowingCurrentUser.useQuery();
 
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [followers, setFollowers] = useState<FollowerWithAuthor[]>([]);
+
+  const router = useRouter();
+  const { user } = useUser();
+
+  const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>({});
+  const [followers, setFollowers] = useState<FollowedWithAuthor[]>([]);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
 
+  useEffect(() => {
+    if (followingData) {
+      const followingMap = followingData.reduce<{[key: string]: boolean}>((acc, user) => {
+        acc[user.followed.followingId] = true;
+        return acc;
+      }, {});
+      setIsFollowing(followingMap);
+    }
+  }, [followingData]);
+  
+
   const { mutate, isLoading: isFollowingLoading } =
   api.profile.followUser.useMutation({
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       console.log(`You are now following the user.`);
-      if (isFollowing) {
-        setIsFollowing(false);
+      
+      // Create a copy of the 'isFollowing' state
+      const newIsFollowing = { ...isFollowing };
+  
+      // Check if the current user is already following the user
+      if (isFollowing[variables.userToFollowId]) {
+        // If so, set 'isFollowing[userId]' to false to indicate that the current user has unfollowed the user
+        newIsFollowing[variables.userToFollowId] = false;
+        setIsFollowing(newIsFollowing);
         setFollowerCount(followerCount - 1);
       } else {
+        // Otherwise, set 'isFollowing[userId]' to true to indicate that the current user is now following the user
+        newIsFollowing[variables.userToFollowId] = true;
+        setIsFollowing(newIsFollowing);
         setFollowerCount(followerCount + 1);
-        setIsFollowing(true);
       }
     },
     onError: (e) => {
@@ -86,6 +109,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
       }
     },
   });
+  
   
 
   if (!userList) {
@@ -108,11 +132,11 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
       word.startsWith("@") &&
       userList 
     ) {
-      const user = userList.find((user) => user.username === word.slice(1));
-      if (user) {
+      const mentionedUser = userList.find((user) => user.username === word.slice(1));
+      if (mentionedUser) {
 
         const username = word.slice(1)
-        const mentionedUserId = user.id;
+        const mentionedUserId = mentionedUser.id;
       return (
         <span key={index} className="relative w-fit">
         <div className="inline-block group">
@@ -120,11 +144,13 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
             className="flex flex-row text-Intone-300 "
             onClick={(event) => {
               event.preventDefault();
+            }}
+          >
+            @<p onClick={(event) => {
+              event.preventDefault();
               event.stopPropagation();
               void router.push(`/@${username}`);
-          }}
-          >
-            @<p className="hover:underline peer">{username}</p>
+          }} className="hover:underline peer">{username}</p>
             <div className="invisible group-hover:visible scale-0 group-hover:scale-100 absolute top-12 left-20 z-10 rounded-2xl bg-black p-4 
             transition-all ease-in-out duration-[500ms] border-slate-400 border"
             >
@@ -136,16 +162,16 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                   width={56}
                   height={56}
               />
-              { mentionedUserId !== currentUser?.id &&
+              { mentionedUserId !== user?.id &&
             user &&
               (true ? (
               <button
                 className={`mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800 px-4
          py-1 transition-all duration-300 hover:bg-slate-900 hover:text-white 
          ${isFollowingLoading ? "scale-110 animate-pulse text-blue-700" : ""}`}
-                onClick={() => mutate({ userToFollowId: mentionedUserId })}
+                onClick={() => mutate({ userToFollowId: mentionedUserId ? mentionedUserId : "" })}
                 disabled={false}
-              >{`${false ? "Unfollow" : "Follow"}`}</button>
+              >{`${isFollowing[mentionedUserId] ? "Unfollow" : "Follow"}`}</button>
             ) : (
               <div className="mr-6 mt-6 flex items-center justify-center">
                 <LoadingSpinner size={32} />
