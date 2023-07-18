@@ -44,7 +44,6 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useRouter } from "next/router";
-import type { FollowedWithAuthor } from "~/server/api/routers/followers";
 
 dayjs.extend(relativeTime);
 
@@ -57,72 +56,110 @@ type PostContentProps = {
 export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
 
-  const {data: followingData} =  api.follow.getFollowingCurrentUser.useQuery();
+  const [
+    fetchMentionedUsersFollowingData,
+    setFetchMentionedUsersFollowingData,
+  ] = useState(false);
 
+  const { data: followingData } = api.follow.getFollowingCurrentUser.useQuery();
+  const mentionedUserIdsArray = useRef<string[]>([]);
+  const newMentionedUserIdsArray: string[] = [];
 
-  const router = useRouter();
+  //const router = useRouter();
   const { user } = useUser();
 
-  const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>({});
-  const [followerCount, setFollowerCount] = useState<{ [key: string]: number }>({});
-  const [followingCount, setFollowingCount] = useState<{ [key: string]: number }>({});
+  const { data: followersDataMentionedUsers } =
+    api.follow.getFollowersCountByIds.useQuery(
+      { mentionedUserIds: mentionedUserIdsArray.current },
+      { enabled: fetchMentionedUsersFollowingData }
+    );
+  const { data: followingDataMentionedUsers } =
+    api.follow.getFollowingCountByIds.useQuery(
+      { mentionedUserIds: mentionedUserIdsArray.current },
+      {
+        enabled: fetchMentionedUsersFollowingData,
+      }
+    );
+
+  const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [followerCount, setFollowerCount] = useState<{ [key: string]: number }>(
+    {}
+  );
+  const [followingCount, setFollowingCount] = useState<{
+    [key: string]: number;
+  }>({});
+
+  useEffect(() => {
+    if (mentionedUserIdsArray.current.length > 0) {
+      setFetchMentionedUsersFollowingData(true);
+    }
+  }, [mentionedUserIdsArray]);
 
   useEffect(() => {
     if (followingData) {
-      const followingMap = followingData.reduce<{[key: string]: boolean}>((acc, user) => {
-        acc[user.followed.followingId] = true;
-        return acc;
-      }, {});
+      const followingMap = followingData.reduce<{ [key: string]: boolean }>(
+        (acc, user) => {
+          acc[user.followed.followingId] = true;
+          return acc;
+        },
+        {}
+      );
       setIsFollowing(followingMap);
     }
   }, [followingData]);
-  
+
+  useEffect(() => {
+    if (followersDataMentionedUsers && followingDataMentionedUsers) {
+      setFollowerCount(followersDataMentionedUsers);
+      setFollowingCount(followingDataMentionedUsers);
+    }
+  }, [followersDataMentionedUsers, followingDataMentionedUsers]);
 
   const { mutate, isLoading: isFollowingLoading } =
-api.profile.followUser.useMutation({
-  onSuccess: (data, variables) => {
-    console.log(`You are now following the user.`);
-    
-    // Create a copy of the 'isFollowing' and 'followerCount' states
-    const newIsFollowing = { ...isFollowing };
-    const newFollowerCount = { ...followerCount };
+    api.profile.followUser.useMutation({
+      onSuccess: (data, variables) => {
+        console.log(`You are now following the user.`);
 
-    // Check if the current user is already following the user
-    if (isFollowing[variables.userToFollowId]) {
-      // If so, set 'isFollowing[userId]' to false to indicate that the current user has unfollowed the user
-      newIsFollowing[variables.userToFollowId] = false;
-      setIsFollowing(newIsFollowing);
+        // Create a copy of the 'isFollowing' and 'followerCount' states
+        const newIsFollowing = { ...isFollowing };
+        const newFollowerCount = { ...followerCount };
 
-      // Decrement the follower count for this user
-      if (newFollowerCount[variables.userToFollowId]) {
-        newFollowerCount[variables.userToFollowId] -= 1;
-      } else {
-        newFollowerCount[variables.userToFollowId] = 0; // assuming when not found, the followerCount should be 0
-      }
-    } else {
-      // Otherwise, set 'isFollowing[userId]' to true to indicate that the current user is now following the user
-      newIsFollowing[variables.userToFollowId] = true;
-      setIsFollowing(newIsFollowing);
+        // Check if the current user is already following the user
+        if (isFollowing[variables.userToFollowId]) {
+          // If so, set 'isFollowing[userId]' to false to indicate that the current user has unfollowed the user
+          newIsFollowing[variables.userToFollowId] = false;
+          setIsFollowing(newIsFollowing);
 
-      // Increment the follower count for this user
-      newFollowerCount[variables.userToFollowId] = (newFollowerCount[variables.userToFollowId] || 0) + 1;
-    }
+          // Decrement the follower count for this user
+          if (newFollowerCount[variables.userToFollowId]) {
+            newFollowerCount[variables.userToFollowId] -= 1;
+          } else {
+            newFollowerCount[variables.userToFollowId] = 0; // assuming when not found, the followerCount should be 0
+          }
+        } else {
+          // Otherwise, set 'isFollowing[userId]' to true to indicate that the current user is now following the user
+          newIsFollowing[variables.userToFollowId] = true;
+          setIsFollowing(newIsFollowing);
 
-    // Update the 'followerCount' state
-    setFollowerCount(newFollowerCount);
-  },
-  onError: (e) => {
-    const errorMessage = e.data?.zodError?.fieldErrors.content;
-    if (errorMessage && errorMessage[0]) {
-      toast.error(errorMessage[0]);
-    } else {
-      toast.error("Failed to Follow! Are you logged in?");
-    }
-  },
-});
+          // Increment the follower count for this user
+          newFollowerCount[variables.userToFollowId] =
+            (newFollowerCount[variables.userToFollowId] || 0) + 1;
+        }
 
-  
-  
+        // Update the 'followerCount' state
+        setFollowerCount(newFollowerCount);
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Follow! Are you logged in?");
+        }
+      },
+    });
 
   if (!userList) {
     console.log("No users");
@@ -140,90 +177,108 @@ api.profile.followUser.useMutation({
           {word}
         </span>
       );
-    } else if (
-      word.startsWith("@") &&
-      userList 
-    ) {
-      const mentionedUser = userList.find((user) => user.username === word.slice(1));
+    } else if (word.startsWith("@") && userList) {
+      const mentionedUser = userList.find(
+        (user) => user.username === word.slice(1)
+      );
       if (mentionedUser) {
+        const username = word.slice(1);
 
-        const username = word.slice(1)
         const mentionedUserId = mentionedUser.id;
-      return (
-        <span key={index} className="relative w-fit">
-        <div className="inline-block group">
-          <span
-            className="flex flex-row text-Intone-300 "
-            onClick={(event) => {
-              event.preventDefault();
-            }}
-          >
-            @<Link 
-              href={`/@${username}`} 
-           className="hover:underline peer">{username}</Link>
-            <div className="invisible group-hover:visible scale-0 group-hover:scale-100 
-            absolute top-12 z-10 rounded-2xl bg-black p-4 
-            transition-all ease-in-out duration-[500ms] border-slate-400 border cursor-default"
-            >
-              <div className="flex flex-row justify-between min-w-[250px]">
-              <Image
-                  className="h-14 w-14 rounded-full"
-                  src={userList.find((user) => user.username === username)?.profilePicture as string}
-                  alt={`@${username} profile picture`}
-                  width={56}
-                  height={56}
-              />
-              
-              { mentionedUserId !== user?.id &&
-            user &&
-              (followingData ? (
-              <button
-                className={`mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800 px-4
+        newMentionedUserIdsArray.push(mentionedUserId);
+
+        return (
+          <span key={index} className="relative w-fit">
+            <div className="group inline-block">
+              <span
+                className="flex flex-row text-Intone-300 "
+                onClick={(event) => {
+                  event.preventDefault();
+                }}
+              >
+                @
+                <Link href={`/@${username}`} className="peer hover:underline">
+                  {username}
+                </Link>
+                <div
+                  className="invisible absolute top-12 z-10 
+            scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
+            p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100"
+                >
+                  <div className="flex min-w-[250px] flex-row justify-between">
+                    <Image
+                      className="h-14 w-14 rounded-full"
+                      src={
+                        userList.find((user) => user.username === username)
+                          ?.profilePicture as string
+                      }
+                      alt={`@${username} profile picture`}
+                      width={56}
+                      height={56}
+                    />
+
+                    {mentionedUserId !== user?.id &&
+                      user &&
+                      (followingData ? (
+                        <button
+                          className={`mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800 px-4
          py-1 transition-all duration-300 hover:bg-slate-900 hover:text-white 
          ${isFollowingLoading ? "scale-110 animate-pulse text-blue-700" : ""}`}
-                onClick={() => mutate({ userToFollowId: mentionedUserId ? mentionedUserId : "" })}
-                disabled={false}
-              >{`${isFollowing[mentionedUserId] ? "Unfollow" : "Follow"}`}</button>
-              
-            ) : (
-              <div className="mr-6 mt-6 flex items-center justify-center">
-                <LoadingSpinner size={32} />
-              </div>
-            ))}
+                          onClick={() =>
+                            mutate({
+                              userToFollowId: mentionedUserId
+                                ? mentionedUserId
+                                : "",
+                            })
+                          }
+                          disabled={false}
+                        >{`${
+                          isFollowing[mentionedUserId] ? "Unfollow" : "Follow"
+                        }`}</button>
+                      ) : (
+                        <div className="mr-6 mt-6 flex items-center justify-center">
+                          <LoadingSpinner size={32} />
+                        </div>
+                      ))}
+                  </div>
+                  <Link href={`/@${username}`} className="flex flex-row">
+                    @
+                    <span className="cursor-pointer hover:underline">
+                      {username}
+                    </span>
+                  </Link>
+                  <div className="flex flex-row">
+                    <Link href={`/followers/@${username}`}>
+                      <div className="mb-4 ml-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
+                        <h1>Followers</h1>
+                        <h1 className="text-bold ml-2 text-2xl">
+                          {followerCount[mentionedUserId] || 0}
+                        </h1>
+                      </div>
+                    </Link>
+                    <Link href={`/following/@${username}`}>
+                      <div className="mb-4 ml-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
+                        <h1>Following</h1>
+                        <h1 className="text-bold ml-2 text-2xl">
+                          {followingCount[mentionedUserId] || 0}
+                        </h1>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              </span>
             </div>
-              <Link 
-              href={`/@${username}`}
-           className="flex flex-row">@<span className="hover:underline cursor-pointer">{username}</span></Link>
-              <div className="flex flex-row">
-            <Link
-             href={`/followers/@${username}`}
-          >
-              <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 cursor-pointer hover:text-white">
-                <h1>Followers</h1>
-                <h1 className="text-bold ml-2 text-2xl">{followerCount[mentionedUserId] || 0}</h1>
-              </div>
-            </Link>
-            <Link 
-              href={`/following/@${username}`}>
-              <div className="mb-4 ml-4 flex flex-row items-center cursor-pointer text-slate-300 hover:text-white">
-                <h1>Following</h1>
-                <h1 className="text-bold ml-2 text-2xl">{0}</h1>
-              </div>
-            </Link>
-          </div>
-            </div>
-            
           </span>
-        </div>
-      </span>
-      
-      
-      );
-    }
+        );
+      }
     } else {
       return <span key={index}>{word}</span>;
     }
   });
+  if (newMentionedUserIdsArray.length >= 1) {
+    mentionedUserIdsArray.current = newMentionedUserIdsArray;
+  }
+
   return (
     <span className="text-2xl sm:whitespace-pre-wrap">
       {coloredWords.reduce<React.ReactNode[]>(
@@ -242,8 +297,6 @@ const PostViewComponent = (props: PostWithUser) => {
   const { homePage } = useHomePage();
 
   const router = useRouter();
-
-
 
   const [liked, setLiked] = useState(false);
   const [retweeted, setRetweeted] = useState(false);
@@ -563,7 +616,8 @@ const PostViewComponent = (props: PostWithUser) => {
       <div className="flex w-full flex-col">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
-            @<span className="hover:text-white hover:underline">{`${author.username}`}</span>
+            @
+            <span className="hover:text-white hover:underline">{`${author.username}`}</span>
           </Link>
           <span className="font-thin">{` · ${dayjs(
             post.createdAt
@@ -591,7 +645,7 @@ const PostViewComponent = (props: PostWithUser) => {
         <span
           className={`${
             !isEditing ? "hover:bg-slate-900" : ""
-          } rounded-2xl px-2 py-1 select-all`}
+          } select-all rounded-2xl px-2 py-1`}
           onMouseUp={(event) => {
             event.stopPropagation();
             void router.push(`/post/${post.id}`);

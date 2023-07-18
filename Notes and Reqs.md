@@ -30,7 +30,7 @@ Let's implement some features I have already implemented before in order to lear
 - Page for Liked posts #DONE 
 - Username and posts counts on the stick div #DONE 
 - Collage of images that the user has posted on the profile view on the right side
-- If a user has no followers or following then display a message
+- If a user has no followers or following then display a message #DONE 
 
 ## Posts
 - Editing posts #DONE 
@@ -106,8 +106,15 @@ Let's implement some features I have already implemented before in order to lear
 - It should also show the follow button #DONE 
 - The follow button should correctly show as unfollow/follow and work as in the profile page #DONE 
 - Display the following numbers and link to the /user/following page #DONE 
-- Fetch the numbers for each mentioned users
+- Fetch the numbers for each mentioned user #DONE 
+- Make the tooltip always be inside the posts div in the middle and not overflowing
 - When making a post and staring a word with an @, a list of users should appear that we can tag
+
+## Bug fixing followers
+- Follower numbers on profile are not correct #DONE 
+- Errors when trying add the author data to the follow record #DONE 
+- Cannot fetch following of current user #DONE 
+#### This was all caused by the same issue, when testing the follow button on the profile tooltip I created a Follow record with the username instead of the userId of the kristijan_k account. This made the function adding author data to follow records fail every time as it could not find an id Match
 
 ## Reworking the post content and removing the link
 - Remove the link wrapping the entire post component and turn it into a span #DONE 

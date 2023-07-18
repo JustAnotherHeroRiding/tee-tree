@@ -10,7 +10,6 @@ const addUserDataToFollowers = async (followers: Follow[]) => {
   const users =
     (await clerkClient.users.getUserList({
       userId: followers.map((follower) => follower.followerId),
-      limit: 100,
     })
     ).map(filterUserForClient);
 
@@ -21,7 +20,7 @@ const addUserDataToFollowers = async (followers: Follow[]) => {
 
     if (!author || !author.username) throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Author for post not found"
+      message: "Author for follower not found."
     });
 
     return {
@@ -47,10 +46,11 @@ const addUserDataToFollowing = async (following: Follow[]) => {
   return following.map((followed) => {
 
     const author = users.find((user) => user.id === followed.followingId);
+    console.log(followed);
 
     if (!author || !author.username) throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Author for post not found"
+      message: "Author for followed not found."
     });
 
     return {
@@ -120,6 +120,33 @@ export const followRouter = createTRPCRouter({
 
     return addUserDataToFollowing(followRecords);
   }),
+
+  getFollowingCountByIds: publicProcedure
+  .input(z.object({ mentionedUserIds: z.array(z.string()) }))
+  .query(async ({ input, ctx }) => {
+    const result : {[key: string]: number} = {};
+    for (const id of input.mentionedUserIds) {
+      const count = await ctx.prisma.follow.count({
+        where: { followerId: id },
+      });
+      result[id] = count;
+    }
+    return result;
+  }),
+
+  getFollowersCountByIds: publicProcedure
+  .input(z.object({ mentionedUserIds: z.array(z.string()) }))
+  .query(async ({ input, ctx }) => {
+    const result : {[key: string]: number} = {};
+    for (const id of input.mentionedUserIds) {
+      const count = await ctx.prisma.follow.count({
+        where: { followingId: id },
+      });
+      result[id] = count;
+    }
+    return result;
+  }),
+
 
   getFollowingCurrentUser: publicProcedure
   .query<FollowedWithAuthor[]>(async ({ ctx }) => {
