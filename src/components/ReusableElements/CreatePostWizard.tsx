@@ -5,7 +5,7 @@ import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { LoadingSpinner } from "~/components/ReusableElements/loading";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
 import {
@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filesize } from "filesize";
 import Compressor from "compressorjs";
 import { Tooltip } from "react-tooltip";
+import { UserContext } from "../Context/UserContext";
 
 dayjs.extend(relativeTime);
 
@@ -28,6 +29,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
 }) => {
   const { user } = useUser();
+  const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
   // const myImage = cld.image("cld-sample-2");
   // Make sure to replace 'demo' with your actual cloud_name
@@ -41,8 +43,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [gifFile, setGifFile] = useState<File | undefined>(undefined);
   const gifInput = useRef(null);
   const imageInput = useRef(null);
-
-
 
   interface ImageResponse {
     public_id: string;
@@ -208,12 +208,43 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const [textLength, setTextLength] = useState(0);
 
+  const [isTypingUsername, setIsTypingUsername] = useState(false);
+  const [typedUsername, setTypedUsername] = useState("");
+
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setInput(event.target.value);
     setTextLength(event.target.textLength);
+
+    const words = event.target.value.split(" ");
+    const lastWord = words[words.length - 1];
+
+    if (lastWord) {
+      if (lastWord.startsWith("@")) {
+        setIsTypingUsername(true);
+        setTypedUsername(lastWord.slice(1));
+      } else {
+        setIsTypingUsername(false);
+      }
+    } else {
+      setIsTypingUsername(false);
+    }
   };
+
+  const [possibleUsernames, setPossibleUsernames] = useState([]);
+
+  // Assuming you have other relevant state variables and functions here
+
+  useEffect(() => {
+    const filteredUsernames = userList.filter((user) => {
+      if (user.username) {
+        return user.username.startsWith(typedUsername);
+      }
+      return false;
+    });
+    setPossibleUsernames(filteredUsernames);
+  }, [userList, typedUsername]);
 
   if (!user) return null;
 
@@ -263,6 +294,35 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           </div>
         )}
       </div>
+      {LoadingUserList && (
+  <div className="flex items-center justify-center">
+    <LoadingSpinner size={20} />
+  </div>
+)}
+  {isTypingUsername && (
+    <ul className="flex flex-col">
+      {possibleUsernames.map((user) => (
+        <li
+          key={user.username}
+          onClick={() => {
+            // Replace typed username with selected username
+            const words = input.split(" ");
+            words[words.length - 1] = user.username ? `@${user.username}` : '';
+            setInput(words.join(" "));
+
+            // Stop showing the drop-down
+            setIsTypingUsername(false);
+          }}
+        >
+          {user.username}
+        </li>
+      ))}
+    </ul>
+  )}
+
+
+      
+
       <div className="flex flex-row items-center gap-2 border-b border-slate-400 pb-4">
         <label>
           <input
@@ -281,8 +341,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 setImageFile(event.target.files[0]);
                 setGifFile(undefined);
               }
-              event.target.value = '';
-
+              event.target.value = "";
             }}
           />
           <FontAwesomeIcon
@@ -317,8 +376,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 setGifFile(event.target.files[0]);
                 setImageFile(undefined);
               }
-              event.target.value = '';
-
+              event.target.value = "";
             }}
           />
           <Image

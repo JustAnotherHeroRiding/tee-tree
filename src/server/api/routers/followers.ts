@@ -46,7 +46,7 @@ const addUserDataToFollowing = async (following: Follow[]) => {
   return following.map((followed) => {
 
     const author = users.find((user) => user.id === followed.followingId);
-
+    
     if (!author || !author.username) throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "Author for followed not found."
