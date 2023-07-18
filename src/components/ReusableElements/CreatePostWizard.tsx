@@ -25,6 +25,12 @@ interface CreatePostWizardProps {
   homePage: boolean;
 }
 
+  type User = {
+    id: string;
+    username: string | null;
+    profilePicture: string;
+  };
+
 export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
 }) => {
@@ -232,19 +238,20 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     }
   };
 
-  const [possibleUsernames, setPossibleUsernames] = useState([]);
+
+  const [possibleUsernames, setPossibleUsernames] = useState<User[]>([]);
 
   // Assuming you have other relevant state variables and functions here
 
-  useEffect(() => {
-    const filteredUsernames = userList.filter((user) => {
-      if (user.username) {
-        return user.username.startsWith(typedUsername);
-      }
-      return false;
-    });
-    setPossibleUsernames(filteredUsernames);
-  }, [userList, typedUsername]);
+useEffect(() => {
+  const filteredUsernames = userList
+    .filter((user) => user.username && user.username.startsWith(typedUsername))
+    .map(({ id, username, profilePicture }) => ({ id, username, profilePicture: profilePicture || "" }));
+    if (filteredUsernames) {
+      setPossibleUsernames(filteredUsernames);
+    }
+}, [userList, typedUsername]);
+
 
   if (!user) return null;
 
