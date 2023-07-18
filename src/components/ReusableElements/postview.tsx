@@ -188,7 +188,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
         newMentionedUserIdsArray.push(mentionedUserId);
 
         return (
-          <span key={index} className="relative w-fit">
+          <span key={index} className=" w-fit">
             <div className="group inline-block">
               <span
                 className="flex flex-row text-Intone-300 "
@@ -201,7 +201,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                   {username}
                 </Link>
                 <div
-                  className="invisible absolute top-12 z-10 
+                  className="invisible absolute top-12 right-0 z-10
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
             p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100"
                 >
@@ -241,15 +241,15 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                         </div>
                       ))}
                   </div>
-                  <Link href={`/@${username}`} className="flex flex-row">
+                  <Link href={`/@${username}`} className="flex flex-row mt-4">
                     @
                     <span className="cursor-pointer hover:underline">
                       {username}
                     </span>
                   </Link>
-                  <div className="flex flex-row">
+                  <div className="flex flex-row mt-4">
                     <Link href={`/followers/@${username}`}>
-                      <div className="mb-4 ml-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
+                      <div className="mb-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
                         <h1>Followers</h1>
                         <h1 className="text-bold ml-2 text-2xl">
                           {followerCount[mentionedUserId] || 0}
@@ -280,7 +280,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   }
 
   return (
-    <span className="text-2xl sm:whitespace-pre-wrap">
+    <span className="text-2xl sm:whitespace-pre-wrap relative">
       {coloredWords.reduce<React.ReactNode[]>(
         (prev, curr, index) => (index === 0 ? [curr] : [...prev, " ", curr]),
         []
