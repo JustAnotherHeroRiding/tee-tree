@@ -224,6 +224,11 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [typedUsername, setTypedUsername] = useState("");
   const [typedTrend, setTypedTrend] = useState("");
 
+  const [highlightedUser, setHighlightedUser] = useState(0);
+  const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
+  
+
+
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -314,6 +319,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               if (input !== "") {
                 mutate({ content: input });
               }
+            } else if (e.key === 'ArrowDown' && highlightedUser < possibleUsernames.length - 1) {
+              // Down arrow key pressed
+              setPrevHighlightedUser(highlightedUser);
+              setHighlightedUser(highlightedUser + 1);
+            } else if (e.key === "ArrowUp" && highlightedUser > 0) {
+              // Up arrow key pressed
+              setPrevHighlightedUser(highlightedUser);
+              setHighlightedUser(highlightedUser - 1);
+            } else if (e.key === "Tab") {
+              // Tab key pressed
+              // Select the currently highlighted user
+              e.preventDefault();
+              selectUser(highlightedUser);
             }
           }}
         />

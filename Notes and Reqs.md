@@ -113,7 +113,10 @@ Let's implement some features I have already implemented before in order to lear
 - When making a post and staring a word with an @, a list of users should appear that we can tag #DONE 
 - Style the list of suggested users #DONE 
 - Improve function that filters usernames to also include lowercase #DONE 
-- Add autofocus to the recommended users card and arrows keys and tab to select
+- Add autofocus to the recommended users card #DONE 
+- This takes the focus away from the typing, i need to find another way to focus
+- Fix this mess!
+- Arrow keys and tab to select 
 
 ## Bug fixing followers
 - Follower numbers on profile are not correct #DONE 
