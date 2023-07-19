@@ -33,6 +33,68 @@ type User = {
   lastName: string | null;
 };
 
+interface UserCardProps {
+  user: User;
+  index: number;
+  input: string;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
+  setIsTypingUsername: React.Dispatch<React.SetStateAction<boolean>>;
+  setTextLength: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export const UserCard: React.FC<UserCardProps> = ({ user, index, input, setInput, setIsTypingUsername, setTextLength }) => {
+  const userRef = useRef<HTMLDivElement>(null); // create a reference
+
+  useEffect(() => {
+    if (index === 0 && userRef.current ) {
+       // if it's the first user
+        // if the div exists
+        userRef.current.focus(); // focus the div
+    }
+  }, [index]);
+
+  return (
+    <div
+      tabIndex={0}
+      ref={userRef}
+      className={`flex flex-row rounded-xl p-4 focus:outline-none hover:bg-Intone-200 focus:text-red-600 ${
+        index == 0 ? "bg-Intone-200" : ""
+      }`}
+      onClick={() => {
+        // Replace typed username with selected username
+        const words = input.split(" ");
+        words[words.length - 1] = user.username
+          ? `@${user.username}`
+          : "";
+        setInput(words.join(" "));
+        if (words[0]) {
+          setTextLength(words[0].length);
+        }
+        // Stop showing the drop-down
+        setIsTypingUsername(false);
+      }}
+    >
+      <Image
+        className="mr-4 h-14 w-14 rounded-full"
+        src={user.profilePicture}
+        alt="Profile Image"
+        width={56}
+        height={56}
+        priority={true}
+      />
+      <div className="flex flex-col ">
+        {user.firstName && user.lastName && (
+          <span>
+            {user.firstName}
+            {user.lastName}
+          </span>
+        )}
+        <li className="">{user.username}</li>
+      </div>
+    </div>
+  );
+}
+
 export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
 }) => {
@@ -255,7 +317,9 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   useEffect(() => {
     const filteredUsernames = userList
       .filter(
-        (user) => user.username && user.username.toLowerCase().includes(typedUsername.toLowerCase())
+        (user) =>
+          user.username &&
+          user.username.toLowerCase().includes(typedUsername.toLowerCase())
       )
       .map(({ id, username, profilePicture, firstName, lastName }) => ({
         id,
@@ -265,7 +329,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         lastName: lastName || "",
       }));
     if (filteredUsernames) {
-      setPossibleUsernames(filteredUsernames.slice(0,6));
+      setPossibleUsernames(filteredUsernames.slice(0, 6));
     }
   }, [userList, typedUsername]);
 
@@ -275,45 +339,15 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     <div className="relative">
       <div className="relative mb-4 flex gap-3 border-b border-slate-400 pb-4">
         {isTypingUsername && (
-          <ul className="absolute right-8 top-20 z-10 flex max-h-[250px] 
-          max-w-[350px] w-fit flex-col overflow-auto rounded-xl bg-Intone-100 gray-thin-scrollbar">
-            {possibleUsernames.map((user, index) => (
-              <div
-              className={`flex flex-row rounded-xl p-4 hover:bg-Intone-200 ${index == 0 ? 'bg-Intone-200' : ''}`} 
-              onClick={() => {
-                  // Replace typed username with selected username
-                  const words = input.split(" ");
-                  words[words.length - 1] = user.username
-                    ? `@${user.username}`
-                    : "";
-                  setInput(words.join(" "));
-                  if (words[0]) {
-                    setTextLength(words[0].length);
-                  }
-                  // Stop showing the drop-down
-                  setIsTypingUsername(false);
-                }}
-                key={user.id}
-              >
-                <Image
-                  className="mr-4 h-14 w-14 rounded-full"
-                  src={user.profilePicture}
-                  alt="Profile Image"
-                  width={56}
-                  height={56}
-                  priority={true}
-                />
-                <div className="flex flex-col ">
-                  {user.firstName && user.lastName && (
-                    <span>
-                      {user.firstName}
-                      {user.lastName}
-                    </span>
-                  )}
-                  <li className="">{user.username}</li>
-                </div>
-              </div>
-            ))}
+          <ul
+            className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+          max-h-[250px] w-fit max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
+          >
+            {possibleUsernames.map((user, index) =>  (
+                <UserCard key={index} user={user} index={index} setInput={setInput}
+                 input={input} setIsTypingUsername={setIsTypingUsername} setTextLength={setTextLength} />
+            )
+            )}
           </ul>
         )}
         <Image
