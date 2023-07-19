@@ -17,7 +17,7 @@ model Like {
   id        String  @id @default(cuid())
   authorId  String
   postId    String
-  post      Post    @relation(fields: [postId], references: [id])
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([authorId, postId], name: "UniqueLike")
   @@index([postId])
@@ -27,7 +27,7 @@ model Retweet {
   id        String  @id @default(cuid())
   authorId  String
   postId    String
-  post      Post    @relation(fields: [postId], references: [id])
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([authorId, postId], name: "UniqueRetweet")
   @@index([postId])

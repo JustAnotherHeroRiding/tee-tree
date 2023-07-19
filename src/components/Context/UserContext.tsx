@@ -7,6 +7,8 @@ type UserType = {
   id: string;
   username: string | null;
   profilePicture: string | null;
+  firstName: string | null;
+  lastName: string | null;
 };
 
 type UserContextType = {

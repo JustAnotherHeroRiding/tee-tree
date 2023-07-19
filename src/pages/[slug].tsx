@@ -233,8 +233,13 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           />
         </div>
         <div className="h-[64px]"></div>
+        {data.firstName && data.lastName && (
+          <span className="p-4 text-2xl font-bold">
+            {data.firstName} {data.lastName}
+          </span>
+        )}
         <div className="flex flex-row items-center justify-between">
-          <h1 className="p-4 text-2xl font-bold">{`@${
+          <h1 className="p-4 text-2xl font-bold text-slate-300">{`@${
             data.username ?? ""
           }`}</h1>
           {data.id === user?.id && user && (
@@ -248,17 +253,22 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           )}
         </div>
         {followersData ? (
-          <div className="flex flex-row">
+          <div className="flex flex-row text-slate-300">
             <Link href={username ? `followers/@${username}` : "/"}>
-              <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 hover:text-white">
-                <h1>Followers</h1>
-                <h1 className="text-bold ml-2 text-2xl">{followerCount}</h1>
+              <div className="mb-4 ml-4 flex flex-row items-center ">
+                <h1 className="hover:underline">
+                  Followers{" "}
+                  <span className="text-white text-2xl">{followerCount}</span>
+                </h1>
               </div>
             </Link>
             <Link href={username ? `following/@${username}` : "/"}>
-              <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 hover:text-white">
-                <h1>Following</h1>
-                <h1 className="text-bold ml-2 text-2xl">{followingCount}</h1>
+              <div className="mb-4 ml-4 flex flex-row items-center">
+                <h1 className="hover:underline">
+                  
+                  Following{" "}
+                  <span className="text-white text-2xl">{followingCount}</span>
+                </h1>
               </div>
             </Link>
           </div>

@@ -31,6 +31,7 @@ Let's implement some features I have already implemented before in order to lear
 - Username and posts counts on the stick div #DONE 
 - Collage of images that the user has posted on the profile view on the right side
 - If a user has no followers or following then display a message #DONE 
+- Display First and Last Name for Users #DONE 
 
 ## Posts
 - Editing posts #DONE 
@@ -108,7 +109,7 @@ Let's implement some features I have already implemented before in order to lear
 - Display the following numbers and link to the /user/following page #DONE 
 - Fetch the numbers for each mentioned user #DONE 
 - Make the tooltip always be inside the posts div in the middle and not overflowing #DONE 
-- The tooltip is clipping to the left on phones
+- The tooltip is clipping to the left on phones(I set it to be relative to the post div and not the text span) #DONE 
 - When making a post and staring a word with an @, a list of users should appear that we can tag #DONE 
 - Style the list of suggested users
 
@@ -117,6 +118,9 @@ Let's implement some features I have already implemented before in order to lear
 - Errors when trying add the author data to the follow record #DONE 
 - Cannot fetch following of current user #DONE 
 #### This was all caused by the same issue, when testing the follow button on the profile tooltip I created a Follow record with the username instead of the userId of the kristijan_k account. This made the function adding author data to follow records fail every time as it could not find an id Match
+
+## Delete Post bug
+- Deleting a post is failing because of the required relation between the Like and Post objects #DONE 
 
 ## Reworking the post content and removing the link
 - Remove the link wrapping the entire post component and turn it into a span #DONE 
@@ -129,5 +133,7 @@ Let's implement some features I have already implemented before in order to lear
 - Separate trend page for expanded view of a trend and the posts containing those hashtags, this should just be a search query for posts containing that word if the user clicks the trend
 - If the user clicks on show more it should open a separate page with just the trends #DONE 
 - The div on the side should not be shown if the url is /trends #DONE 
-- Posts starting with # in post.content should be blue #DONE 
+- Posts starting with # in post.content should be blue #DONE
+- Make the trends be a global context like the user list so that I can access them from the create post and trends components
+- When typing, if a word starts with # we should get recommendations like for users with @ 
 - Clicking on them should open the search query for that trend

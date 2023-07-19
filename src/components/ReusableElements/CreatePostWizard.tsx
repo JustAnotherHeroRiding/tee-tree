@@ -29,6 +29,8 @@ interface CreatePostWizardProps {
     id: string;
     username: string | null;
     profilePicture: string;
+    firstName: string | null;
+    lastName: string | null;
   };
 
 export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
@@ -215,7 +217,10 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [textLength, setTextLength] = useState(0);
 
   const [isTypingUsername, setIsTypingUsername] = useState(false);
+  const [isTypingTrend, setIsTypingTrend] = useState(false);
+
   const [typedUsername, setTypedUsername] = useState("");
+  const [typedTrend, setTypedTrend] = useState("");
 
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -227,10 +232,14 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     const lastWord = words[words.length - 1];
 
     if (lastWord) {
-      if (lastWord.startsWith("@")) {
+      if (lastWord.startsWith("@") && lastWord.length > 1) {
         setIsTypingUsername(true);
         setTypedUsername(lastWord.slice(1));
-      } else {
+      } else if (lastWord.startsWith("#")) {
+        setIsTypingTrend(true);
+        setTypedTrend(lastWord.slice(1));
+      } 
+      else {
         setIsTypingUsername(false);
       }
     } else {
@@ -242,11 +251,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [possibleUsernames, setPossibleUsernames] = useState<User[]>([]);
 
   // Assuming you have other relevant state variables and functions here
+  console.log(userList)
 
 useEffect(() => {
   const filteredUsernames = userList
     .filter((user) => user.username && user.username.startsWith(typedUsername))
-    .map(({ id, username, profilePicture }) => ({ id, username, profilePicture: profilePicture || "" }));
+    .map(({ id, username, profilePicture, firstName, lastName }) => ({ id, username, 
+      profilePicture: profilePicture || "", firstName: firstName || "", lastName: lastName || "" }));
     if (filteredUsernames) {
       setPossibleUsernames(filteredUsernames);
     }
@@ -256,7 +267,7 @@ useEffect(() => {
   if (!user) return null;
 
   return (
-    <>
+    <div className="relative">
       <div className="relative mb-4 flex gap-3 border-b border-slate-400 pb-4">
         <Image
           className="h-14 w-14 rounded-full"
@@ -307,7 +318,7 @@ useEffect(() => {
   </div>
 )}
   {isTypingUsername && (
-    <ul className="flex flex-col">
+    <ul className="flex flex-col absolute top-12">
       {possibleUsernames.map((user) => (
         <li
           key={user.username}
@@ -441,6 +452,6 @@ useEffect(() => {
           />
         </div>
       )}
-    </>
+    </div>
   );
 };
