@@ -255,7 +255,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   useEffect(() => {
     const filteredUsernames = userList
       .filter(
-        (user) => user.username && user.username.toLowerCase().startsWith(typedUsername.toLowerCase())
+        (user) => user.username && user.username.toLowerCase().includes(typedUsername.toLowerCase())
       )
       .map(({ id, username, profilePicture, firstName, lastName }) => ({
         id,
@@ -265,7 +265,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         lastName: lastName || "",
       }));
     if (filteredUsernames) {
-      setPossibleUsernames(filteredUsernames);
+      setPossibleUsernames(filteredUsernames.slice(0,6));
     }
   }, [userList, typedUsername]);
 
@@ -275,7 +275,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     <div className="relative">
       <div className="relative mb-4 flex gap-3 border-b border-slate-400 pb-4">
         {isTypingUsername && (
-          <ul className="absolute right-8 top-20 z-10 flex max-h-[250px] w-[250px] flex-col overflow-auto rounded-xl bg-Intone-100">
+          <ul className="absolute right-8 top-20 z-10 flex max-h-[250px] 
+          max-w-[350px] w-fit flex-col overflow-auto rounded-xl bg-Intone-100 gray-thin-scrollbar">
             {possibleUsernames.map((user, index) => (
               <div
               className={`flex flex-row rounded-xl p-4 hover:bg-Intone-200 ${index == 0 ? 'bg-Intone-200' : ''}`} 
@@ -309,7 +310,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                       {user.lastName}
                     </span>
                   )}
-                  <li>{user.username}</li>
+                  <li className="">{user.username}</li>
                 </div>
               </div>
             ))}
