@@ -108,7 +108,9 @@ Let's implement some features I have already implemented before in order to lear
 - Display the following numbers and link to the /user/following page #DONE 
 - Fetch the numbers for each mentioned user #DONE 
 - Make the tooltip always be inside the posts div in the middle and not overflowing #DONE 
-- When making a post and staring a word with an @, a list of users should appear that we can tag
+- The tooltip is clipping to the left on phones
+- When making a post and staring a word with an @, a list of users should appear that we can tag #DONE 
+- Style the list of suggested users
 
 ## Bug fixing followers
 - Follower numbers on profile are not correct #DONE 

@@ -201,7 +201,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                   {username}
                 </Link>
                 <div
-                  className="invisible absolute top-12 right-0 z-10
+                  className="invisible absolute top-16 right-0 z-10
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
             p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100"
                 >
@@ -280,7 +280,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   }
 
   return (
-    <span className="text-2xl sm:whitespace-pre-wrap relative">
+    <span className="text-2xl sm:whitespace-pre-wrap">
       {coloredWords.reduce<React.ReactNode[]>(
         (prev, curr, index) => (index === 0 ? [curr] : [...prev, " ", curr]),
         []
@@ -613,7 +613,7 @@ const PostViewComponent = (props: PostWithUser) => {
         width={56}
         height={56}
       />
-      <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col relative">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
             @
