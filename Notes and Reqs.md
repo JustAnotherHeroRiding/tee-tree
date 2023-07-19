@@ -111,7 +111,8 @@ Let's implement some features I have already implemented before in order to lear
 - Make the tooltip always be inside the posts div in the middle and not overflowing #DONE 
 - The tooltip is clipping to the left on phones(I set it to be relative to the post div and not the text span) #DONE 
 - When making a post and staring a word with an @, a list of users should appear that we can tag #DONE 
-- Style the list of suggested users
+- Style the list of suggested users #DONE 
+- Improve function that filters usernames to also include first and last names, lowercase
 
 ## Bug fixing followers
 - Follower numbers on profile are not correct #DONE 

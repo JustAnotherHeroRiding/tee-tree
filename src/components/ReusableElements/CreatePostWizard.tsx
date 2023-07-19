@@ -25,13 +25,13 @@ interface CreatePostWizardProps {
   homePage: boolean;
 }
 
-  type User = {
-    id: string;
-    username: string | null;
-    profilePicture: string;
-    firstName: string | null;
-    lastName: string | null;
-  };
+type User = {
+  id: string;
+  username: string | null;
+  profilePicture: string;
+  firstName: string | null;
+  lastName: string | null;
+};
 
 export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
@@ -233,13 +233,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
     if (lastWord) {
       if (lastWord.startsWith("@") && lastWord.length > 1) {
-        setIsTypingUsername(true);
+        if (possibleUsernames.length === 0) {
+          setIsTypingUsername(false);
+        } else {
+          setIsTypingUsername(true);
+        }
         setTypedUsername(lastWord.slice(1));
       } else if (lastWord.startsWith("#")) {
         setIsTypingTrend(true);
         setTypedTrend(lastWord.slice(1));
-      } 
-      else {
+      } else {
         setIsTypingUsername(false);
       }
     } else {
@@ -247,28 +250,71 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     }
   };
 
-
   const [possibleUsernames, setPossibleUsernames] = useState<User[]>([]);
 
-  // Assuming you have other relevant state variables and functions here
-  console.log(userList)
-
-useEffect(() => {
-  const filteredUsernames = userList
-    .filter((user) => user.username && user.username.startsWith(typedUsername))
-    .map(({ id, username, profilePicture, firstName, lastName }) => ({ id, username, 
-      profilePicture: profilePicture || "", firstName: firstName || "", lastName: lastName || "" }));
+  useEffect(() => {
+    const filteredUsernames = userList
+      .filter(
+        (user) => user.username && user.username.toLowerCase().startsWith(typedUsername.toLowerCase())
+      )
+      .map(({ id, username, profilePicture, firstName, lastName }) => ({
+        id,
+        username,
+        profilePicture: profilePicture || "",
+        firstName: firstName || "",
+        lastName: lastName || "",
+      }));
     if (filteredUsernames) {
       setPossibleUsernames(filteredUsernames);
     }
-}, [userList, typedUsername]);
-
+  }, [userList, typedUsername]);
 
   if (!user) return null;
 
   return (
     <div className="relative">
       <div className="relative mb-4 flex gap-3 border-b border-slate-400 pb-4">
+        {isTypingUsername && (
+          <ul className="absolute right-8 top-20 z-10 flex max-h-[250px] w-[250px] flex-col overflow-auto rounded-xl bg-Intone-100">
+            {possibleUsernames.map((user, index) => (
+              <div
+              className={`flex flex-row rounded-xl p-4 hover:bg-Intone-200 ${index == 0 ? 'bg-Intone-200' : ''}`} 
+              onClick={() => {
+                  // Replace typed username with selected username
+                  const words = input.split(" ");
+                  words[words.length - 1] = user.username
+                    ? `@${user.username}`
+                    : "";
+                  setInput(words.join(" "));
+                  if (words[0]) {
+                    setTextLength(words[0].length);
+                  }
+                  // Stop showing the drop-down
+                  setIsTypingUsername(false);
+                }}
+                key={user.id}
+              >
+                <Image
+                  className="mr-4 h-14 w-14 rounded-full"
+                  src={user.profilePicture}
+                  alt="Profile Image"
+                  width={56}
+                  height={56}
+                  priority={true}
+                />
+                <div className="flex flex-col ">
+                  {user.firstName && user.lastName && (
+                    <span>
+                      {user.firstName}
+                      {user.lastName}
+                    </span>
+                  )}
+                  <li>{user.username}</li>
+                </div>
+              </div>
+            ))}
+          </ul>
+        )}
         <Image
           className="h-14 w-14 rounded-full"
           src={user.profileImageUrl}
@@ -296,6 +342,7 @@ useEffect(() => {
             }
           }}
         />
+
         {input !== "" && !isPosting && (
           <button
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 
@@ -313,33 +360,10 @@ useEffect(() => {
         )}
       </div>
       {LoadingUserList && (
-  <div className="flex items-center justify-center">
-    <LoadingSpinner size={20} />
-  </div>
-)}
-  {isTypingUsername && (
-    <ul className="flex flex-col absolute top-12">
-      {possibleUsernames.map((user) => (
-        <li
-          key={user.username}
-          onClick={() => {
-            // Replace typed username with selected username
-            const words = input.split(" ");
-            words[words.length - 1] = user.username ? `@${user.username}` : '';
-            setInput(words.join(" "));
-
-            // Stop showing the drop-down
-            setIsTypingUsername(false);
-          }}
-        >
-          {user.username}
-        </li>
-      ))}
-    </ul>
-  )}
-
-
-      
+        <div className="flex items-center justify-center">
+          <LoadingSpinner size={20} />
+        </div>
+      )}
 
       <div className="flex flex-row items-center gap-2 border-b border-slate-400 pb-4">
         <label>
