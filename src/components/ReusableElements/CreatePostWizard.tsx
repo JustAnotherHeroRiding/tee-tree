@@ -231,6 +231,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
 
+  const [highlightedInput, setHighlightedInput] = useState('');
 
 
   const selectUser = (highlightedUser: number) => {
@@ -239,13 +240,22 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     const selectedUsername = possibleUsernames[highlightedUser]?.username ?? "";
     words[words.length - 1] = `@${selectedUsername}`;
     setInput(words.join(" "));
+
+    const lastWord = words[words.length - 1];
+    if (lastWord) {
+      if (lastWord.startsWith("@") || lastWord.startsWith("#")) {
+        words[words.length - 1] = `<span class="text-Intone-300">${lastWord}</span>`;
+      }
+  
+    setHighlightedInput(words.join(" "));
+  }
     if (words[0]) {
       setTextLength(words[0].length);
     }
     // Stop showing the drop-down
     setIsTypingUsername(false);
   }
-  
+
 
 
   const handleTextareaChange = (
@@ -257,7 +267,24 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     const words = event.target.value.split(" ");
     const lastWord = words[words.length - 1];
 
+
+    if (event.target.value.length <= 1 ) {
+      setHighlightedInput("")
+    }
+
+    const styledWords = words.map((word) => {
+      if (word.startsWith("@") || word.startsWith("#")) {
+        return `<span class="text-Intone-300">${word}</span>`;
+      }
+      return word;
+    });
+    console.log(styledWords)
+  
+    // Join the words back together and set highlightedInput
+    setHighlightedInput(styledWords.join(" "));
+
     if (lastWord) {
+      setHighlightedInput(words.join(" "));
       if (lastWord.startsWith("@") && lastWord.length > 1) {
         if (possibleUsernames.length === 0) {
           setIsTypingUsername(false);
@@ -299,6 +326,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       setPossibleUsernames(filteredUsernames.slice(0, 6));
     }
   }, [userList, typedUsername]);
+  
 
   if (!user) return null;
 
@@ -339,9 +367,14 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         <h1 className="absolute -top-4 right-0 rounded-3xl">
           {textLength}/280
         </h1>
+        <div className="relative w-full">
+      <div
+      className="absolute text-transparent"
+        dangerouslySetInnerHTML={{ __html: highlightedInput.replace(/\n/g, '<br/>') }}
+      />
         <TextareaAutosize
           placeholder="What's on your mind?"
-          className="grow resize-none bg-transparent outline-none"
+          className="grow w-full resize-none bg-transparent outline-none"
           value={input}
           maxLength={280}
           onChange={(e) => handleTextareaChange(e)}
@@ -401,7 +434,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             
           }}
         />
-
+  </div>
         {input !== "" && !isPosting && (
           <button
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 

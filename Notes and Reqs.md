@@ -117,7 +117,7 @@ Let's implement some features I have already implemented before in order to lear
 - This takes the focus away from the typing, i need to find another way to focus #DONE 
 - Fix this mess! #DONE 
 - Arrow keys and tab to select #DONE 
-- Let's make it scroll if we are selecting an out of bounds user
+- Let's make it scroll if we are selecting an out of bounds user #DONE 
 - Unfinished user mentions were not showing where i could possibly tag someone, added the else block to handle this to the colored words function #DONE 
 
 ## Bug fixing followers
@@ -131,6 +131,10 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Reworking the post content and removing the link
 - Remove the link wrapping the entire post component and turn it into a span #DONE 
+
+## Trends and mentions blue text
+- When typing a word that starts with an @ or # when making a new post it should be blue #DONE 
+- It should remain blue when typing the following words
 
 
 ## Trends and follow recommendations
