@@ -384,12 +384,21 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 return nextHighlightedUser;
               });
             
-            } else if (e.key === "Tab") {
-              // Tab key pressed
-              // Select the currently highlighted user
-              e.preventDefault();
-              selectUser(highlightedUser);
+            } else if (e.key === "Tab") {  
+              // Split input into an array of words
+              const words = input.split(' ');
+              // Get the last word
+              const lastWord = words.slice(-1)[0];
+              // Check if the last word isn't just an @ or a #
+              if (lastWord && lastWord.length > 1) {
+            
+                // Tab key pressed
+                // Select the currently highlighted user
+                e.preventDefault();
+                selectUser(highlightedUser);
+              } 
             }
+            
           }}
         />
 
