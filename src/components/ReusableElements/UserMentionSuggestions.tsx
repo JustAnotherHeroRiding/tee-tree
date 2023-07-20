@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import type { User } from "./CreatePostWizard";
 import Image from "next/image";
 
@@ -9,26 +9,19 @@ interface UserCardProps {
     setInput: React.Dispatch<React.SetStateAction<string>>;
     setIsTypingUsername: React.Dispatch<React.SetStateAction<boolean>>;
     setTextLength: React.Dispatch<React.SetStateAction<number>>;
+    highlightedUser: number;
+    
   }
   
-  export const UserCard: React.FC<UserCardProps> = ({ user, index, input, setInput, setIsTypingUsername, setTextLength }) => {
+  export const UserCard: React.FC<UserCardProps> = ({ user, index, input, setInput, setIsTypingUsername, setTextLength, highlightedUser }) => {
     const userRef = useRef<HTMLDivElement>(null); // create a reference
-  
-    useEffect(() => {
-      if (index === 0 && userRef.current ) {
-         // if it's the first user
-          // if the div exists
-          userRef.current.focus(); // focus the div
-      }
-    }, [index]);
-  
+    
     return (
       <div
         tabIndex={0}
         ref={userRef}
-        className={`flex flex-row rounded-xl p-4 focus:outline-none hover:bg-Intone-200 focus:text-red-600 ${
-          index == 0 ? "bg-Intone-200" : ""
-        }`}
+        className={`flex flex-row rounded-xl p-4  hover:bg-Intone-200 ${
+          highlightedUser == index ? "bg-Intone-200" : ""}`}
         onClick={() => {
           // Replace typed username with selected username
           const words = input.split(" ");

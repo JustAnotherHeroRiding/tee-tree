@@ -114,9 +114,10 @@ Let's implement some features I have already implemented before in order to lear
 - Style the list of suggested users #DONE 
 - Improve function that filters usernames to also include lowercase #DONE 
 - Add autofocus to the recommended users card #DONE 
-- This takes the focus away from the typing, i need to find another way to focus
-- Fix this mess!
-- Arrow keys and tab to select 
+- This takes the focus away from the typing, i need to find another way to focus #DONE 
+- Fix this mess! #DONE 
+- Arrow keys and tab to select #DONE 
+- Let's make it scroll if we are selecting an out of bounds user
 
 ## Bug fixing followers
 - Follower numbers on profile are not correct #DONE 

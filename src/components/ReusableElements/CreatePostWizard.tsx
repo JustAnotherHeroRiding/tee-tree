@@ -200,6 +200,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
       setInput("");
       setTextLength(0);
+      setIsTypingUsername(false);
+      setIsTypingTrend(false);
       if (homePage || !imageFile) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
       } else {
@@ -226,6 +228,21 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const [highlightedUser, setHighlightedUser] = useState(0);
   const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
+
+
+  const selectUser = (highlightedUser: number) => {
+    // Replace typed username with selected username
+    const words = input.split(" ");
+    words[words.length - 1] = possibleUsernames[highlightedUser]?.username
+      ? `@${possibleUsernames[highlightedUser]?.username}`
+      : "";
+    setInput(words.join(" "));
+    if (words[0]) {
+      setTextLength(words[0].length);
+    }
+    // Stop showing the drop-down
+    setIsTypingUsername(false);
+  }
   
 
 
@@ -242,6 +259,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       if (lastWord.startsWith("@") && lastWord.length > 1) {
         if (possibleUsernames.length === 0) {
           setIsTypingUsername(false);
+          setHighlightedUser(0)
         } else {
           setIsTypingUsername(true);
         }
@@ -250,9 +268,11 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         setIsTypingTrend(true);
         setTypedTrend(lastWord.slice(1));
       } else {
+        setHighlightedUser(0);
         setIsTypingUsername(false);
       }
     } else {
+      setHighlightedUser(0);
       setIsTypingUsername(false);
     }
   };
@@ -286,11 +306,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         {isTypingUsername && (
           <ul
             className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
-          max-h-[250px] w-fit max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
+          max-h-[450px] w-fit max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
           >
             {possibleUsernames.map((user, index) =>  (
                 <UserCard key={index} user={user} index={index} setInput={setInput}
-                 input={input} setIsTypingUsername={setIsTypingUsername} setTextLength={setTextLength} />
+                 input={input} setIsTypingUsername={setIsTypingUsername} setTextLength={setTextLength}
+                 highlightedUser={highlightedUser}
+                  />
             )
             )}
           </ul>
@@ -321,10 +343,14 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               }
             } else if (e.key === 'ArrowDown' && highlightedUser < possibleUsernames.length - 1) {
               // Down arrow key pressed
+              e.preventDefault();
+              console.log("Down Arrow Pressed")
               setPrevHighlightedUser(highlightedUser);
               setHighlightedUser(highlightedUser + 1);
             } else if (e.key === "ArrowUp" && highlightedUser > 0) {
               // Up arrow key pressed
+              e.preventDefault();
+              console.log("Up Arrow Pressed")
               setPrevHighlightedUser(highlightedUser);
               setHighlightedUser(highlightedUser - 1);
             } else if (e.key === "Tab") {
