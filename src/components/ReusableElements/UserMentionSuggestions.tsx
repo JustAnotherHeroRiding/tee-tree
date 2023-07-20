@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import type { User } from "./CreatePostWizard";
 import Image from "next/image";
 
@@ -10,16 +9,17 @@ interface UserCardProps {
     setIsTypingUsername: React.Dispatch<React.SetStateAction<boolean>>;
     setTextLength: React.Dispatch<React.SetStateAction<number>>;
     highlightedUser: number;
+    scrollRef: React.RefObject<HTMLDivElement>;
     
   }
   
-  export const UserCard: React.FC<UserCardProps> = ({ user, index, input, setInput, setIsTypingUsername, setTextLength, highlightedUser }) => {
-    const userRef = useRef<HTMLDivElement>(null); // create a reference
+  export const UserCard: React.FC<UserCardProps> = ({ user, index, input, setInput, setIsTypingUsername,
+     setTextLength, highlightedUser, scrollRef }) => {
     
     return (
       <div
         tabIndex={0}
-        ref={userRef}
+        ref={scrollRef}
         className={`flex flex-row rounded-xl p-4  hover:bg-Intone-200 ${
           highlightedUser == index ? "bg-Intone-200" : ""}`}
         onClick={() => {

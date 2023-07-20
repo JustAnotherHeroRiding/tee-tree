@@ -118,6 +118,7 @@ Let's implement some features I have already implemented before in order to lear
 - Fix this mess! #DONE 
 - Arrow keys and tab to select #DONE 
 - Let's make it scroll if we are selecting an out of bounds user
+- Unfinished user mentions were not showing where i could possibly tag someone, added the else block to handle this to the colored words function #DONE 
 
 ## Bug fixing followers
 - Follower numbers on profile are not correct #DONE 

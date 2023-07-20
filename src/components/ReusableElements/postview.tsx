@@ -201,7 +201,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                   {username}
                 </Link>
                 <div
-                  className="invisible absolute top-16 right-0 z-10
+                  className="invisible absolute right-0 top-16 z-10
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
             p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100"
                 >
@@ -241,13 +241,13 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                         </div>
                       ))}
                   </div>
-                  <Link href={`/@${username}`} className="flex flex-row mt-4">
+                  <Link href={`/@${username}`} className="mt-4 flex flex-row">
                     @
                     <span className="cursor-pointer hover:underline">
                       {username}
                     </span>
                   </Link>
-                  <div className="flex flex-row mt-4">
+                  <div className="mt-4 flex flex-row">
                     <Link href={`/followers/@${username}`}>
                       <div className="mb-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
                         <h1>Followers</h1>
@@ -270,6 +270,8 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
             </div>
           </span>
         );
+      } else {
+        return <span key={index}>{word}</span>;
       }
     } else {
       return <span key={index}>{word}</span>;
@@ -613,7 +615,7 @@ const PostViewComponent = (props: PostWithUser) => {
         width={56}
         height={56}
       />
-      <div className="flex w-full flex-col relative">
+      <div className="relative flex w-full flex-col">
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username}`}>
             @
@@ -648,11 +650,8 @@ const PostViewComponent = (props: PostWithUser) => {
           } select-all rounded-2xl px-2 py-1`}
           onMouseUp={(event) => {
             event.stopPropagation();
-            void router.push(`/post/${post.id}`);
-          }}
-          onClick={(event) => {
-            if (isEditing) {
-              event.preventDefault();
+            if (!isEditing) {
+              void router.push(`/post/${post.id}`);
             }
           }}
         >
@@ -662,7 +661,9 @@ const PostViewComponent = (props: PostWithUser) => {
                 className="absolute right-0 top-4 rounded-3xl
           px-1 py-1 hover:bg-slate-700 hover:text-white
           "
-                onClick={() => setIsEditing(false)}
+                onClick={() => {
+                  setIsEditing(false);
+                }}
               >
                 <FontAwesomeIcon
                   className="h-6 w-6 rounded-3xl"

@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { api } from "~/utils/api";
-
+import React from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { LoadingSpinner } from "~/components/ReusableElements/loading";
@@ -229,13 +229,15 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [highlightedUser, setHighlightedUser] = useState(0);
   const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
 
+  const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
+
+
 
   const selectUser = (highlightedUser: number) => {
     // Replace typed username with selected username
     const words = input.split(" ");
-    words[words.length - 1] = possibleUsernames[highlightedUser]?.username
-      ? `@${possibleUsernames[highlightedUser]?.username}`
-      : "";
+    const selectedUsername = possibleUsernames[highlightedUser]?.username ?? "";
+    words[words.length - 1] = `@${selectedUsername}`;
     setInput(words.join(" "));
     if (words[0]) {
       setTextLength(words[0].length);
@@ -306,14 +308,23 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         {isTypingUsername && (
           <ul
             className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
-          max-h-[450px] w-fit max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
+          max-h-[250px] w-fit max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
           >
-            {possibleUsernames.map((user, index) =>  (
-                <UserCard key={index} user={user} index={index} setInput={setInput}
-                 input={input} setIsTypingUsername={setIsTypingUsername} setTextLength={setTextLength}
-                 highlightedUser={highlightedUser}
-                  />
-            )
+            {possibleUsernames.map((user, index) =>  
+              {
+                if (!userRefs.current[index]) {
+                  userRefs.current[index] = React.createRef<HTMLDivElement>();
+                }
+
+                return (<UserCard key={index} user={user} index={index} setInput={setInput}
+                  input={input} setIsTypingUsername={setIsTypingUsername} setTextLength={setTextLength}
+                  highlightedUser={highlightedUser} scrollRef={userRefs.current?.[index] || React.createRef<HTMLDivElement>()}
+
+
+                   />)
+              }
+                
+            
             )}
           </ul>
         )}
@@ -344,15 +355,35 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             } else if (e.key === 'ArrowDown' && highlightedUser < possibleUsernames.length - 1) {
               // Down arrow key pressed
               e.preventDefault();
-              console.log("Down Arrow Pressed")
               setPrevHighlightedUser(highlightedUser);
-              setHighlightedUser(highlightedUser + 1);
+              setHighlightedUser(prevHighlightedUser => {
+                const nextHighlightedUser = prevHighlightedUser + 1;
+                const nextRef = userRefs.current[nextHighlightedUser];
+                if (nextRef && nextRef.current) {
+                  nextRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                  });
+                }
+                return nextHighlightedUser;
+              });
+              
             } else if (e.key === "ArrowUp" && highlightedUser > 0) {
               // Up arrow key pressed
               e.preventDefault();
-              console.log("Up Arrow Pressed")
               setPrevHighlightedUser(highlightedUser);
-              setHighlightedUser(highlightedUser - 1);
+              setHighlightedUser(prevHighlightedUser => {
+                const nextHighlightedUser = prevHighlightedUser - 1;
+                const nextRef = userRefs.current[nextHighlightedUser];
+                if (nextRef && nextRef.current) {
+                  nextRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                  });
+                }
+                return nextHighlightedUser;
+              });
+            
             } else if (e.key === "Tab") {
               // Tab key pressed
               // Select the currently highlighted user
