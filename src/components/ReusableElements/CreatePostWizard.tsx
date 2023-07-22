@@ -34,7 +34,6 @@ export type User = {
   lastName: string | null;
 };
 
-
 export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
 }) => {
@@ -202,6 +201,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       setTextLength(0);
       setIsTypingUsername(false);
       setIsTypingTrend(false);
+      setHighlightedInput("");
       if (homePage || !imageFile) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
       } else {
@@ -231,8 +231,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
 
-  const [highlightedInput, setHighlightedInput] = useState('');
-
+  const [highlightedInput, setHighlightedInput] = useState("");
 
   const selectUser = (highlightedUser: number) => {
     // Replace typed username with selected username
@@ -244,19 +243,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     const lastWord = words[words.length - 1];
     if (lastWord) {
       if (lastWord.startsWith("@") || lastWord.startsWith("#")) {
-        words[words.length - 1] = `<span class="text-Intone-300">${lastWord}</span>`;
+        words[
+          words.length - 1
+        ] = `<span class="text-Intone-300">${lastWord}</span>`;
       }
-  
-    setHighlightedInput(words.join(" "));
-  }
+
+      setHighlightedInput(words.join(" "));
+    }
     if (words[0]) {
       setTextLength(words[0].length);
     }
     // Stop showing the drop-down
     setIsTypingUsername(false);
-  }
-
-
+  };
 
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -267,28 +266,21 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     const words = event.target.value.split(" ");
     const lastWord = words[words.length - 1];
 
+    // Create the highlighted HTML version of the entered text
+    const createMarkup = (text: string) => {
+      return text.replace(
+        /(@|#)\S+/g,
+        '<span class="text-Intone-300">$&</span>'
+      );
+    };
 
-    if (event.target.value.length <= 1 ) {
-      setHighlightedInput("")
-    }
-
-    const styledWords = words.map((word) => {
-      if (word.startsWith("@") || word.startsWith("#")) {
-        return `<span class="text-Intone-300">${word}</span>`;
-      }
-      return word;
-    });
-    console.log(styledWords)
-  
-    // Join the words back together and set highlightedInput
-    setHighlightedInput(styledWords.join(" "));
+    setHighlightedInput(createMarkup(event.target.value));
 
     if (lastWord) {
-      setHighlightedInput(words.join(" "));
       if (lastWord.startsWith("@") && lastWord.length > 1) {
         if (possibleUsernames.length === 0) {
           setIsTypingUsername(false);
-          setHighlightedUser(0)
+          setHighlightedUser(0);
         } else {
           setIsTypingUsername(true);
         }
@@ -326,7 +318,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       setPossibleUsernames(filteredUsernames.slice(0, 6));
     }
   }, [userList, typedUsername]);
-  
 
   if (!user) return null;
 
@@ -338,22 +329,28 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
           max-h-[250px] w-fit max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
           >
-            {possibleUsernames.map((user, index) =>  
-              {
-                if (!userRefs.current[index]) {
-                  userRefs.current[index] = React.createRef<HTMLDivElement>();
-                }
-
-                return (<UserCard key={index} user={user} index={index} setInput={setInput}
-                  input={input} setIsTypingUsername={setIsTypingUsername} setTextLength={setTextLength}
-                  highlightedUser={highlightedUser} scrollRef={userRefs.current?.[index] || React.createRef<HTMLDivElement>()}
-
-
-                   />)
+            {possibleUsernames.map((user, index) => {
+              if (!userRefs.current[index]) {
+                userRefs.current[index] = React.createRef<HTMLDivElement>();
               }
-                
-            
-            )}
+
+              return (
+                <UserCard
+                  key={index}
+                  user={user}
+                  index={index}
+                  setInput={setInput}
+                  input={input}
+                  setIsTypingUsername={setIsTypingUsername}
+                  setTextLength={setTextLength}
+                  highlightedUser={highlightedUser}
+                  scrollRef={
+                    userRefs.current?.[index] ||
+                    React.createRef<HTMLDivElement>()
+                  }
+                />
+              );
+            })}
           </ul>
         )}
         <Image
@@ -368,73 +365,74 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           {textLength}/280
         </h1>
         <div className="relative w-full">
-      <div
-      className="absolute text-transparent"
-        dangerouslySetInnerHTML={{ __html: highlightedInput.replace(/\n/g, '<br/>') }}
-      />
-        <TextareaAutosize
-          placeholder="What's on your mind?"
-          className="grow w-full resize-none bg-transparent outline-none"
-          value={input}
-          maxLength={280}
-          onChange={(e) => handleTextareaChange(e)}
-          disabled={isPosting}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              if (input !== "") {
-                mutate({ content: input });
-              }
-            } else if (e.key === 'ArrowDown' && highlightedUser < possibleUsernames.length - 1) {
-              // Down arrow key pressed
-              e.preventDefault();
-              setPrevHighlightedUser(highlightedUser);
-              setHighlightedUser(prevHighlightedUser => {
-                const nextHighlightedUser = prevHighlightedUser + 1;
-                const nextRef = userRefs.current[nextHighlightedUser];
-                if (nextRef && nextRef.current) {
-                  nextRef.current.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                  });
-                }
-                return nextHighlightedUser;
-              });
-              
-            } else if (e.key === "ArrowUp" && highlightedUser > 0) {
-              // Up arrow key pressed
-              e.preventDefault();
-              setPrevHighlightedUser(highlightedUser);
-              setHighlightedUser(prevHighlightedUser => {
-                const nextHighlightedUser = prevHighlightedUser - 1;
-                const nextRef = userRefs.current[nextHighlightedUser];
-                if (nextRef && nextRef.current) {
-                  nextRef.current.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                  });
-                }
-                return nextHighlightedUser;
-              });
-            
-            } else if (e.key === "Tab") {  
-              // Split input into an array of words
-              const words = input.split(' ');
-              // Get the last word
-              const lastWord = words.slice(-1)[0];
-              // Check if the last word isn't just an @ or a #
-              if (lastWord && lastWord.length > 1) {
-            
-                // Tab key pressed
-                // Select the currently highlighted user
+          <div
+            className="absolute text-transparent"
+            dangerouslySetInnerHTML={{
+              __html: highlightedInput.replace(/\n/g, "<br/>"),
+            }}
+          />
+          <TextareaAutosize
+            placeholder="What's on your mind?"
+            className="w-full grow resize-none bg-transparent outline-none"
+            value={input}
+            maxLength={280}
+            onChange={(e) => handleTextareaChange(e)}
+            disabled={isPosting}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
                 e.preventDefault();
-                selectUser(highlightedUser);
-              } 
-            }
-            
-          }}
-        />
-  </div>
+                if (input !== "") {
+                  mutate({ content: input });
+                }
+              } else if (
+                e.key === "ArrowDown" &&
+                highlightedUser < possibleUsernames.length - 1
+              ) {
+                // Down arrow key pressed
+                e.preventDefault();
+                setPrevHighlightedUser(highlightedUser);
+                setHighlightedUser((prevHighlightedUser) => {
+                  const nextHighlightedUser = prevHighlightedUser + 1;
+                  const nextRef = userRefs.current[nextHighlightedUser];
+                  if (nextRef && nextRef.current) {
+                    nextRef.current.scrollIntoView({
+                      behavior: "smooth",
+                      block: "nearest",
+                    });
+                  }
+                  return nextHighlightedUser;
+                });
+              } else if (e.key === "ArrowUp" && highlightedUser > 0) {
+                // Up arrow key pressed
+                e.preventDefault();
+                setPrevHighlightedUser(highlightedUser);
+                setHighlightedUser((prevHighlightedUser) => {
+                  const nextHighlightedUser = prevHighlightedUser - 1;
+                  const nextRef = userRefs.current[nextHighlightedUser];
+                  if (nextRef && nextRef.current) {
+                    nextRef.current.scrollIntoView({
+                      behavior: "smooth",
+                      block: "nearest",
+                    });
+                  }
+                  return nextHighlightedUser;
+                });
+              } else if (e.key === "Tab") {
+                // Split input into an array of words
+                const words = input.split(" ");
+                // Get the last word
+                const lastWord = words.slice(-1)[0];
+                // Check if the last word isn't just an @ or a #
+                if (lastWord && lastWord.length > 1) {
+                  // Tab key pressed
+                  // Select the currently highlighted user
+                  e.preventDefault();
+                  selectUser(highlightedUser);
+                }
+              }
+            }}
+          />
+        </div>
         {input !== "" && !isPosting && (
           <button
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 

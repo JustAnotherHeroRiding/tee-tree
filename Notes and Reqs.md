@@ -135,7 +135,7 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Trends and mentions blue text
 - When typing a word that starts with an @ or # when making a new post it should be blue #DONE 
-- It should remain blue when typing the following words
+- It should remain blue when typing the following words #DONE 
 
 
 ## Trends and follow recommendations
