@@ -40,8 +40,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
-  const {data: trends, isLoading: loadingTrends} = api.posts.getTrends.useQuery({});
-
+  const { data: trends, isLoading: loadingTrends } =
+    api.posts.getTrends.useQuery({});
 
   // const myImage = cld.image("cld-sample-2");
   // Make sure to replace 'demo' with your actual cloud_name
@@ -230,6 +230,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [typedTrend, setTypedTrend] = useState("");
 
   const [highlightedUser, setHighlightedUser] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
 
   const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
@@ -260,6 +261,29 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     setIsTypingUsername(false);
   };
 
+  const selectTrend = (highlightedTrend: string) => {
+    // Replace typed username with selected username
+    const words = input.split(" ");
+    const selectedTrend = highlightedTrend;
+    words[words.length - 1] = `${selectedTrend}`;
+    setInput(words.join(" "));
+
+    const lastWord = words[words.length - 1];
+    if (lastWord) {
+      if (lastWord.startsWith("@") || lastWord.startsWith("#")) {
+        words[
+          words.length - 1
+        ] = `<span class="text-Intone-300">${lastWord}</span>`;
+      }
+
+      setHighlightedInput(words.join(" "));
+    }
+    setTextLength(words.length);
+
+    // Stop showing the drop-down
+    setIsTypingTrend(false);
+  };
+
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -288,8 +312,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           setIsTypingUsername(true);
         }
         setTypedUsername(lastWord.slice(1));
-      } else if (lastWord.startsWith("#") && lastWord.length > 1 ){
-        setIsTypingTrend(true);
+      } else if (lastWord.startsWith("#") && lastWord.length > 1) {
+        console.log(possibleTrends)
+        if (possibleTrends.length === 0) {
+          setIsTypingTrend(false);
+        } else {
+          setIsTypingTrend(true);
+        }
         setTypedTrend(lastWord.slice(1));
       } else {
         setHighlightedUser(0);
@@ -323,27 +352,23 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     }
   }, [userList, typedUsername]);
 
-
   const [possibleTrends, setPossibleTrends] = useState<[string, number][]>([]);
 
   useEffect(() => {
     // Filter trends based on typedTrend
     if (trends && !loadingTrends) {
-      const filteredTrends = trends
-      .filter(
+      const filteredTrends = trends.filter(
         (trend) =>
           trend[0] && // Checking if trend name exists.
-          trend[0].toLowerCase().includes(typedTrend.toLowerCase()) // Checking if trend name includes the typed trend.
+          trend[0].toLowerCase().includes(typedTrend.toLowerCase())// Checking if trend name includes the typed trend.
       );
 
-    // If filteredTrends exists, update possibleTrends.
-    if (filteredTrends) {
-      setPossibleTrends(filteredTrends.slice(0, 6)); // Limiting array to first 6 items.
+      // If filteredTrends exists, update possibleTrends.
+      if (filteredTrends) {
+        setPossibleTrends(filteredTrends.slice(0, 6)); // Limiting array to first 6 items.
+      }
     }
-    }
-   
-  }, [trends, typedTrend,loadingTrends]); 
-
+  }, [trends, typedTrend, loadingTrends]);
 
   if (!user) return null;
 
@@ -353,7 +378,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         {isTypingUsername && (
           <ul
             className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
-          max-h-[250px] w-fit max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
+            max-h-[250px] w-fit max-w-[350px]
+            flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
           >
             {possibleUsernames.map((user, index) => {
               if (!userRefs.current[index]) {
@@ -379,36 +405,25 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             })}
           </ul>
         )}
-        {isTypingTrend && (
+        {isTypingTrend &&  possibleTrends.length > 0 &&(
           <ul
             className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
-          max-h-[250px] w-fit min-w-[200px] max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
+            max-h-[250px] w-fit min-w-[200px]
+            max-w-[350px] flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
           >
-            {!trends && (
-              <LoadingSpinner />
-            )}
-            {possibleTrends && (
+            {!trends && <LoadingSpinner />}
+            {possibleTrends &&
               possibleTrends.map((trend) => {
                 return (
-                  <li className="px-4 py-2 hover:bg-Intone-200" onClick={() => {
-                    // Replace typed username with selected username
-                    const words = input.split(" ");
-                    words[words.length - 1] = trend[0]
-                      ? `${trend[0]}`
-                      : "";
-                    setInput(words.join(" "));
-                    if (words[0]) {
-                      setTextLength(words[0].length);
-                    }
-                    // Stop showing the drop-down
-                    setIsTypingTrend(false);
-                  }}
-                   key={`${trend[0]}+${trend[1]}`}>{trend[0]}</li>
+                  <li
+                    className="px-4 py-2 hover:bg-Intone-200"
+                    onClick={() => selectTrend(trend[0])}
+                    key={`${trend[0]}+${trend[1]}`}
+                  >
+                    {trend[0]}
+                  </li>
                 );
-              })
-            )
-            }
-            
+              })}
           </ul>
         )}
         <Image
