@@ -59,6 +59,7 @@ Let's implement some features I have already implemented before in order to lear
 - Views per post
 - Emoji selector
 - Sharing audio files that can be played 
+- Make post content be selectable #DONE 
 
 
 ## Retweets

@@ -647,10 +647,11 @@ const PostViewComponent = (props: PostWithUser) => {
         <span
           className={`${
             !isEditing ? "hover:bg-slate-900" : ""
-          } select-all rounded-2xl px-2 py-1`}
+          } rounded-2xl px-2 py-1`}
           onMouseUp={(event) => {
             event.stopPropagation();
-            if (!isEditing) {
+            const selectedText = window.getSelection()?.toString();
+            if (!isEditing && !selectedText) {
               void router.push(`/post/${post.id}`);
             }
           }}
@@ -688,7 +689,7 @@ const PostViewComponent = (props: PostWithUser) => {
               <LoadingSpinner size={32} />
             </div>
           ) : (
-            <span className="text-2xl sm:whitespace-pre-wrap">
+            <span className="select-text text-2xl sm:whitespace-pre-wrap">
               <PostContent content={post.content} />
             </span>
           )}
