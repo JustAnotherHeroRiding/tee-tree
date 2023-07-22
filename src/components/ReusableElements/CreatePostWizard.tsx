@@ -40,9 +40,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
-  const {data: trends, isLoading} = api.posts.getTrends.useQuery({});
+  const {data: trends, isLoading: loadingTrends} = api.posts.getTrends.useQuery({});
 
-  console.log(trends)
 
   // const myImage = cld.image("cld-sample-2");
   // Make sure to replace 'demo' with your actual cloud_name
@@ -289,7 +288,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           setIsTypingUsername(true);
         }
         setTypedUsername(lastWord.slice(1));
-      } else if (lastWord.startsWith("#")) {
+      } else if (lastWord.startsWith("#") && lastWord.length > 1 ){
         setIsTypingTrend(true);
         setTypedTrend(lastWord.slice(1));
       } else {
@@ -299,6 +298,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     } else {
       setHighlightedUser(0);
       setIsTypingUsername(false);
+      setIsTypingTrend(false);
     }
   };
 
@@ -322,6 +322,28 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       setPossibleUsernames(filteredUsernames.slice(0, 6));
     }
   }, [userList, typedUsername]);
+
+
+  const [possibleTrends, setPossibleTrends] = useState<[string, number][]>([]);
+
+  useEffect(() => {
+    // Filter trends based on typedTrend
+    if (trends && !loadingTrends) {
+      const filteredTrends = trends
+      .filter(
+        (trend) =>
+          trend[0] && // Checking if trend name exists.
+          trend[0].toLowerCase().includes(typedTrend.toLowerCase()) // Checking if trend name includes the typed trend.
+      );
+
+    // If filteredTrends exists, update possibleTrends.
+    if (filteredTrends) {
+      setPossibleTrends(filteredTrends.slice(0, 6)); // Limiting array to first 6 items.
+    }
+    }
+   
+  }, [trends, typedTrend,loadingTrends]); 
+
 
   if (!user) return null;
 
@@ -355,6 +377,38 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 />
               );
             })}
+          </ul>
+        )}
+        {isTypingTrend && (
+          <ul
+            className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+          max-h-[250px] w-fit min-w-[200px] max-w-[350px] flex-col overflow-auto rounded-xl bg-Intone-100"
+          >
+            {!trends && (
+              <LoadingSpinner />
+            )}
+            {possibleTrends && (
+              possibleTrends.map((trend) => {
+                return (
+                  <li className="px-4 py-2 hover:bg-Intone-200" onClick={() => {
+                    // Replace typed username with selected username
+                    const words = input.split(" ");
+                    words[words.length - 1] = trend[0]
+                      ? `${trend[0]}`
+                      : "";
+                    setInput(words.join(" "));
+                    if (words[0]) {
+                      setTextLength(words[0].length);
+                    }
+                    // Stop showing the drop-down
+                    setIsTypingTrend(false);
+                  }}
+                   key={`${trend[0]}+${trend[1]}`}>{trend[0]}</li>
+                );
+              })
+            )
+            }
+            
           </ul>
         )}
         <Image
@@ -421,7 +475,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                   }
                   return nextHighlightedUser;
                 });
-              } else if (e.key === "Tab") {
+              } else if (e.key === "Tab" && isTypingUsername) {
                 // Split input into an array of words
                 const words = input.split(" ");
                 // Get the last word
