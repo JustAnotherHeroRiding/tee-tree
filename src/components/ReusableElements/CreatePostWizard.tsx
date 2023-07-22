@@ -314,6 +314,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         setTypedUsername(lastWord.slice(1));
       } else if (lastWord.startsWith("#") && lastWord.length > 1) {
         if (possibleTrends.length === 0) {
+          setHighlightedTrend(0);
           setIsTypingTrend(false);
         } else {
           setIsTypingTrend(true);
@@ -325,6 +326,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     } else {
       setHighlightedUser(0);
+      setHighlightedTrend(0);
       setIsTypingUsername(false);
       setIsTypingTrend(false);
     }
@@ -348,6 +350,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }));
     if (filteredUsernames) {
       setPossibleUsernames(filteredUsernames.slice(0, 6));
+      setHighlightedUser(0);
     }
   }, [userList, typedUsername]);
 
@@ -365,6 +368,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       // If filteredTrends exists, update possibleTrends.
       if (filteredTrends) {
         setPossibleTrends(filteredTrends.slice(0, 6)); // Limiting array to first 6 items.
+        setHighlightedTrend(0);
       }
     }
   }, [trends, typedTrend, loadingTrends]);
@@ -412,10 +416,10 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           >
             {!trends && <LoadingSpinner />}
             {possibleTrends &&
-              possibleTrends.map((trend) => {
+              possibleTrends.map((trend , index) => {
                 return (
                   <li
-                    className="px-4 py-2 hover:bg-Intone-200"
+                    className={`${index == highlightedTrend ? "bg-Intone-200" : ""} px-4 py-2 hover:bg-Intone-200`}
                     onClick={() => selectTrend(trend[0])}
                     key={`${trend[0]}+${trend[1]}`}
                   >
@@ -491,7 +495,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               ) {
                 // Up arrow key pressed
                 e.preventDefault();
-                if (highlightedUser > 0) {
+                if (highlightedUser > 0 && isTypingUsername) {
                   setPrevHighlightedUser(highlightedUser);
                   setHighlightedUser((prevHighlightedUser) => {
                     const nextHighlightedUser = prevHighlightedUser - 1;
@@ -504,6 +508,9 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                     }
                     return nextHighlightedUser;
                   });
+                }
+                else if (isTypingTrend && trends && highlightedTrend > 0) {
+                  setHighlightedTrend(highlightedTrend - 1);
                 }
               } else if (e.key === "Tab") {
                 // Split input into an array of words
@@ -520,7 +527,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                     selectUser(highlightedUser);
                   } else if (isTypingTrend) {
                     // This is a placeholder
-                    selectTrend(possibleTrends[0]?.[0] ?? "");
+                    selectTrend(possibleTrends[highlightedTrend]?.[0] ?? "");
                   }
                   // Tab key pressed
                   // Select the currently highlighted user

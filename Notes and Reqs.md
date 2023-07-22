@@ -59,8 +59,11 @@ Let's implement some features I have already implemented before in order to lear
 - Views per post
 - Emoji selector
 - Sharing audio files that can be played 
-- Make post content be selectable #DONE 
+- Make post content be selectable #DONE
 
+### Bug alert
+- Button cant appear inside of a button for the share modal
+- The buttons are too cramped, I should add another column on phone screen sizes and make it wider
 
 ## Retweets
 - Create the retweet model #DONE 
@@ -148,5 +151,8 @@ Let's implement some features I have already implemented before in order to lear
 - Posts starting with # in post.content should be blue #DONE
 - Make the trends be a global context like the user list so that I can access them from the create post and trends components - Turned into into a trpc call to fetch trends so we only call it once #DONE 
 - When typing, if a word starts with # we should get recommendations like for users with @  #DONE 
-- Fix the CSS with the highlighting, the select is not always displaying well and for some reason the possible trends array is one character too slow
+- Fix the CSS with the highlighting, the select is not always displaying well and for some reason the possible trends array is one character too slow #DONE 
+- Keyboard Navigation for trends #DONE 
+- The tab is selecting the wrong hashtag - I never used highlightedTrend to index the array #DONE 
+- Add Refs and scroll into view
 - Clicking on them should open the search query for that trend
