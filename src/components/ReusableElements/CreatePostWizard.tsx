@@ -233,6 +233,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
 
+  const [highlightedTrend, setHighlightedTrend] = useState(0);
+
   const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
 
   const [highlightedInput, setHighlightedInput] = useState("");
@@ -254,9 +256,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
       setHighlightedInput(words.join(" "));
     }
-    if (words[0]) {
-      setTextLength(words[0].length);
-    }
+    setTextLength(words.join(" ").length);
     // Stop showing the drop-down
     setIsTypingUsername(false);
   };
@@ -278,7 +278,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
       setHighlightedInput(words.join(" "));
     }
-    setTextLength(words.length);
+    setTextLength(words.join(" ").length);
 
     // Stop showing the drop-down
     setIsTypingTrend(false);
@@ -313,7 +313,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         }
         setTypedUsername(lastWord.slice(1));
       } else if (lastWord.startsWith("#") && lastWord.length > 1) {
-        console.log(possibleTrends)
         if (possibleTrends.length === 0) {
           setIsTypingTrend(false);
         } else {
@@ -360,7 +359,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       const filteredTrends = trends.filter(
         (trend) =>
           trend[0] && // Checking if trend name exists.
-          trend[0].toLowerCase().includes(typedTrend.toLowerCase())// Checking if trend name includes the typed trend.
+          trend[0].toLowerCase().includes(typedTrend.toLowerCase()) // Checking if trend name includes the typed trend.
       );
 
       // If filteredTrends exists, update possibleTrends.
@@ -405,7 +404,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             })}
           </ul>
         )}
-        {isTypingTrend &&  possibleTrends.length > 0 &&(
+        {isTypingTrend && possibleTrends.length > 0 && (
           <ul
             className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
             max-h-[250px] w-fit min-w-[200px]
@@ -459,48 +458,72 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 }
               } else if (
                 e.key === "ArrowDown" &&
-                highlightedUser < possibleUsernames.length - 1
+                (isTypingTrend || isTypingUsername)
               ) {
                 // Down arrow key pressed
                 e.preventDefault();
-                setPrevHighlightedUser(highlightedUser);
-                setHighlightedUser((prevHighlightedUser) => {
-                  const nextHighlightedUser = prevHighlightedUser + 1;
-                  const nextRef = userRefs.current[nextHighlightedUser];
-                  if (nextRef && nextRef.current) {
-                    nextRef.current.scrollIntoView({
-                      behavior: "smooth",
-                      block: "nearest",
-                    });
-                  }
-                  return nextHighlightedUser;
-                });
-              } else if (e.key === "ArrowUp" && highlightedUser > 0) {
+                if (
+                  isTypingUsername &&
+                  highlightedUser < possibleUsernames.length - 1
+                ) {
+                  setPrevHighlightedUser(highlightedUser);
+                  setHighlightedUser((prevHighlightedUser) => {
+                    const nextHighlightedUser = prevHighlightedUser + 1;
+                    const nextRef = userRefs.current[nextHighlightedUser];
+                    if (nextRef && nextRef.current) {
+                      nextRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest",
+                      });
+                    }
+                    return nextHighlightedUser;
+                  });
+                } else if (
+                  isTypingTrend &&
+                  trends &&
+                  highlightedTrend < trends?.length - 1
+                ) {
+                  setHighlightedTrend(highlightedTrend + 1);
+                }
+              } else if (
+                e.key === "ArrowUp" &&
+                (isTypingTrend || isTypingUsername)
+              ) {
                 // Up arrow key pressed
                 e.preventDefault();
-                setPrevHighlightedUser(highlightedUser);
-                setHighlightedUser((prevHighlightedUser) => {
-                  const nextHighlightedUser = prevHighlightedUser - 1;
-                  const nextRef = userRefs.current[nextHighlightedUser];
-                  if (nextRef && nextRef.current) {
-                    nextRef.current.scrollIntoView({
-                      behavior: "smooth",
-                      block: "nearest",
-                    });
-                  }
-                  return nextHighlightedUser;
-                });
-              } else if (e.key === "Tab" && isTypingUsername) {
+                if (highlightedUser > 0) {
+                  setPrevHighlightedUser(highlightedUser);
+                  setHighlightedUser((prevHighlightedUser) => {
+                    const nextHighlightedUser = prevHighlightedUser - 1;
+                    const nextRef = userRefs.current[nextHighlightedUser];
+                    if (nextRef && nextRef.current) {
+                      nextRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest",
+                      });
+                    }
+                    return nextHighlightedUser;
+                  });
+                }
+              } else if (e.key === "Tab") {
                 // Split input into an array of words
                 const words = input.split(" ");
                 // Get the last word
                 const lastWord = words.slice(-1)[0];
                 // Check if the last word isn't just an @ or a #
-                if (lastWord && lastWord.length > 1) {
+                if (
+                  (lastWord && lastWord.length > 1 && isTypingTrend) ||
+                  isTypingUsername
+                ) {
+                  e.preventDefault();
+                  if (isTypingUsername) {
+                    selectUser(highlightedUser);
+                  } else if (isTypingTrend) {
+                    // This is a placeholder
+                    selectTrend(possibleTrends[0]?.[0] ?? "");
+                  }
                   // Tab key pressed
                   // Select the currently highlighted user
-                  e.preventDefault();
-                  selectUser(highlightedUser);
                 }
               }
             }}

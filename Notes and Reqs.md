@@ -146,6 +146,7 @@ Let's implement some features I have already implemented before in order to lear
 - If the user clicks on show more it should open a separate page with just the trends #DONE 
 - The div on the side should not be shown if the url is /trends #DONE 
 - Posts starting with # in post.content should be blue #DONE
-- Make the trends be a global context like the user list so that I can access them from the create post and trends components
-- When typing, if a word starts with # we should get recommendations like for users with @ 
+- Make the trends be a global context like the user list so that I can access them from the create post and trends components - Turned into into a trpc call to fetch trends so we only call it once #DONE 
+- When typing, if a word starts with # we should get recommendations like for users with @  #DONE 
+- Fix the CSS with the highlighting, the select is not always displaying well and for some reason the possible trends array is one character too slow
 - Clicking on them should open the search query for that trend
