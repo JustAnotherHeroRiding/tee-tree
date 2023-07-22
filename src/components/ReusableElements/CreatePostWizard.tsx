@@ -40,6 +40,10 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
+  const {data: trends, isLoading} = api.posts.getTrends.useQuery({});
+
+  console.log(trends)
+
   // const myImage = cld.image("cld-sample-2");
   // Make sure to replace 'demo' with your actual cloud_name
   const imageUploadUrl =

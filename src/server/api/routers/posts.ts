@@ -13,6 +13,7 @@ import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
 import type { Post, Like, Retweet } from "@prisma/client";
 import { env } from "~/env.mjs";
 import crypto from "crypto";
+import { countHashtags } from "~/server/helpers/countHashtags";
 
 export type ExtendedPost = Post & {
   likes: Like[];
@@ -162,6 +163,42 @@ export const postsRouter = createTRPCRouter({
   
       return addUserDataToPosts(posts);
   }),
+  
+  getTrends: publicProcedure
+  .input(
+    z.object({
+      limit: z.number().optional(),
+    })
+  )
+  .query(async ({ ctx, input }) => {
+    const limit = input.limit;
+    // Get the date for one week ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    // Query the posts
+    const posts = await ctx.prisma.post.findMany({
+      orderBy: [{ createdAt: "desc" }],
+      where: {
+        createdAt: {
+          gte: oneWeekAgo,
+        },
+      },
+    });
+
+    // Count the hashtags
+    const hashtagCounts = countHashtags(posts);
+    const sortedHashtagCounts = Object.entries(hashtagCounts).sort(
+      (a, b) => b[1] - a[1]
+    );
+    
+    const topHashtags = limit
+      ? sortedHashtagCounts.slice(0, limit)
+      : sortedHashtagCounts;
+
+    return topHashtags;
+  }),
+
   
 
   getAllPaginated: publicProcedure

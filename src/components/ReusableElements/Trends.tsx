@@ -1,12 +1,11 @@
-import { countHashtags } from "~/server/helpers/countHashtags";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "./loading";
 import Link from "next/link";
 
 export const Trends = ({ limit = 10, sideBar = true }) => {
-  const { data: posts, isLoading } = api.posts.getAllLastWeek.useQuery();
+  const { data: unslicedHashtags, isLoading } = api.posts.getTrends.useQuery({});
   
-  if (!posts) {
+  if (!unslicedHashtags || isLoading) {
     return <div className="flex">
       <div className="mx-auto">
     <LoadingSpinner size={42} />
@@ -14,11 +13,7 @@ export const Trends = ({ limit = 10, sideBar = true }) => {
     </div>;
   }
 
-  // Sort and limit the hashtags
-  const hashtagCounts = countHashtags(posts);
-  const sortedHashtagCounts = Object.entries(hashtagCounts).sort((a, b) => b[1] - a[1]);
-  
-  const topHashtags = sortedHashtagCounts.slice(0, limit); // limit is now a prop
+  const topHashtags =  unslicedHashtags.slice(0, limit)
 
   return (
     <div className="flex flex-col">
