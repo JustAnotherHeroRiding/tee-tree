@@ -892,7 +892,7 @@ const PostViewComponent = (props: PostWithUser) => {
             <div className="modalparent">
               <div
                 className="modal grid grid-flow-row grid-cols-1 rounded-lg border border-slate-400
-               bg-black p-4 md:w-1/4"
+               bg-black p-4 w-[80vw] md:w-[35vw]"
               >
                 <button
                   className="absolute right-2 top-4 rounded-3xl
@@ -906,7 +906,7 @@ const PostViewComponent = (props: PostWithUser) => {
                   />
                 </button>
                 <h2 className="mx-auto font-semibold">Share with:</h2>
-                <div className="grid grid-flow-row-dense grid-cols-2 rounded-3xl border p-6 md:grid-cols-3">
+                <div className="grid grid-flow-row-dense grid-cols-3 rounded-3xl border p-6 md:grid-cols-3">
                   <button
                     data-tooltip-id="copyLink-tooltip"
                     data-tooltip-content="Copy to Clipboard"
