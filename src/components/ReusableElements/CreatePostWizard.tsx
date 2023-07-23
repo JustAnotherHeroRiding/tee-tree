@@ -234,6 +234,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
 
   const [highlightedTrend, setHighlightedTrend] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [prevhighlightedTrend, setPrevHighlightedTrend] = useState(-1);
 
   const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);

@@ -891,8 +891,8 @@ const PostViewComponent = (props: PostWithUser) => {
           {showShareModal && (
             <div className="modalparent">
               <div
-                className="modal grid grid-flow-row grid-cols-1 rounded-lg border border-slate-400
-               bg-black p-4 w-[80vw] md:w-[35vw]"
+                className="modal grid w-[80vw] grid-flow-row grid-cols-1 rounded-lg border
+               border-slate-400 bg-black p-4 md:w-[35vw]"
               >
                 <button
                   className="absolute right-2 top-4 rounded-3xl
@@ -910,7 +910,7 @@ const PostViewComponent = (props: PostWithUser) => {
                   <button
                     data-tooltip-id="copyLink-tooltip"
                     data-tooltip-content="Copy to Clipboard"
-                    className="flex flex-col items-center justify-center"
+                    className="flex my-2 flex-col items-center  justify-center rounded-xl hover:bg-gray-700"
                     onClick={() => {
                       void copyToClipboard();
                     }}
@@ -926,78 +926,79 @@ const PostViewComponent = (props: PostWithUser) => {
                     }}
                     id="copyLink-tooltip"
                   />
-
-                  <button className="flex flex-col items-center justify-center">
-                    <TwitterShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
+                  <TwitterShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    <span className="flex py-2 flex-col items-center justify-center rounded-xl hover:bg-gray-700">
                       <TwitterIcon size={32} round={true} />
-                    </TwitterShareButton>
-                    <p className="phone:hidden">Twitter</p>
-                  </button>
-                  <button className="flex flex-col items-center justify-center">
-                    <WhatsappShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
+
+                      <p className="phone:hidden">Twitter</p>
+                    </span>
+                  </TwitterShareButton>
+                  <WhatsappShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       {" "}
                       <WhatsappIcon size={32} round={true} />
-                    </WhatsappShareButton>
-                    <p className="phone:hidden">Whatsapp</p>
-                  </button>
-                  <button className="flex flex-col items-center justify-center">
-                    <TelegramShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
+                      <p className="phone:hidden">Whatsapp</p>
+                    </span>
+                  </WhatsappShareButton>
+                  <TelegramShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       {" "}
                       <TelegramIcon size={32} round={true} />
-                    </TelegramShareButton>
-                    <p className="phone:hidden">Telegram</p>
-                  </button>
-                  <button className="flex flex-col items-center justify-center">
-                    <LinkedinShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
+                      <p className="phone:hidden">Telegram</p>
+                    </span>
+                  </TelegramShareButton>
+                  <LinkedinShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       {" "}
                       <LinkedinIcon size={32} round={true} />
-                    </LinkedinShareButton>
-                    <p className="phone:hidden">Linkedin</p>
-                  </button>
-                  <button className="flex flex-col items-center justify-center">
-                    <EmailShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
+                      <p className="phone:hidden">Linkedin</p>
+                    </span>
+                  </LinkedinShareButton>
+                  <EmailShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       {" "}
                       <EmailIcon size={32} round={true} />
-                    </EmailShareButton>
-                    <p className="phone:hidden">Email</p>
-                  </button>
-                  <button className="flex flex-col items-center justify-center">
-                    <VKShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
-                      {" "}
+                      <p className="phone:hidden">Email</p>
+                    </span>
+                  </EmailShareButton>
+                  <VKShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    {" "}
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       <VKIcon size={32} round={true} />
-                    </VKShareButton>
-                    <p className="phone:hidden">Vk</p>
-                  </button>
-                  <button className="flex flex-col items-center justify-center">
-                    <RedditShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
-                      {" "}
+
+                      <p className="phone:hidden">Vk</p>
+                    </span>
+                  </VKShareButton>
+                  <RedditShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    {" "}
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       <RedditIcon size={32} round={true} />
-                    </RedditShareButton>
-                    <p className="phone:hidden">Reddit</p>
-                  </button>
-                  <button className="flex flex-col items-center justify-center">
-                    <ViberShareButton
-                      url={window.location.hostname + "/post" + `/${post.id}`}
-                    >
-                      {" "}
+                      <p className="phone:hidden">Reddit</p>
+                    </span>
+                  </RedditShareButton>
+                  <ViberShareButton
+                    url={window.location.hostname + "/post" + `/${post.id}`}
+                  >
+                    {" "}
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       <ViberIcon size={32} round={true} />
-                    </ViberShareButton>
-                    <p className="phone:hidden">Viber</p>
-                  </button>
+                      <p className="phone:hidden">Viber</p>
+                    </span>
+                  </ViberShareButton>
                 </div>
               </div>
             </div>
