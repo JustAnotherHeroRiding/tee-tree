@@ -62,7 +62,7 @@ Let's implement some features I have already implemented before in order to lear
 - Make post content be selectable #DONE
 
 ### Bug alert
-- Button cant appear inside of a button for the share modal
+- Button cant appear inside of a button for the share modal #DONE 
 - The buttons are too cramped, I should add another column on phone screen sizes and make it wider #DONE 
 
 ## Retweets
@@ -94,15 +94,19 @@ Let's implement some features I have already implemented before in order to lear
 - Home/following selector should always be on top and the posts underneath to be blurred #DONE 
 
 ## Search bar for profiles / posts
-- Return posts that contain the query in the post body
+- Create a separate search results page #DONE 
+- Return posts that contain the query in the post body with infinite scroll
+- Add those blue lines to the selected category of search results
 - Return profiles if user selects people
 - If the query starts with @ then show profiles first but still show posts afterwards
-- For the profiles show 3 profiles and a show more tab, for posts implement useInfiniteQuery
+- For the profiles show 3 profiles and a show more tab, for posts
 - Search by hashtags
 
 ## Messaging
 - Separate page where users can message each other
 
+## Recommended Users to follow
+- Display users that the current user is not following on the right below the trends
 
 ## Mentioning users
 - If the word starts with an @ and is part of the list of users then then it should be blue #DONE 
@@ -118,17 +122,17 @@ Let's implement some features I have already implemented before in order to lear
 - Style the list of suggested users #DONE 
 - Improve function that filters usernames to also include lowercase #DONE 
 - Add autofocus to the recommended users card #DONE 
-- This takes the focus away from the typing, i need to find another way to focus #DONE 
+- This takes the focus away from the typing, I need to find another way to focus #DONE 
 - Fix this mess! #DONE 
 - Arrow keys and tab to select #DONE 
 - Let's make it scroll if we are selecting an out of bounds user #DONE 
-- Unfinished user mentions were not showing where i could possibly tag someone, added the else block to handle this to the colored words function #DONE 
+- Unfinished user mentions were not showing where I could possibly tag someone, added the else block to handle this to the colored words function #DONE 
 
 ## Bug fixing followers
 - Follower numbers on profile are not correct #DONE 
 - Errors when trying add the author data to the follow record #DONE 
 - Cannot fetch following of current user #DONE 
-#### This was all caused by the same issue, when testing the follow button on the profile tooltip I created a Follow record with the username instead of the userId of the kristijan_k account. This made the function adding author data to follow records fail every time as it could not find an id Match
+##### This was all caused by the same issue, when testing the follow button on the profile tooltip I created a Follow record with the username instead of the userId of the kristijan_k account. This made the function adding author data to follow records fail every time as it could not find an id Match
 
 ## Delete Post bug
 - Deleting a post is failing because of the required relation between the Like and Post objects #DONE 
@@ -145,7 +149,6 @@ Let's implement some features I have already implemented before in order to lear
 - Since the trends will be shown in all pages, let's add them to the layout.tsx #DONE 
 - See how much each hashtag has appeared in all posts and show the top trends #DONE 
 - Make it only query the last week #DONE 
-- Separate trend page for expanded view of a trend and the posts containing those hashtags, this should just be a search query for posts containing that word if the user clicks the trend
 - If the user clicks on show more it should open a separate page with just the trends #DONE 
 - The div on the side should not be shown if the url is /trends #DONE 
 - Posts starting with # in post.content should be blue #DONE
@@ -156,3 +159,4 @@ Let's implement some features I have already implemented before in order to lear
 - The tab is selecting the wrong hashtag - I never used highlightedTrend to index the array #DONE 
 - Add Refs and scroll into view #DONE 
 - Clicking on them should open the search query for that trend
+- Separate trend page for expanded view of a trend and the posts containing those hashtags, this should just be a search query for posts containing that word if the user clicks the trend

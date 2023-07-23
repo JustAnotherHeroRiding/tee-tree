@@ -11,8 +11,8 @@ export default authMiddleware({
     "/:slug",
     "/following/:slug",
     "/followers/:slug",
-    "/i/trends"
-    
+    "/i/trends",
+    "/i/search(.*)"    
   ],
 });
 
