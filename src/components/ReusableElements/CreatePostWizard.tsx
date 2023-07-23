@@ -234,8 +234,10 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
 
   const [highlightedTrend, setHighlightedTrend] = useState(0);
+  const [prevhighlightedTrend, setPrevHighlightedTrend] = useState(-1);
 
   const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
+  const trendRefs = useRef<React.RefObject<HTMLLIElement>[]>([]);
 
   const [highlightedInput, setHighlightedInput] = useState("");
 
@@ -246,16 +248,24 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     words[words.length - 1] = `@${selectedUsername}`;
     setInput(words.join(" "));
 
-    const lastWord = words[words.length - 1];
-    if (lastWord) {
-      if (lastWord.startsWith("@") || lastWord.startsWith("#")) {
-        words[
-          words.length - 1
-        ] = `<span class="text-Intone-300">${lastWord}</span>`;
-      }
+    // New array for highlighted words
+  const highlightedWords: (string | undefined)[] = [];
 
-      setHighlightedInput(words.join(" "));
+  // Highlight all words that start with @ or #
+  for(let i = 0; i < words.length; i++){
+    const word = words[i];
+    if (word) {  // if word is not undefined
+      if (word.startsWith("@") || word.startsWith("#")) {
+        highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
+      } else {
+        highlightedWords[i] = words[i];
+      }
     }
+  }
+
+
+  const highlightedInput = highlightedWords.join(" ");
+  setHighlightedInput(highlightedInput);
     setTextLength(words.join(" ").length);
     // Stop showing the drop-down
     setIsTypingUsername(false);
@@ -268,16 +278,24 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     words[words.length - 1] = `${selectedTrend}`;
     setInput(words.join(" "));
 
-    const lastWord = words[words.length - 1];
-    if (lastWord) {
-      if (lastWord.startsWith("@") || lastWord.startsWith("#")) {
-        words[
-          words.length - 1
-        ] = `<span class="text-Intone-300">${lastWord}</span>`;
-      }
+      // New array for highlighted words
+  const highlightedWords: (string | undefined)[] = [];
 
-      setHighlightedInput(words.join(" "));
+  // Highlight all words that start with @ or #
+  for(let i = 0; i < words.length; i++){
+    const word = words[i];
+    if (word) {  // if word is not undefined
+      if (word.startsWith("@") || word.startsWith("#")) {
+        highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
+      } else {
+        highlightedWords[i] = words[i];
+      }
     }
+  }
+
+
+  const highlightedInput = highlightedWords.join(" ");
+  setHighlightedInput(highlightedInput);
     setTextLength(words.join(" ").length);
 
     // Stop showing the drop-down
@@ -417,9 +435,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             {!trends && <LoadingSpinner />}
             {possibleTrends &&
               possibleTrends.map((trend , index) => {
+                if (!trendRefs.current[index]) {
+                  trendRefs.current[index] = React.createRef<HTMLLIElement>();
+                }
                 return (
                   <li
-                    className={`${index == highlightedTrend ? "bg-Intone-200" : ""} px-4 py-2 hover:bg-Intone-200`}
+                  ref={
+                    trendRefs.current?.[index] ||
+                    React.createRef<HTMLLIElement>()
+                  }
+                    className={`${index == highlightedTrend ? "bg-Intone-200" : ""} px-4 py-2   hover:bg-Intone-200`}
                     onClick={() => selectTrend(trend[0])}
                     key={`${trend[0]}+${trend[1]}`}
                   >
@@ -485,10 +510,20 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 } else if (
                   isTypingTrend &&
                   trends &&
-                  highlightedTrend < trends?.length - 1
+                  highlightedTrend < possibleTrends?.length - 1
                 ) {
-                  setHighlightedTrend(highlightedTrend + 1);
-                }
+                  setPrevHighlightedTrend(highlightedTrend);
+                  setHighlightedTrend((prevhighlightedTrend) => {
+                    const nextHighlightedTrend = prevhighlightedTrend + 1;
+                    const nextRef = trendRefs.current[nextHighlightedTrend];
+                    if (nextRef && nextRef.current) {
+                      nextRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest",
+                      });
+                    }
+                    return nextHighlightedTrend;
+                  });                }
               } else if (
                 e.key === "ArrowUp" &&
                 (isTypingTrend || isTypingUsername)
@@ -510,8 +545,18 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                   });
                 }
                 else if (isTypingTrend && trends && highlightedTrend > 0) {
-                  setHighlightedTrend(highlightedTrend - 1);
-                }
+                  setPrevHighlightedTrend(highlightedTrend);
+                  setHighlightedTrend((prevhighlightedTrend) => {
+                    const nextHighlightedTrend = prevhighlightedTrend - 1;
+                    const nextRef = trendRefs.current[nextHighlightedTrend];
+                    if (nextRef && nextRef.current) {
+                      nextRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest",
+                      });
+                    }
+                    return nextHighlightedTrend;
+                  });                }
               } else if (e.key === "Tab") {
                 // Split input into an array of words
                 const words = input.split(" ");
