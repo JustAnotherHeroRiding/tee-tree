@@ -47,7 +47,7 @@ import { useRouter } from "next/router";
 
 dayjs.extend(relativeTime);
 
-type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
 type PostContentProps = {
   content: string;

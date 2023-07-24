@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
-import type { PostWithAuthor } from "~/server/api/routers/posts";
-import { PostView } from "../ReusableElements/postview";
+import { PostView, type PostWithUser } from "../ReusableElements/postview";
 import { RetweetedBy } from "../ReusableElements/RetweetedBy";
 
 export const InfiniteScrollFollowingFeed = () => {
@@ -85,7 +84,7 @@ export const InfiniteScrollFollowingFeed = () => {
   return (
     <div className="flex flex-col">
       {data?.pages?.map((page, pageIndex) =>
-        page.posts.map((fullPost: PostWithAuthor, postIndex) => {
+        page.posts.map((fullPost: PostWithUser, postIndex) => {
           const isLastPost =
             pageIndex === data.pages.length - 1 &&
             postIndex === page.posts.length - 1;

@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
-import { PostView } from "../ReusableElements/postview";
-import type { PostWithAuthor } from "~/server/api/routers/posts";
+import { PostView, type PostWithUser } from "../ReusableElements/postview";
 
 export const InfiniteScrollProfileLikedFeed = (props: { userId: string }) => {
   const [page, setPage] = useState(0);
@@ -68,7 +67,7 @@ export const InfiniteScrollProfileLikedFeed = (props: { userId: string }) => {
   return (
     <div className="flex flex-col">
       {data?.pages?.map((page, pageIndex) =>
-        page.posts.map((fullPost: PostWithAuthor, postIndex) => {
+        page.posts.map((fullPost: PostWithUser, postIndex) => {
           const isLastPost =
             pageIndex === data.pages.length - 1 &&
             postIndex === page.posts.length - 1;

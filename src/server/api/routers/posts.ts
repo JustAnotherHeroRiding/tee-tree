@@ -274,6 +274,58 @@ export const postsRouter = createTRPCRouter({
       };
     }),
 
+
+    infiniteScrollSearchResults: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        // cursor is a reference to the last item in the previous batch
+        // it's used to fetch the next batch
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+        query: z.string(), // Adding the search query input
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const items = await ctx.prisma.post.findMany({
+        where: {
+          // Only fetch posts where the content includes the search query  
+          content: {
+            contains: input.query,
+          },
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: [
+          { 
+            likes: {
+              _count: 'desc',
+            }
+          },
+          {
+            createdAt: 'desc',
+          },
+        ],
+        include: {
+          likes: true,
+          retweets: true,
+        },
+      });
+      
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      const extendedPosts = await addUserDataToPosts(items);
+      return {
+        posts: extendedPosts,
+        nextCursor,
+      };
+    }),
+
   getPostsByUserId: publicProcedure
     .input(
       z.object({

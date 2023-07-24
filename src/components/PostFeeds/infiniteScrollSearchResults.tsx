@@ -3,7 +3,9 @@ import { api } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
 import { PostView, type PostWithUser } from "../ReusableElements/postview";
 
-export const InfiniteScrollFeed = () => {
+export const InfiniteScrollSearchResults = (props: {
+  query: string;
+}) => {
   const [page, setPage] = useState(0);
 
   const {
@@ -11,19 +13,15 @@ export const InfiniteScrollFeed = () => {
     fetchNextPage,
     isLoading: postsLoading,
     isFetchingNextPage: isFetchingNextPage,
-  } = api.posts.infiniteScrollAllPosts.useInfiniteQuery(
+  } = api.posts.infiniteScrollSearchResults.useInfiniteQuery(
     {
-      limit: 4,
+        query: props.query,
+        limit: 4,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-
- 
-  /* const handleFetchPreviousPage = () => {
-    setPage((prev) => prev - 1);
-  }; */
 
   // data will be split in pages
   const toShow = data?.pages[page]?.posts;
@@ -37,19 +35,16 @@ export const InfiniteScrollFeed = () => {
       await fetchNextPage();
       setPage((prev) => prev + 1);
     };
-  
+
     if (!nextCursor) return; // No more pages to load
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
-           void handleFetchNextPage();
+          void handleFetchNextPage();
         }
       },
-      { root: null, // viewport
-        rootMargin: '0px',
-        threshold: 1.0
-      }
+      { threshold: 1 }
     );
 
     const currentLastPostElement = lastPostElementRef.current;
@@ -60,8 +55,7 @@ export const InfiniteScrollFeed = () => {
 
     return () => {
       if (currentLastPostElement) {
-
-        observer.observe(currentLastPostElement);
+        observer.unobserve(currentLastPostElement);
       }
     };
   }, [lastPostElementRef, nextCursor, fetchNextPage]);
@@ -82,19 +76,25 @@ export const InfiniteScrollFeed = () => {
 
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
-            <PostView  {...fullPost} />
 
-            <div ref={lastPostElementRef} className="infiniteScrollTriggerDiv w-full">
-              </div>
-              </div>
+              <PostView {...fullPost} />
+              <div
+                ref={lastPostElementRef}
+                className="infiniteScrollTriggerDiv"
+              ></div>
+            </div>
           ) : (
-            <PostView {...fullPost} key={fullPost.post.id} />
+            <div key={fullPost.post.id}>
+
+
+              <PostView {...fullPost} />
+            </div>
           );
         })
       )}
       {isFetchingNextPage && (
         <div className="mx-auto mt-6">
-        <LoadingSpinner size={40}/>
+          <LoadingSpinner size={40} />
         </div>
       )}
     </div>

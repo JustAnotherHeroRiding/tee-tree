@@ -5,7 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import { LoadingPage } from '~/components/ReusableElements/loading';
 import { PageLayout } from '~/components/layout';
 import BackButton from '~/components/ReusableElements/BackButton';
-import { InfiniteScrollFeed } from '~/components/PostFeeds/infinitescroll';
+import { InfiniteScrollSearchResults } from '~/components/PostFeeds/infiniteScrollSearchResults';
 
 
 
@@ -33,7 +33,7 @@ const SearchResults: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-      <div className="mb-12 flex flex-col sticky top-0 z-50 h-16 backdrop-blur-sm">
+      <div className="mb-12 flex flex-col sticky top-0 z-50 backdrop-blur-sm">
       <BackButton />
     <ul className='flex flex-row justify-between text-center cursor-pointer mt-[72px]'>
         <li className='px-4 py-2 hover:bg-slate-700 w-full'>Top</li>
@@ -46,7 +46,7 @@ const SearchResults: NextPage = () => {
 
 
         <h1 className="text-2xl border-t border-slate-400 font-bold text-center pt-2">{`Search Results for "${searchQuery as string}"`}</h1>
-        <InfiniteScrollFeed/>
+        <InfiniteScrollSearchResults query={searchQuery as string}/>
       </PageLayout>
     </>
   );
