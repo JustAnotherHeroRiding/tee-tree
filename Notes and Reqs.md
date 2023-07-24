@@ -95,12 +95,15 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Search bar for profiles / posts
 - Create a separate search results page #DONE 
+- Add a src parameter to see where the user initiated the search from #DONE 
 - Return posts that contain the query in the post body with infinite scroll
+- For the profiles show 3 profiles and a show more tab, for posts
 - Add those blue lines to the selected category of search results
 - Return profiles if user selects people
 - If the query starts with @ then show profiles first but still show posts afterwards
-- For the profiles show 3 profiles and a show more tab, for posts
+
 - Search by hashtags
+- Suggested search results
 
 ## Messaging
 - Separate page where users can message each other
@@ -158,5 +161,5 @@ Let's implement some features I have already implemented before in order to lear
 - Keyboard Navigation for trends #DONE 
 - The tab is selecting the wrong hashtag - I never used highlightedTrend to index the array #DONE 
 - Add Refs and scroll into view #DONE 
-- Clicking on them should open the search query for that trend
+- Clicking on them should open the search query for that trend #DONE 
 - Separate trend page for expanded view of a trend and the posts containing those hashtags, this should just be a search query for posts containing that word if the user clicks the trend

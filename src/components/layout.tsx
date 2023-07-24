@@ -25,6 +25,7 @@ export const PageLayout = (props: PropsWithChildren) => {
                 className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
                 name="q" // query parameter
               />
+              <input type="hidden" name="src" value="typed_query" />
               <FontAwesomeIcon
                 icon={faSearch}
                 className="absolute left-[4%] top-[38%] h-3 w-3 text-Intone-300"
