@@ -11,9 +11,10 @@ export const PageLayout = (props: PropsWithChildren) => {
   return (
     <>
       <main className="relative flex h-screen justify-center">
+        <div className="fixed left-[3%] showSidebar:hidden">
       <Link href={"/"}>
             <svg
-              className="h-10 w-10 rounded-2xl p-1 absolute left-1/4 hover:bg-slate-700"
+              className="h-10 w-10 rounded-2xl top-2 p-1 sticky hover:bg-slate-700"
               width="1em"
               height="1em"
               viewBox="0 0 24 24"
@@ -25,6 +26,7 @@ export const PageLayout = (props: PropsWithChildren) => {
               ></path>
             </svg>
           </Link>
+          </div>
         <div
           className="gray-thin-scrollbar h-full min-h-screen w-full overflow-y-scroll  border-x border-slate-400 
             sm:max-w-[500px] md:max-w-[500px] lg:max-w-[650px] phone:border-none"
