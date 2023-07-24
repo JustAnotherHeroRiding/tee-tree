@@ -5,6 +5,7 @@ import { PostView, type PostWithUser } from "../ReusableElements/postview";
 
 export const InfiniteScrollSearchResults = (props: {
   query: string;
+  selector: string; // made it optional here
 }) => {
   const [page, setPage] = useState(0);
 
@@ -16,12 +17,14 @@ export const InfiniteScrollSearchResults = (props: {
   } = api.posts.infiniteScrollSearchResults.useInfiniteQuery(
     {
         query: props.query,
+        selector: props.selector,
         limit: 4,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
+  
 
   // data will be split in pages
   const toShow = data?.pages[page]?.posts;
@@ -58,7 +61,10 @@ export const InfiniteScrollSearchResults = (props: {
         observer.unobserve(currentLastPostElement);
       }
     };
-  }, [lastPostElementRef, nextCursor, fetchNextPage]);
+  }, [lastPostElementRef, nextCursor, fetchNextPage, props.selector]);
+
+  
+
 
   if (toShow?.length === 0) return null;
 

@@ -31,16 +31,19 @@ const SearchResults: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-        <div className="sticky top-0 z-50 mb-12 flex flex-col backdrop-blur-sm">
+        <div className="sticky top-0 z-50 mb-2 flex flex-col backdrop-blur-sm">
           <BackButton />
-          <ul className="mt-[72px] flex cursor-pointer flex-row justify-between border-b text-center">
-            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+          <ul className="mt-[72px] flex cursor-pointer flex-row justify-between border-b border-slate-400 text-center">
+            <div
+              className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700"
+              onClick={() => {
                 const newQuery = { ...router.query, selector: "top" };
                 void router.push({
                   pathname: router.pathname,
                   query: newQuery,
                 });
-              }}>
+              }}
+            >
               <li className="w-full px-4 py-2">Top</li>
               {selector === "top" && (
                 <hr className="selector-on-symbol absolute bottom-0"></hr>
@@ -61,37 +64,46 @@ const SearchResults: NextPage = () => {
                 <hr className="selector-on-symbol absolute bottom-0"></hr>
               )}
             </div>
-            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+            <div
+              className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700"
+              onClick={() => {
                 const newQuery = { ...router.query, selector: "people" };
                 void router.push({
                   pathname: router.pathname,
                   query: newQuery,
                 });
-              }}>
+              }}
+            >
               <li className="w-full px-4 py-2 ">People</li>
               {selector === "people" && (
                 <hr className="selector-on-symbol absolute bottom-0"></hr>
               )}
             </div>
-            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+            <div
+              className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700"
+              onClick={() => {
                 const newQuery = { ...router.query, selector: "photos" };
                 void router.push({
                   pathname: router.pathname,
                   query: newQuery,
                 });
-              }}>
+              }}
+            >
               <li className="w-full px-4 py-2">Photos</li>
               {selector === "photos" && (
                 <hr className="selector-on-symbol absolute bottom-0"></hr>
               )}
             </div>
-            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+            <div
+              className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700"
+              onClick={() => {
                 const newQuery = { ...router.query, selector: "gifs" };
                 void router.push({
                   pathname: router.pathname,
                   query: newQuery,
                 });
-              }}>
+              }}
+            >
               <li className="w-full px-4 py-2">Gifs</li>
               {selector === "gifs" && (
                 <hr className="selector-on-symbol absolute bottom-0"></hr>
@@ -99,8 +111,23 @@ const SearchResults: NextPage = () => {
             </div>{" "}
           </ul>
         </div>
-
-        <InfiniteScrollSearchResults query={searchQuery as string} />
+        <div className="border-b border-slate-400">
+          <h2 className="px-4 font-bold text-2xl">People</h2>
+          {/* This should set the selector to people */}
+          <p className="pl-4 mb-4 text-Intone-300 hover:bg-slate-800 w-full">View all</p>
+        </div>
+        {selector == "top" && (
+          <InfiniteScrollSearchResults
+            query={searchQuery as string}
+            selector={"top"}
+          />
+        )}
+        {selector == "latest" && (
+          <InfiniteScrollSearchResults
+            query={searchQuery as string}
+            selector={"latest"}
+          />
+        )}
       </PageLayout>
     </>
   );

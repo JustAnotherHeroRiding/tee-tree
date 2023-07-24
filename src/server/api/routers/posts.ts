@@ -145,7 +145,7 @@ export const postsRouter = createTRPCRouter({
     // Get the date for one week ago
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  
+
     // Query the posts
     const posts = await ctx.prisma.post.findMany({
       orderBy: [{ createdAt: "desc" }],
@@ -157,49 +157,47 @@ export const postsRouter = createTRPCRouter({
       },
       include: {
         likes: true,
-        retweets: true // Include the likes relation in the result
+        retweets: true, // Include the likes relation in the result
       },
     });
-  
-      return addUserDataToPosts(posts);
+
+    return addUserDataToPosts(posts);
   }),
-  
+
   getTrends: publicProcedure
-  .input(
-    z.object({
-      limit: z.number().optional(),
-    })
-  )
-  .query(async ({ ctx, input }) => {
-    const limit = input.limit;
-    // Get the date for one week ago
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    .input(
+      z.object({
+        limit: z.number().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit;
+      // Get the date for one week ago
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    // Query the posts
-    const posts = await ctx.prisma.post.findMany({
-      orderBy: [{ createdAt: "desc" }],
-      where: {
-        createdAt: {
-          gte: oneWeekAgo,
+      // Query the posts
+      const posts = await ctx.prisma.post.findMany({
+        orderBy: [{ createdAt: "desc" }],
+        where: {
+          createdAt: {
+            gte: oneWeekAgo,
+          },
         },
-      },
-    });
+      });
 
-    // Count the hashtags
-    const hashtagCounts = countHashtags(posts);
-    const sortedHashtagCounts = Object.entries(hashtagCounts).sort(
-      (a, b) => b[1] - a[1]
-    );
-    
-    const topHashtags = limit
-      ? sortedHashtagCounts.slice(0, limit)
-      : sortedHashtagCounts;
+      // Count the hashtags
+      const hashtagCounts = countHashtags(posts);
+      const sortedHashtagCounts = Object.entries(hashtagCounts).sort(
+        (a, b) => b[1] - a[1]
+      );
 
-    return topHashtags;
-  }),
+      const topHashtags = limit
+        ? sortedHashtagCounts.slice(0, limit)
+        : sortedHashtagCounts;
 
-  
+      return topHashtags;
+    }),
 
   getAllPaginated: publicProcedure
     .input(
@@ -274,8 +272,7 @@ export const postsRouter = createTRPCRouter({
       };
     }),
 
-
-    infiniteScrollSearchResults: publicProcedure
+  infiniteScrollSearchResults: publicProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -284,13 +281,14 @@ export const postsRouter = createTRPCRouter({
         cursor: z.string().nullish(),
         skip: z.number().optional(),
         query: z.string(), // Adding the search query input
+        selector: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
+
       const items = await ctx.prisma.post.findMany({
         where: {
-          // Only fetch posts where the content includes the search query  
           content: {
             contains: input.query,
           },
@@ -298,22 +296,22 @@ export const postsRouter = createTRPCRouter({
         take: limit + 1,
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: [
-          { 
-            likes: {
-              _count: 'desc',
-            }
-          },
-          {
-            createdAt: 'desc',
-          },
-        ],
+        orderBy:
+          input.selector === "top"
+            ? {
+                likes: {
+                  _count: "desc",
+                },
+              }
+            : {
+                createdAt: "desc",
+              },
         include: {
           likes: true,
           retweets: true,
         },
       });
-      
+
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         const nextItem = items.pop(); // return the last item from the array
