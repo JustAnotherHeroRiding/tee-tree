@@ -13,7 +13,7 @@ export const Trends = ({ limit = 10, sideBar = true }) => {
   const handleClick = async (hashtag : string) => {
     await router.push({
       pathname: '/i/search',
-      query: { q: hashtag, src: 'trend_click' }
+      query: { q: hashtag, src: 'trend_click', selector: 'top' }
     });
   };
 

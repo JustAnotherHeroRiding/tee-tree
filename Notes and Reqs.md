@@ -96,7 +96,7 @@ Let's implement some features I have already implemented before in order to lear
 ## Search bar for profiles / posts
 - Create a separate search results page #DONE 
 - Add a src parameter to see where the user initiated the search from #DONE 
-- Return posts that contain the query in the post body with infinite scroll
+- Return posts that contain the query in the post body with infinite scroll #DONE 
 - For the profiles show 3 profiles and a show more tab, for posts
 - Add those blue lines to the selected category of search results
 - Return profiles if user selects people

@@ -1,14 +1,11 @@
-import { useRouter } from 'next/router'; // add this line at the top
-import type { NextPage } from 'next';
-import Head from 'next/head';
-import { useUser } from '@clerk/nextjs';
-import { LoadingPage } from '~/components/ReusableElements/loading';
-import { PageLayout } from '~/components/layout';
-import BackButton from '~/components/ReusableElements/BackButton';
-import { InfiniteScrollSearchResults } from '~/components/PostFeeds/infiniteScrollSearchResults';
-
-
-
+import { useRouter } from "next/router"; // add this line at the top
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useUser } from "@clerk/nextjs";
+import { LoadingPage } from "~/components/ReusableElements/loading";
+import { PageLayout } from "~/components/layout";
+import BackButton from "~/components/ReusableElements/BackButton";
+import { InfiniteScrollSearchResults } from "~/components/PostFeeds/infiniteScrollSearchResults";
 
 const SearchResults: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn, user } = useUser();
@@ -19,6 +16,7 @@ const SearchResults: NextPage = () => {
 
   // We can use router.query to fetch the 'q' parameter from the URL
   const searchQuery = router.query.q;
+  const selector = router.query.selector;
 
   // Return empty div if BOTH are not loaded, since user tends to load faster
   if (!userLoaded) return <LoadingPage />;
@@ -33,20 +31,76 @@ const SearchResults: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-      <div className="mb-12 flex flex-col sticky top-0 z-50 backdrop-blur-sm">
-      <BackButton />
-    <ul className='flex flex-row justify-between text-center cursor-pointer mt-[72px]'>
-        <li className='px-4 py-2 hover:bg-slate-700 w-full'>Top</li>
-        <li className='px-4 py-2 hover:bg-slate-700 w-full'>Latest</li>
-        <li className='px-4 py-2 hover:bg-slate-700 w-full'>People</li>
-        <li className='px-4 py-2 hover:bg-slate-700 w-full'>Photos</li>
-        <li className='px-4 py-2 hover:bg-slate-700 w-full'>Gifs</li>
-      </ul>
-      </div>
+        <div className="sticky top-0 z-50 mb-12 flex flex-col backdrop-blur-sm">
+          <BackButton />
+          <ul className="mt-[72px] flex cursor-pointer flex-row justify-between border-b text-center">
+            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+                const newQuery = { ...router.query, selector: "top" };
+                void router.push({
+                  pathname: router.pathname,
+                  query: newQuery,
+                });
+              }}>
+              <li className="w-full px-4 py-2">Top</li>
+              {selector === "top" && (
+                <hr className="selector-on-symbol absolute bottom-0"></hr>
+              )}
+            </div>
+            <div
+              className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700"
+              onClick={() => {
+                const newQuery = { ...router.query, selector: "latest" };
+                void router.push({
+                  pathname: router.pathname,
+                  query: newQuery,
+                });
+              }}
+            >
+              <li className="w-full px-4 py-2">Latest</li>
+              {selector === "latest" && (
+                <hr className="selector-on-symbol absolute bottom-0"></hr>
+              )}
+            </div>
+            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+                const newQuery = { ...router.query, selector: "people" };
+                void router.push({
+                  pathname: router.pathname,
+                  query: newQuery,
+                });
+              }}>
+              <li className="w-full px-4 py-2 ">People</li>
+              {selector === "people" && (
+                <hr className="selector-on-symbol absolute bottom-0"></hr>
+              )}
+            </div>
+            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+                const newQuery = { ...router.query, selector: "photos" };
+                void router.push({
+                  pathname: router.pathname,
+                  query: newQuery,
+                });
+              }}>
+              <li className="w-full px-4 py-2">Photos</li>
+              {selector === "photos" && (
+                <hr className="selector-on-symbol absolute bottom-0"></hr>
+              )}
+            </div>
+            <div className="flex w-1/2 flex-col items-center justify-center hover:bg-slate-700" onClick={() => {
+                const newQuery = { ...router.query, selector: "gifs" };
+                void router.push({
+                  pathname: router.pathname,
+                  query: newQuery,
+                });
+              }}>
+              <li className="w-full px-4 py-2">Gifs</li>
+              {selector === "gifs" && (
+                <hr className="selector-on-symbol absolute bottom-0"></hr>
+              )}
+            </div>{" "}
+          </ul>
+        </div>
 
-
-        <h1 className="text-2xl border-t border-slate-400 font-bold text-center pt-2">{`Search Results for "${searchQuery as string}"`}</h1>
-        <InfiniteScrollSearchResults query={searchQuery as string}/>
+        <InfiniteScrollSearchResults query={searchQuery as string} />
       </PageLayout>
     </>
   );
