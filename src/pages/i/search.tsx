@@ -6,6 +6,7 @@ import { LoadingPage } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
 import { InfiniteScrollSearchResults } from "~/components/PostFeeds/infiniteScrollSearchResults";
+import { UserSearchResults } from "~/components/ReusableElements/userSearchResults";
 
 const SearchResults: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn, user } = useUser();
@@ -111,11 +112,23 @@ const SearchResults: NextPage = () => {
             </div>{" "}
           </ul>
         </div>
-        <div className="border-b border-slate-400">
-          <h2 className="px-4 font-bold text-2xl">People</h2>
-          {/* This should set the selector to people */}
-          <p className="pl-4 mb-4 text-Intone-300 hover:bg-slate-800 w-full">View all</p>
-        </div>
+        {selector === "top" && (
+          <div className="border-b border-slate-400">
+            <h2 className="px-4 text-2xl font-bold">People</h2>
+            <UserSearchResults  query={searchQuery as string}/> 
+            {/* This should set the selector to people */}
+            <p className="mb-4 w-full pl-4 text-Intone-300 hover:bg-slate-800"  onClick={() => {
+                const newQuery = { ...router.query, selector: "people" };
+                void router.push({
+                  pathname: router.pathname,
+                  query: newQuery,
+                });
+              }}>
+              View all
+            </p>
+          </div>
+        )}
+
         {selector == "top" && (
           <InfiniteScrollSearchResults
             query={searchQuery as string}

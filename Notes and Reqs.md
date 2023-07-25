@@ -29,9 +29,9 @@ Let's implement some features I have already implemented before in order to lear
 - Sticky div at the top with the arrow to go back #DONE 
 - Page for Liked posts #DONE 
 - Username and posts counts on the stick div #DONE 
-- Collage of images that the user has posted on the profile view on the right side
 - If a user has no followers or following then display a message #DONE 
 - Display First and Last Name for Users #DONE 
+- Collage of images that the user has posted on the profile view on the right side
 
 ## Posts
 - Editing posts #DONE 
@@ -99,9 +99,9 @@ Let's implement some features I have already implemented before in order to lear
 - Return posts that contain the query in the post body with infinite scroll #DONE 
 - The feed should change #DONE 
 - It is not scrolling #DONE 
-- Create endpoint to fetch 3 users
+- Create endpoint to fetch 3 users #DONE 
 - Create endpoint to fetch infinite users
-- For the profiles show 3 profiles and a show more tab, for posts
+- For the profiles show 3 profiles and a show more tab, for posts, this should be only for the top selector
 - Add those blue lines to the selected category of search results #DONE 
 - Return profiles if user selects people
 - If the query starts with @ then show profiles first but still show posts afterwards

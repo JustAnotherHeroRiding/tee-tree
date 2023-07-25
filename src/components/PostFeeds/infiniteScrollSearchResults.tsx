@@ -24,7 +24,6 @@ export const InfiniteScrollSearchResults = (props: {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-  
 
   // data will be split in pages
   const toShow = data?.pages[page]?.posts;
