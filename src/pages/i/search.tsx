@@ -6,7 +6,7 @@ import { LoadingPage } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
 import { InfiniteScrollSearchResults } from "~/components/PostFeeds/infiniteScrollSearchResults";
-import { UserSearchResults } from "~/components/ReusableElements/userSearchResults";
+import { UserSearchResults } from "~/components/UserFeeds/userSearchResults";
 
 const SearchResults: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn, user } = useUser();

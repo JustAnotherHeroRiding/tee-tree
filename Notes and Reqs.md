@@ -101,7 +101,7 @@ Let's implement some features I have already implemented before in order to lear
 - It is not scrolling #DONE 
 - Create endpoint to fetch 3 users #DONE 
 - The endpoint is returning 3 users even if I search for gibberish #DONE 
-- Create endpoint to fetch infinite users
+- Create endpoint to fetch infinite users - This is proving to be difficult as we are fetching the users from clerk. For some reason useInfiniteQuery is not available for the endpoint that I created. Let us see later what is the issue.
 - For the profiles show 3 profiles and a show more tab, for posts, this should be only for the top selector #DONE 
 - Loading spinner should only show for the user being followed #DONE 
 - Add those blue lines to the selected category of search results #DONE 

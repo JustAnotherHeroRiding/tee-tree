@@ -1,5 +1,5 @@
 import { api } from "~/utils/api";
-import { LoadingSpinner } from "./loading";
+import { LoadingSpinner } from "../ReusableElements/loading";
 import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
@@ -7,7 +7,7 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../Context/UserContext";
 import toast from "react-hot-toast";
 
-export const UserSearchResults = (props: { query: string }) => {
+export const UserSearchResults = (props: { query: string  }) => {
   const { user } = useUser();
   const { userList, isLoading } = useContext(UserContext);
 
