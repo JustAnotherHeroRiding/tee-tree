@@ -32,7 +32,7 @@ export const PageLayout = (props: PropsWithChildren) => {
           className="gray-thin-scrollbar h-full min-h-screen w-full overflow-y-scroll  border-x border-slate-400 
             sm:max-w-[500px] md:max-w-[500px] lg:max-w-[650px] phone:border-none"
                     >
-          <form action="/i/search" method="get" className="w-1/2 mx-auto relative top-0 hidden trendsbreakpoint:block">
+          <form action="/i/search" method="get" className="w-1/2 mx-auto relative mt-2 hidden trendsbreakpoint:block">
               <input
                 type="text"
                 placeholder="Search"
