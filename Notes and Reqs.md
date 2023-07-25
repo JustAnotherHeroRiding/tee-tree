@@ -100,7 +100,7 @@ Let's implement some features I have already implemented before in order to lear
 - The feed should change #DONE 
 - It is not scrolling #DONE 
 - Create endpoint to fetch 3 users #DONE 
-- The endpoint is returning 3 users even if I search for gibberish
+- The endpoint is returning 3 users even if I search for gibberish #DONE 
 - Create endpoint to fetch infinite users
 - For the profiles show 3 profiles and a show more tab, for posts, this should be only for the top selector #DONE 
 - Loading spinner should only show for the user being followed #DONE 

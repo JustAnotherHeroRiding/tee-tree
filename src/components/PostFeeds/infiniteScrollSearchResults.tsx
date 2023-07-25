@@ -16,9 +16,9 @@ export const InfiniteScrollSearchResults = (props: {
     isFetchingNextPage: isFetchingNextPage,
   } = api.posts.infiniteScrollSearchResults.useInfiniteQuery(
     {
-        query: props.query,
-        selector: props.selector,
-        limit: 4,
+      query: props.query,
+      selector: props.selector,
+      limit: 4,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -62,14 +62,14 @@ export const InfiniteScrollSearchResults = (props: {
     };
   }, [lastPostElementRef, nextCursor, fetchNextPage, props.selector]);
 
-  
-
-
-  if (toShow?.length === 0) return null;
+  if (toShow?.length === 0)
+    return <div className="text-center mt-4">No posts found.</div>;
 
   if (postsLoading) return <LoadingPage />;
 
-  if (!data) return <div>Something went wrong.</div>;
+  if (!data || !data.pages[0]?.posts) {
+    return <div className="text-center">No posts found.</div>;
+  }
 
   return (
     <div className="flex flex-col">
@@ -81,7 +81,6 @@ export const InfiniteScrollSearchResults = (props: {
 
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
-
               <PostView {...fullPost} />
               <div
                 ref={lastPostElementRef}
@@ -90,8 +89,6 @@ export const InfiniteScrollSearchResults = (props: {
             </div>
           ) : (
             <div key={fullPost.post.id}>
-
-
               <PostView {...fullPost} />
             </div>
           );
