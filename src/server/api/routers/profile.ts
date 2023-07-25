@@ -41,14 +41,13 @@ export const profileRouter = createTRPCRouter({
                 similarityScore(input.query, user.username ?? "");
 
             // Create tuples of user with their score
-            scoredUsers.push([user, score]);
+            if (score != 0) {
+              scoredUsers.push([user, score]);
+            }
         });
 
         if (!scoredUsers.length) {
-            throw new TRPCError({
-                code: "NOT_FOUND",
-                message: "No users found.",
-            });
+            return [];
         }
 
         // Sort and pick the top 3
