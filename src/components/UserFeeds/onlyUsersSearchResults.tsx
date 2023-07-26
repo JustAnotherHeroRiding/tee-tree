@@ -37,7 +37,7 @@ export const OnlyUserSearchResults = (props: {
 
   const nextCursor = data?.pages[page]?.nextCursor;
 
-  const lastUserElementRef = useRef(null);
+  const lastUserElementRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleFetchNextPage = async () => {
@@ -60,6 +60,9 @@ export const OnlyUserSearchResults = (props: {
 
     if (lastUserElementRef.current) {
       observer.observe(lastUserElementRef.current);
+      if (lastUserElementRef.current.getBoundingClientRect().bottom <= window.innerHeight) {
+        void handleFetchNextPage();
+      }
     }
 
     return () => {
@@ -174,7 +177,7 @@ export const OnlyUserSearchResults = (props: {
                 <Image
                   src={user.profilePicture}
                   alt={`${user.username ?? ""}'s profile pic `}
-                  className="rounded-full border-2 border-black bg-black"
+                  className="rounded-full border-2 w-16 h-16 border-black bg-black"
                   width={64}
                   height={64}
                 />
@@ -243,11 +246,6 @@ export const OnlyUserSearchResults = (props: {
           );
         })
       )}
-      <button onClick={() =>  {
-        void fetchNextPage()
-        setPage(page + 1)
-      }}>Next page</button>
-
       {isFetchingNextPage && (
         <div className="mx-auto mt-6">
           <LoadingSpinner size={40} />
