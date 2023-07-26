@@ -1,20 +1,52 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { UserContext } from "../Context/UserContext";
 import { LoadingSpinner } from "./loading";
 import React from "react";
 import { UserCardSearchResults } from "./UserMentionSuggestions";
 import type { User } from "./CreatePostWizard";
+import { api } from "~/utils/api";
+import Link from "next/link";
 
 export const SearchInput = (props: { src: string }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
-  const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
+  const { data: trends, isLoading: loadingTrends } =
+    api.posts.getTrends.useQuery({});
+  const resultRefs = useRef<React.RefObject<HTMLAnchorElement>[]>([]);
+
   const [input, setInput] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [isTypingQuery, setIsTypingQuery] = useState(false);
+  const [possibleTrends, setPossibleTrends] = useState<[string, number][]>([]);
 
+  useEffect(() => {
+    // Filter trends based on typedTrend
+    if (trends && !loadingTrends) {
+      const filteredTrends = trends.filter(
+        (trend) =>
+          trend[0] && // Checking if trend name exists.
+          trend[0].toLowerCase().includes(input.toLowerCase()) // Checking if trend name includes the typed trend.
+      );
 
-  const [showSuggestedQueries, setShowSuggestedQueries] = useState(true);
+      // If filteredTrends exists, update possibleTrends.
+      if (filteredTrends) {
+        setPossibleTrends(filteredTrends.slice(0, 6)); // Limiting array to first 6 items.
+      }
+    }
+  }, [trends, input, loadingTrends]);
+
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const currentValue = event.target.value;
+    setInput(currentValue);
+
+    if (currentValue.length > 0) {
+      setIsTypingQuery(true);
+    } else if (currentValue.length === 0) {
+      setIsTypingQuery(false);
+      setHighlightedIndex(0);
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -33,8 +65,40 @@ export const SearchInput = (props: { src: string }) => {
           className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
           name="q" // query parameter
           value={input}
-          onChange={(e) => {
-            setInput(e.target.value);
+          onChange={(e) => handleQueryChange(e)}
+          autoComplete="off"
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown") {
+                if (highlightedIndex < possibleTrends.length - 1 + userList.length)
+              setHighlightedIndex((prevHighlightedIndex) => {
+                const nextHighlightedIndex = prevHighlightedIndex + 1;
+                const nextRef = resultRefs.current[nextHighlightedIndex];
+                if (nextRef && nextRef.current) {
+                  nextRef.current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                  });
+                }
+                return nextHighlightedIndex;
+              });
+            } else if (e.key === "ArrowUp") {
+              if (highlightedIndex > 0) {
+                setHighlightedIndex((setHighlightedIndex) => {
+                    const nextHighlightedIndex = setHighlightedIndex - 1;
+                    const nextRef = resultRefs.current[nextHighlightedIndex];
+                    if (nextRef && nextRef.current) {
+                      nextRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest",
+                      });
+                    }
+                    return nextHighlightedIndex;
+                  });
+              }
+              
+            } else if (e.key === "Tab") {
+              resultRefs.current[highlightedIndex]?.current?.click();
+            }
           }}
         />
         <input type="hidden" name="src" value="typed_query" />
@@ -44,7 +108,7 @@ export const SearchInput = (props: { src: string }) => {
           className="absolute left-[4%] top-[38%] h-3 w-3 text-Intone-300"
         />
       </form>
-      {showSuggestedQueries && (
+      {isTypingQuery && (
         <div
           className={`${
             props.src === "typed_query"
@@ -55,26 +119,59 @@ export const SearchInput = (props: { src: string }) => {
                 flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl`}
         >
           <div className="flex flex-col">
-            {userList ? (
-          userList.map((user, index) => {
-              if (!userRefs.current[index]) {
-                userRefs.current[index] = React.createRef<HTMLDivElement>();
-              }
+            {LoadingUserList ? (
+              <LoadingSpinner />
+            ) : userList ? (
+              userList.map((user, index) => {
+                if (!resultRefs.current[index]) {
+                  resultRefs.current[index] =
+                    React.createRef<HTMLAnchorElement>();
+                }
 
-              return (
-                <UserCardSearchResults
-                  key={index}
-                  user={user as User}
-
-                  index={index}
-                highlightedIndex={highlightedIndex}
-                  scrollRef={
-                    userRefs.current?.[index] ||
-                    React.createRef<HTMLDivElement>()
-                  }
-                />
-              );
-            }) ) : <LoadingSpinner/>} 
+                return (
+                  <UserCardSearchResults
+                    key={index}
+                    user={user as User}
+                    index={index}
+                    highlightedIndex={highlightedIndex}
+                    scrollRef={
+                      resultRefs.current?.[index] ||
+                      React.createRef<HTMLAnchorElement>()
+                    }
+                  />
+                );
+              })
+            ) : (
+              <LoadingSpinner />
+            )}
+            {!trends && <LoadingSpinner />}
+            {possibleTrends &&
+              possibleTrends.map((trend, index) => {
+                if (!resultRefs.current[index + userList.length]) {
+                  resultRefs.current[index + userList.length] =
+                    React.createRef<HTMLAnchorElement>();
+                }
+                return (
+                  <Link
+                    href={`/i/search?q=${trend[0]}&src=${props.src}&selector=top`}
+                    key={`${trend[0]}+${trend[1]}`}
+                    ref={
+                      resultRefs.current?.[index + userList.length] ||
+                      React.createRef<HTMLAnchorElement>()
+                    }
+                  >
+                    <div
+                      className={`${
+                        index + userList.length == highlightedIndex
+                          ? "bg-Intone-200"
+                          : ""
+                      } px-4 py-2   hover:bg-Intone-200`}
+                    >
+                      {trend[0]}
+                    </div>
+                  </Link>
+                );
+              })}
           </div>
         </div>
       )}

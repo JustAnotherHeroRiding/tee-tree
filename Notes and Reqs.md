@@ -111,8 +111,10 @@ Let's implement some features I have already implemented before in order to lear
 - Search by hashtags #DONE 
 - First user photo is squished #DONE Added css w and h just like on the profile page
 - Suggested search queries #DONE Css is done, let us handle the logic
-- Create a new User card only for the search inputs
-- When typing a query, it should show possible trends or users
+- Create a new User card only for the search inputs #DONE 
+- Write the inputChange listener function to see if the user is typing a query #DONE 
+- When typing a query, it should show possible trends or users #DONE 
+- Let us concatenate both ref arrays into one for the possible results
 
 ## Messaging
 - Separate page where users can message each other

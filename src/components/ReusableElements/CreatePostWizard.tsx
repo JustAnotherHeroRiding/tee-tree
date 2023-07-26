@@ -44,7 +44,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     api.posts.getTrends.useQuery({});
 
   // const myImage = cld.image("cld-sample-2");
-  // Make sure to replace 'demo' with your actual cloud_name
   const imageUploadUrl =
     "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
   const gifUploadUrl = "https://api.cloudinary.com/v1_1/de5zmknvp/image/upload";
