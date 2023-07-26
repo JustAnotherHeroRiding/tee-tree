@@ -76,8 +76,9 @@ Let's implement some features I have already implemented before in order to lear
 
 
 ## Comments
- - Comments for tweets, further comments for them too. Implement twitter threads
- - Profile page should have a replies page
+- Clicking on the comment icon should open a modal where users can post a reply to the tweet with the original tweet above
+- Comments for tweets, further comments for them too. Implement twitter threads
+- Profile page should have a replies page
 
 ## Post View
 - Add a sticky div #DONE 
@@ -114,13 +115,17 @@ Let's implement some features I have already implemented before in order to lear
 - Create a new User card only for the search inputs #DONE 
 - Write the inputChange listener function to see if the user is typing a query #DONE 
 - When typing a query, it should show possible trends or users #DONE 
-- Let us concatenate both ref arrays into one for the possible results
+- Let us concatenate both ref arrays into one for the possible results #DONE 
+- The suggested results div is too small on phones
 
 ## Messaging
 - Separate page where users can message each other
 
 ## Recommended Users to follow
 - Display users that the current user is not following on the right below the trends
+- It should be limited to 3
+- Clicking on Show more should open a page with all users that the current user is not following
+- The user id will be passed in the url
 
 ## Mentioning users
 - If the word starts with an @ and is part of the list of users then then it should be blue #DONE 

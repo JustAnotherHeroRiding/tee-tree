@@ -112,9 +112,9 @@ export const SearchInput = (props: { src: string }) => {
         <div
           className={`${
             props.src === "typed_query"
-              ? "top-14 hidden w-1/2 translate-x-1/2 trendsbreakpoint:block"
+              ? "top-14 hidden translate-x-1/2 trendsbreakpoint:block"
               : "top-16 w-full trendsbreakpoint:hidden"
-          } gray-thin-scrollbar absolute z-10 flex max-h-[250px] 
+          } gray-thin-scrollbar absolute z-10 flex max-h-[300px] 
                 scroll-p-4 
                 flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl`}
         >
