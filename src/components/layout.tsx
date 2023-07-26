@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { Trends } from "./ReusableElements/Trends";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { SearchInput, SidebarSearchInput } from "./ReusableElements/SearchForm";
+import { SearchInput } from "./ReusableElements/SearchForm";
 
 export const PageLayout = (props: PropsWithChildren) => {
   const router = useRouter();
@@ -31,13 +31,13 @@ export const PageLayout = (props: PropsWithChildren) => {
           className="gray-thin-scrollbar h-full min-h-screen w-full overflow-y-scroll  border-x border-slate-400 
             sm:max-w-[500px] md:max-w-[500px] lg:max-w-[650px] phone:border-none"
                     >
-          <SearchInput />
+          <SearchInput location="main" />
           {props.children}
           
         </div>
         <div className="gray-thin-scrollbar fixed right-[3%] max-h-[100vh] w-1/5 overflow-y-scroll scrollbar-none trendsbreakpoint:hidden">
           <div className="sticky top-0 mb-6 bg-black py-2">
-            <SidebarSearchInput />
+            <SearchInput location="trends" />
           </div>
           <div className="gap-6@ flex flex-col items-center justify-center">
             {!router.pathname.startsWith("/i/trends") && (

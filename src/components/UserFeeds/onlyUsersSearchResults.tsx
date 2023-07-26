@@ -7,6 +7,7 @@ import { useEffect, useState, useContext, useRef } from "react";
 import { UserContext } from "../Context/UserContext";
 import toast from "react-hot-toast";
 import type { User as UserType } from "../ReusableElements/CreatePostWizard";
+
 export const OnlyUserSearchResults = (props: {
   query: string;
   selector: string;
