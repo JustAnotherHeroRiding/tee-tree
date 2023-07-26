@@ -31,14 +31,18 @@ export const profileRouter = createTRPCRouter({
     get3UsersSearch: publicProcedure
     .input(z.object({ query: z.string() }))
     .query(async ({ input }) => {
+      let query = input.query;
+      if (query.startsWith('@')) {
+        query = query.substring(1);
+      }
         const users = await clerkClient.users.getUserList();
         const scoredUsers: Array<[User, number]> = []; // Assuming UserType is the type of your user objects
 
         users.forEach((user) => {
             const score =
-                similarityScore(input.query, user.firstName ?? "") +
-                similarityScore(input.query, user.lastName ?? "") +
-                similarityScore(input.query, user.username ?? "");
+                similarityScore(query, user.firstName ?? "") +
+                similarityScore(query, user.lastName ?? "") +
+                similarityScore(query, user.username ?? "");
 
             // Create tuples of user with their score
             if (score != 0) {
@@ -72,6 +76,10 @@ export const profileRouter = createTRPCRouter({
     )
     .query(async ({ input }) => {
       const { limit, cursor } = input;
+      let query = input.query;
+      if (query.startsWith('@')) {
+        query = query.substring(1);
+      }
 
       // Fetch all users starting from the cursor
       // You might need to adjust this call depending on your actual data
@@ -86,9 +94,9 @@ export const profileRouter = createTRPCRouter({
       const scoredUsers: Array<[User, number]> = []; // Assuming UserType is the type of your user objects
       users.forEach((user) => {
           const score =
-              similarityScore(input.query, user.firstName ?? "") +
-              similarityScore(input.query, user.lastName ?? "") +
-              similarityScore(input.query, user.username ?? "");
+              similarityScore(query, user.firstName ?? "") +
+              similarityScore(query, user.lastName ?? "") +
+              similarityScore(query, user.username ?? "");
           if (score != 0) {
             scoredUsers.push([user, score]);
           }

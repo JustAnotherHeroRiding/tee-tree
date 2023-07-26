@@ -21,7 +21,7 @@ export const OnlyUserSearchResults = (props: {
     isLoading,
     isFetchingNextPage: isFetchingNextPage,
   } = api.profile.infiniteScrollSearchResultsUsers.useInfiniteQuery(
-    { limit: 2, query: props.query, selector: props.selector },
+    { limit: 4, query: props.query, selector: props.selector },
     {
       getNextPageParam: (lastPage) => {
         if ("nextCursor" in lastPage) {
@@ -36,7 +36,7 @@ export const OnlyUserSearchResults = (props: {
 
   const nextCursor = data?.pages[page]?.nextCursor;
 
-  const lastPostElementRef = useRef(null);
+  const lastUserElementRef = useRef(null);
 
   useEffect(() => {
     const handleFetchNextPage = async () => {
@@ -55,18 +55,18 @@ export const OnlyUserSearchResults = (props: {
       { threshold: 1 }
     );
 
-    const currentLastPostElement = lastPostElementRef.current;
+    const currentLastUserElement = lastUserElementRef.current;
 
-    if (lastPostElementRef.current) {
-      observer.observe(lastPostElementRef.current);
+    if (lastUserElementRef.current) {
+      observer.observe(lastUserElementRef.current);
     }
 
     return () => {
-      if (currentLastPostElement) {
-        observer.unobserve(currentLastPostElement);
+      if (currentLastUserElement) {
+        observer.unobserve(currentLastUserElement);
       }
     };
-  }, [lastPostElementRef, nextCursor, fetchNextPage, props.selector]);
+  }, [lastUserElementRef, nextCursor, fetchNextPage, props.selector]);
 
   const [loadingStates, setLoadingStates] = useState<{
     [key: string]: boolean;
@@ -203,7 +203,7 @@ export const OnlyUserSearchResults = (props: {
                   ))}
               </div>
               <div
-                ref={lastPostElementRef}
+                ref={lastUserElementRef}
                 className="infiniteScrollTriggerDiv"
               ></div>
             </div>
