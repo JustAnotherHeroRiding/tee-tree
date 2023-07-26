@@ -26,7 +26,7 @@ export const SearchInput = (props: { src: string }) => {
       const filteredTrends = trends.filter(
         (trend) =>
           trend[0] && // Checking if trend name exists.
-          trend[0].toLowerCase().includes(input.toLowerCase()) // Checking if trend name includes the typed trend.
+          trend[0].toLowerCase().includes(input.toLowerCase().slice(1)) // Checking if trend name includes the typed trend.
       );
 
       // If filteredTrends exists, update possibleTrends.
@@ -55,7 +55,7 @@ export const SearchInput = (props: { src: string }) => {
         method="get"
         className={`${
           props.src === "typed_query"
-            ? "hidden w-1/2 trendsbreakpoint:block"
+            ? "hidden w-3/4 trendsbreakpoint:block"
             : "w-full trendsbreakpoint:hidden"
         } relative mx-auto mt-2 `}
       >
