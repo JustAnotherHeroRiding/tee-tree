@@ -109,8 +109,10 @@ Let's implement some features I have already implemented before in order to lear
 - Return profiles if user selects people #DONE 
 - If the query starts with @ then show profiles first but still show posts afterwards #DONE 
 - Search by hashtags #DONE 
-- First user photo is squished
-- Suggested search queries
+- First user photo is squished #DONE Added css w and h just like on the profile page
+- Suggested search queries #DONE Css is done, let us handle the logic
+- Create a new User card only for the search inputs
+- When typing a query, it should show possible trends or users
 
 ## Messaging
 - Separate page where users can message each other

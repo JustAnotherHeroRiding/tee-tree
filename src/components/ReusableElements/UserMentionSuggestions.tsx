@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { User } from "./CreatePostWizard";
 import Image from "next/image";
 
@@ -9,6 +10,15 @@ interface UserCardProps {
     setIsTypingUsername: React.Dispatch<React.SetStateAction<boolean>>;
     setTextLength: React.Dispatch<React.SetStateAction<number>>;
     highlightedUser: number;
+    scrollRef: React.RefObject<HTMLDivElement>;
+    
+  }
+
+
+  interface UserCardPropsSearch {
+    user: User;
+    index: number;
+    highlightedIndex: number;
     scrollRef: React.RefObject<HTMLDivElement>;
     
   }
@@ -51,8 +61,41 @@ interface UserCardProps {
               {user.lastName}
             </span>
           )}
-          <li className="">{user.username}</li>
+          <p className="text-slate-300">@{user.username}</p>
         </div>
       </div>
     );
   }
+
+  export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({ user, index,
+     highlightedIndex, scrollRef }) => {
+   
+   return (
+    <Link href={`/@${user.username ?? ""}`}>
+     <div
+       tabIndex={0}
+       ref={scrollRef}
+       className={`flex flex-row rounded-xl p-4  hover:bg-Intone-200 ${
+         highlightedIndex == index ? "bg-Intone-200" : ""}`}
+     >
+       <Image
+         className="mr-4 h-14 w-14 rounded-full"
+         src={user.profilePicture}
+         alt="Profile Image"
+         width={56}
+         height={56}
+         priority={true}
+       />
+       <div className="flex flex-col ">
+         {user.firstName && user.lastName && (
+           <span>
+             {user.firstName}
+             {user.lastName}
+           </span>
+         )}
+         <p className="text-slate-300">@{user.username}</p>
+       </div>
+     </div>
+     </Link>
+   );
+ }
