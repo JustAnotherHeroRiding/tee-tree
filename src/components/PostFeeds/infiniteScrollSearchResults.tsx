@@ -5,7 +5,7 @@ import { PostView, type PostWithUser } from "../ReusableElements/postview";
 
 export const InfiniteScrollSearchResults = (props: {
   query: string;
-  selector: string; // made it optional here
+  selector: string;
 }) => {
   const [page, setPage] = useState(0);
 

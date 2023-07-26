@@ -7,6 +7,7 @@ import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
 import { InfiniteScrollSearchResults } from "~/components/PostFeeds/infiniteScrollSearchResults";
 import { UserSearchResults } from "~/components/UserFeeds/userSearchResults";
+import { OnlyUserSearchResults } from "~/components/UserFeeds/onlyUsersSearchResults";
 
 const SearchResults: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn, user } = useUser();
@@ -146,6 +147,9 @@ const SearchResults: NextPage = () => {
             query={searchQuery}
             selector={"latest"}
           />
+        )}
+        {selector == "people" && (
+          <OnlyUserSearchResults query={searchQuery} selector={"people"} />
         )}
       </PageLayout>
     </>

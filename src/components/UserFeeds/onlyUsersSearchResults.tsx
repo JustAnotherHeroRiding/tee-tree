@@ -3,32 +3,70 @@ import { LoadingSpinner } from "../ReusableElements/loading";
 import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { UserContext } from "../Context/UserContext";
 import toast from "react-hot-toast";
-
-export const UserSearchResults = (props: { query: string, selector: string }) => {
-  const { user } = useUser();
+import type { User as UserType } from "../ReusableElements/CreatePostWizard";
+export const OnlyUserSearchResults = (props: {
+  query: string;
+  selector: string;
+}) => {
+  const { user: currentUser } = useUser();
   const { userList, isLoading: isLoadingUserList } = useContext(UserContext);
+  const [page, setPage] = useState(0);
 
   const {
     data,
-    isError,
-    isFetchingNextPage,
     fetchNextPage,
-    hasNextPage,
-    isLoading
+    isLoading,
+    isFetchingNextPage: isFetchingNextPage,
   } = api.profile.infiniteScrollSearchResultsUsers.useInfiniteQuery(
-    {limit: 4, query: props.query, selector: props.selector},
+    { limit: 2, query: props.query, selector: props.selector },
     {
-     getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.hasMore) {
-           return allPages.length * limit;
+      getNextPageParam: (lastPage) => {
+        if ("nextCursor" in lastPage) {
+          return lastPage.nextCursor;
         }
-        return false; 
-    },
-  });
-  
+        // handle the case when lastPage is of type never[]
+      },
+    }
+  );
+
+  const toShow = data?.pages[page]?.users;
+
+  const nextCursor = data?.pages[page]?.nextCursor;
+
+  const lastPostElementRef = useRef(null);
+
+  useEffect(() => {
+    const handleFetchNextPage = async () => {
+      await fetchNextPage();
+      setPage((prev) => prev + 1);
+    };
+
+    if (!nextCursor) return; // No more pages to load
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          void handleFetchNextPage();
+        }
+      },
+      { threshold: 1 }
+    );
+
+    const currentLastPostElement = lastPostElementRef.current;
+
+    if (lastPostElementRef.current) {
+      observer.observe(lastPostElementRef.current);
+    }
+
+    return () => {
+      if (currentLastPostElement) {
+        observer.unobserve(currentLastPostElement);
+      }
+    };
+  }, [lastPostElementRef, nextCursor, fetchNextPage, props.selector]);
 
   const [loadingStates, setLoadingStates] = useState<{
     [key: string]: boolean;
@@ -104,55 +142,116 @@ export const UserSearchResults = (props: { query: string, selector: string }) =>
     console.log("No users");
   }
 
-  if (isLoading) {
+  if (isLoadingUserList) {
     return <LoadingSpinner />;
   }
 
-  if (!data || data.length === 0)
-    return <h1 className="text-center">No Users Found</h1>;
+  if (toShow?.length === 0)
+    return <div className="mt-4 text-center">No users found.</div>;
+
+  if (!data || data.pages[0] instanceof Array || !data.pages[0]?.users) {
+    return <div className="text-center">No users found.</div>;
+  }
 
   return (
     <div className="flex flex-col">
-      {isLoading && (
-        <div className="mx-auto">
-          <LoadingSpinner size={42} />
+      {isLoading ||
+        (isLoadingUserList && (
+          <div className="mx-auto">
+            <LoadingSpinner size={42} />
+          </div>
+        ))}
+      {data?.pages?.map((page, pageIndex) =>
+        page.users.map((user: UserType, userIndex: number) => {
+          const isLastUser =
+            pageIndex === data.pages.length - 1 &&
+            userIndex === page.users.length - 1;
+
+          return isLastUser ? (
+            <div key={user.id} className="relative">
+              <div className="flex flex-row px-2 py-4">
+                <Image
+                  src={user.profilePicture}
+                  alt={`${user.username ?? ""}'s profile pic `}
+                  className="rounded-full border-2 border-black bg-black"
+                  width={64}
+                  height={64}
+                />
+                <Link href={`/@${user.username ?? ""}`} className="">
+                  {user.firstName && user.lastName && (
+                    <p className="ml-4 font-bold">{`${user.firstName}  ${user.lastName}`}</p>
+                  )}
+                  <p className="mb ml-4 text-slate-300 hover:underline">
+                    @{user.username}
+                  </p>
+                </Link>
+                {currentUser &&
+                  currentUser.id !== user.id &&
+                  (!loadingStates[user.id] ? (
+                    <button
+                      className={`ml-auto mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800
+      px-4 py-2 transition-all duration-300 hover:bg-slate-900 hover:text-white `}
+                      onClick={() => mutate({ userToFollowId: user.id })}
+                      disabled={loadingStates[user.id]}
+                    >{`${
+                      isFollowing[user.id] ? "Unfollow" : "Follow"
+                    }`}</button>
+                  ) : (
+                    <div className="ml-auto mr-6 mt-6 flex items-center justify-center">
+                      <LoadingSpinner size={32} />
+                    </div>
+                  ))}
+              </div>
+              <div
+                ref={lastPostElementRef}
+                className="infiniteScrollTriggerDiv"
+              ></div>
+            </div>
+          ) : (
+            <div className="relative flex flex-row px-2 py-4" key={user.id}>
+              <Image
+                src={user.profilePicture}
+                alt={`${user.username ?? ""}'s profile pic `}
+                className="rounded-full border-2 border-black bg-black"
+                width={64}
+                height={64}
+              />
+              <Link href={`/@${user.username ?? ""}`} className="">
+                {user.firstName && user.lastName && (
+                  <p className="ml-4 font-bold">{`${user.firstName}  ${user.lastName}`}</p>
+                )}
+                <p className="mb ml-4 text-slate-300 hover:underline">
+                  @{user.username}
+                </p>
+              </Link>
+              {currentUser &&
+                  currentUser.id !== user.id &&
+                  (!loadingStates[user.id] ? (
+                  <button
+                    className={`ml-auto mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800
+      px-4 py-2 transition-all duration-300 hover:bg-slate-900 hover:text-white `}
+                    onClick={() => mutate({ userToFollowId: user.id })}
+                    disabled={loadingStates[user.id]}
+                  >{`${isFollowing[user.id] ? "Unfollow" : "Follow"}`}</button>
+                ) : (
+                  <div className="ml-auto mr-6 mt-6 flex items-center justify-center">
+                    <LoadingSpinner size={32} />
+                  </div>
+                ))}
+            </div>
+          );
+        })
+      )}
+      <button onClick={() =>  {
+        void fetchNextPage()
+        setPage(page + 1)
+      }}>Next page</button>
+
+      {isFetchingNextPage && (
+        <div className="mx-auto mt-6">
+          <LoadingSpinner size={40} />
         </div>
       )}
-      {data.map((userResult) => (
-        <div className="relative flex flex-row px-2 py-4" key={userResult.id}>
-          <Image
-            src={userResult.profilePicture}
-            alt={`${userResult.username ?? ""}'s profile pic `}
-            className="rounded-full border-2 border-black bg-black"
-            width={64}
-            height={64}
-          />
-          <Link href={`/@${userResult.username ?? ""}`} className="">
-            {userResult.firstName && userResult.lastName && (
-              <p className="ml-4 font-bold">{`${userResult.firstName}  ${userResult.lastName}`}</p>
-            )}
-            <p className="mb ml-4 text-slate-300 hover:underline">
-              @{userResult.username}
-            </p>
-          </Link>
-          {userResult.id !== user?.id &&
-            user &&
-            (!loadingStates[userResult.id] ? (
-              <button
-                className={`ml-auto mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800
-      px-4 py-2 transition-all duration-300 hover:bg-slate-900 hover:text-white `}
-                onClick={() => mutate({ userToFollowId: userResult.id })}
-                disabled={loadingStates[userResult.id]}
-              >{`${
-                isFollowing[userResult.id] ? "Unfollow" : "Follow"
-              }`}</button>
-            ) : (
-              <div className="ml-auto mr-6 mt-6 flex items-center justify-center">
-                <LoadingSpinner size={32} />
-              </div>
-            ))}
-        </div>
-      ))}
     </div>
   );
 };

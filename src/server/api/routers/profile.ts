@@ -65,17 +65,21 @@ export const profileRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number(),
-        offset: z.number().optional(), // Changing from cursor to offset
+        cursor: z.number().nullish(), // Changing from cursor to offset
         query: z.string(), // Adding the search query input
         selector: z.string(),
       })
     )
     .query(async ({ input }) => {
-      const { limit, offset } = input;
+      const { limit, cursor } = input;
 
       // Fetch all users starting from the cursor
       // You might need to adjust this call depending on your actual data
-      const users = await clerkClient.users.getUserList({ limit: limit + 1, offset: offset });
+      const users = await clerkClient.users.getUserList({ limit: limit + 1, offset: cursor as number });
+
+      if (!users || users.length === 0) {
+        return { users: [], hasMore: false, nextCursor: null };
+      }
 
       // Same as before...
       // Calculate scores and create list of tuples (user, score), excluding users with a score of 0
@@ -92,7 +96,7 @@ export const profileRouter = createTRPCRouter({
 
       // Return empty array when there's no matching users
       if (!scoredUsers.length) {
-          return [];
+        return { users: [], hasMore: false, nextCursor: null };
       }
 
       // Check if there are more results
@@ -114,7 +118,7 @@ export const profileRouter = createTRPCRouter({
       return {
         users: topUsers.map(filterUserForClient),
         hasMore,
-        nextOffset: hasMore ? offset ?? 0 + limit : null,
+        nextCursor: hasMore ? cursor ?? 0 + limit : null,
     }
     }),
 
