@@ -57,9 +57,11 @@ Let's implement some features I have already implemented before in order to lear
 - Copy link button #DONE 
 - Image preview loads on the same file being uploaded #DONE 
 - Views per post
-- Emoji selector
 - Sharing audio files that can be played 
 - Make post content be selectable #DONE
+
+### Emoji selector
+- Make the emoji selector work for the create post wizard
 
 ### Bug alert
 - Button cant appear inside of a button for the share modal #DONE 
@@ -116,7 +118,11 @@ Let's implement some features I have already implemented before in order to lear
 - Write the inputChange listener function to see if the user is typing a query #DONE 
 - When typing a query, it should show possible trends or users #DONE 
 - Let us concatenate both ref arrays into one for the possible results #DONE 
-- The suggested results div is too small on phones
+- The suggested results div is too small on phones #DONE 
+- Add the feeds for photos and gif feeds
+
+## Image upload icon
+- The icon is not in line with the other icons #DONE 
 
 ## Messaging
 - Separate page where users can message each other

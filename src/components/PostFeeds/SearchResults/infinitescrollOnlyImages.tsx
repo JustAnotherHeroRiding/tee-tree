@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api } from "~/utils/api";
-import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
-import { PostView, type PostWithUser } from "../ReusableElements/postview";
+import { LoadingPage, LoadingSpinner } from "../../ReusableElements/loading";
+import { PostView, type PostWithUser } from "../../ReusableElements/postview";
 
-export const InfiniteScrollSearchResults = (props: {
+export const InfiniteScrollOnlyImages = (props: {
   query: string;
   selector: string;
 }) => {

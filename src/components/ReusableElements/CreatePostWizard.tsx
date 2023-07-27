@@ -627,7 +627,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           <FontAwesomeIcon
             data-tooltip-id="ImageUpload-tooltip"
             data-tooltip-content="Upload Image"
-            className="CreatePostWizard-Icons"
+            className="CreatePostWizard-Icons flex justify-center"
             icon={faImage}
           />
           <Tooltip

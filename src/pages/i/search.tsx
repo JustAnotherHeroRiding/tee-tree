@@ -5,9 +5,11 @@ import { useUser } from "@clerk/nextjs";
 import { LoadingPage } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
-import { InfiniteScrollSearchResults } from "~/components/PostFeeds/infiniteScrollSearchResults";
+import { InfiniteScrollSearchResults } from "~/components/PostFeeds/SearchResults/infiniteScrollSearchResults";
 import { UserSearchResults } from "~/components/UserFeeds/userSearchResults";
 import { OnlyUserSearchResults } from "~/components/UserFeeds/onlyUsersSearchResults";
+import { InfiniteScrollOnlyImages } from "~/components/PostFeeds/SearchResults/infinitescrollOnlyImages";
+import { InfiniteScrollOnlyGifs } from "~/components/PostFeeds/SearchResults/infiniteScrollOnlyGifs";
 
 const SearchResults: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn, user } = useUser();
@@ -150,6 +152,12 @@ const SearchResults: NextPage = () => {
         )}
         {selector == "people" && (
           <OnlyUserSearchResults query={searchQuery} selector={"people"} />
+        )}
+        {selector == "images" && (
+          <InfiniteScrollOnlyImages query={searchQuery} selector={"images"} />
+        )}
+        {selector == "gifs" && (
+          <InfiniteScrollOnlyGifs query={searchQuery} selector={"gifs"} />
         )}
       </PageLayout>
     </>
