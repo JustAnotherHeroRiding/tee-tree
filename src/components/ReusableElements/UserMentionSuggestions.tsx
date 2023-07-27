@@ -51,7 +51,7 @@ export const UserCard: React.FC<UserCardProps> = ({
     >
       <Image
         className="mr-4 h-14 w-14 rounded-full"
-        src={user.profilePicture}
+        src={user.profileImageUrl}
         alt="Profile Image"
         width={56}
         height={56}
@@ -86,7 +86,7 @@ export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({
       >
         <Image
           className="mr-4 h-14 w-14 rounded-full"
-          src={user.profilePicture}
+          src={user.profileImageUrl}
           alt="Profile Image"
           width={56}
           height={56}

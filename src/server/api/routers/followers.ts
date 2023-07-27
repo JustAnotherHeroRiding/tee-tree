@@ -67,7 +67,7 @@ export type FollowerWithAuthor = {
   author: {
     username: string;
     id: string;
-    profilePicture: string;
+    profileImageUrl: string;
   };
 };
 
@@ -76,7 +76,7 @@ export type FollowedWithAuthor = {
   author: {
     username: string;
     id: string;
-    profilePicture: string;
+    profileImageUrl: string;
   };
 };
 
@@ -145,6 +145,37 @@ export const followRouter = createTRPCRouter({
     }
     return result;
   }),
+
+  getNotFollowingCurrentUser: publicProcedure
+    .query(async ({ ctx }) => {
+      const currentUserId = ctx.userId
+      if (!currentUserId) {
+        return [];
+      }
+      
+      // Get list of followed users
+      const followedUsers = await ctx.prisma.follow.findMany({
+        where: { followerId: currentUserId },
+      });
+
+      // If the user is not following anyone, return all users from Clerk
+      if (!followedUsers || followedUsers.length === 0) {
+        return await clerkClient.users.getUserList(); 
+      }
+
+      // Extract the followed user ids
+      const followedUserIds = followedUsers.map(user => user.followingId);
+      
+      // Fetch all users from Clerk
+      const allUsers = await clerkClient.users.getUserList();
+      
+      // Filter out the followed users
+      const usersNotFollowing = allUsers.filter(user => !followedUserIds.includes(user.id));
+
+      return usersNotFollowing.map(filterUserForClient);
+    }),
+
+
 
 
   getFollowingCurrentUser: publicProcedure

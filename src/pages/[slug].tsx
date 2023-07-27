@@ -225,7 +225,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           </div>
 
           <Image
-            src={data.profilePicture}
+            src={data.profileImageUrl}
             alt={`${data.username ?? ""}'s profile pic `}
             className="absolute bottom-0 left-0 -mb-[64px] ml-4 h-32 w-32 rounded-full border-2 border-black bg-black"
             width={128}

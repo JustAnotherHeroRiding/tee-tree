@@ -132,8 +132,10 @@ Let's implement some features I have already implemented before in order to lear
 - Separate page where users can message each other
 
 ## Recommended Users to follow
-- Display users that the current user is not following on the right below the trends
-- It should be limited to 3
+- Endpoint to fetch users that the current user is not following #DONE 
+- Display users that the current user is not following on the right below the trends #DONE 
+- It should be limited to 3 #DONE 
+- Let's make the profile picture consistent across the user types
 - Clicking on Show more should open a page with all users that the current user is not following
 - The user id will be passed in the url
 

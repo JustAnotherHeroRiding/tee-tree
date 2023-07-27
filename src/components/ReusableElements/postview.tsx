@@ -210,7 +210,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                       className="h-14 w-14 rounded-full"
                       src={
                         userList.find((user) => user.username === username)
-                          ?.profilePicture as string
+                          ?.profileImageUrl as string
                       }
                       alt={`@${username} profile picture`}
                       width={56}
@@ -610,7 +610,7 @@ const PostViewComponent = (props: PostWithUser) => {
     >
       <Image
         className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
-        src={author.profilePicture}
+        src={author?.profileImageUrl}
         alt={`@${author.username}profile picture`}
         width={56}
         height={56}

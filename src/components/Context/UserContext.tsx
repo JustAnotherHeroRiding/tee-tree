@@ -6,7 +6,7 @@ import { type NextPage } from "next";
 type UserType = {
   id: string;
   username: string | null;
-  profilePicture: string | null;
+  profileImageUrl: string | null;
   firstName: string | null;
   lastName: string | null;
 };

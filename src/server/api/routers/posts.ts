@@ -101,7 +101,7 @@ const FollowedWithAuthorSchema = z.object({
   author: z.object({
     username: z.string(),
     id: z.string(),
-    profilePicture: z.string(),
+    profileImageUrl: z.string(),
   }),
 });
 

@@ -158,7 +158,7 @@ function isCurrentUserFollowing(currentUserId: string, follower: FollowedWithAut
           )}
           {followers.map((follower) => (
             <div className="relative flex flex-row py-4 px-2" key={follower.follower.id}>
-              <Image src={follower.author.profilePicture}
+              <Image src={follower.author.profileImageUrl}
                 alt={`${follower.author.username ?? ""}'s profile pic `}
                 className="rounded-full border-2 border-black bg-black"
                 width={64}

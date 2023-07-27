@@ -3,6 +3,7 @@ import { Trends } from "./ReusableElements/Trends";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { SearchInput } from "./ReusableElements/SearchForm";
+import { SuggestedUsers } from "./ReusableElements/SuggestedUsers";
 
 export const PageLayout = (props: PropsWithChildren) => {
   const router = useRouter();
@@ -49,8 +50,10 @@ export const PageLayout = (props: PropsWithChildren) => {
               </div>
             )}
 
-            <div className="h-36 w-full items-center rounded-2xl bg-twitter-100 px-4 py-2 ">
-              <h1 className="mb-4 text-2xl font-bold">Who to follow</h1>
+            <div className=" w-full items-center rounded-2xl bg-twitter-100">
+              <h1 className="mb-4 text-2xl font-bold px-4 py-2">Who to follow</h1>
+              <SuggestedUsers />
+
             </div>
           </div>
           <div className="px-4 py-2">

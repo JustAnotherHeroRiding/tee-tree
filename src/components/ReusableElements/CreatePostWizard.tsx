@@ -29,7 +29,7 @@ interface CreatePostWizardProps {
 export type User = {
   id: string;
   username: string | null;
-  profilePicture: string;
+  profileImageUrl: string;
   firstName: string | null;
   lastName: string | null;
 };
@@ -359,10 +359,10 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           user.username &&
           user.username.toLowerCase().includes(typedUsername.toLowerCase())
       )
-      .map(({ id, username, profilePicture, firstName, lastName }) => ({
+      .map(({ id, username, profileImageUrl, firstName, lastName }) => ({
         id,
         username,
-        profilePicture: profilePicture || "",
+        profileImageUrl: profileImageUrl || "",
         firstName: firstName || "",
         lastName: lastName || "",
       }));
