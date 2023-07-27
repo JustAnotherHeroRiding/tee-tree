@@ -14,7 +14,7 @@ export const InfiniteScrollOnlyImages = (props: {
     fetchNextPage,
     isLoading: postsLoading,
     isFetchingNextPage: isFetchingNextPage,
-  } = api.posts.infiniteScrollSearchResults.useInfiniteQuery(
+  } = api.posts.infiniteScrollSearchResultsImages.useInfiniteQuery(
     {
       query: props.query,
       selector: props.selector,

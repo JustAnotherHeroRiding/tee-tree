@@ -153,7 +153,7 @@ const SearchResults: NextPage = () => {
         {selector == "people" && (
           <OnlyUserSearchResults query={searchQuery} selector={"people"} />
         )}
-        {selector == "images" && (
+        {selector == "photos" && (
           <InfiniteScrollOnlyImages query={searchQuery} selector={"images"} />
         )}
         {selector == "gifs" && (

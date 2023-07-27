@@ -63,6 +63,10 @@ Let's implement some features I have already implemented before in order to lear
 ### Emoji selector
 - Make the emoji selector work for the create post wizard
 
+### User and trend suggestion in the edit post view
+- Add user and trend suggesting in the edit post text area
+- Make the text blue when you are editing it
+
 ### Bug alert
 - Button cant appear inside of a button for the share modal #DONE 
 - The buttons are too cramped, I should add another column on phone screen sizes and make it wider #DONE 

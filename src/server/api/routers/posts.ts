@@ -324,6 +324,127 @@ export const postsRouter = createTRPCRouter({
       };
     }),
 
+
+    infiniteScrollSearchResultsImages: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+        query: z.string(),
+        selector: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+
+      const items = await ctx.prisma.post.findMany({
+        where: {
+          content: {
+            contains: input.query,
+          },
+          imageUrl: {
+            not: null,
+          },
+          AND: {
+            imageUrl: {
+              not: "",
+            },
+          },
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: 
+          input.selector === "top"
+            ? {
+                likes: {
+                  _count: "desc",
+                },
+              }
+            : {
+                createdAt: "desc",
+              },
+        include: {
+          likes: true,
+          retweets: true,
+        },
+    });
+
+    let nextCursor: typeof cursor | undefined = undefined;
+    if (items.length > limit) {
+      const nextItem = items.pop(); // return the last item from the array
+      nextCursor = nextItem?.id;
+    }
+    const extendedPosts = await addUserDataToPosts(items);
+    return {
+      posts: extendedPosts,
+      nextCursor,
+    };
+  }),
+
+
+
+  infiniteScrollSearchResultsGifs: publicProcedure
+  .input(
+    z.object({
+      limit: z.number(),
+      cursor: z.string().nullish(),
+      skip: z.number().optional(),
+      query: z.string(),
+      selector: z.string(),
+    })
+  )
+  .query(async ({ ctx, input }) => {
+    const { limit, skip, cursor } = input;
+
+    const items = await ctx.prisma.post.findMany({
+      where: {
+        content: {
+          contains: input.query,
+        },
+        gifUrl: {
+          not: null,
+        },
+        AND: {
+          gifUrl: {
+            not: "",
+          },
+        },
+      },
+      take: limit + 1,
+      skip: skip,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: 
+        input.selector === "top"
+          ? {
+              likes: {
+                _count: "desc",
+              },
+            }
+          : {
+              createdAt: "desc",
+            },
+      include: {
+        likes: true,
+        retweets: true,
+      },
+  });
+
+  let nextCursor: typeof cursor | undefined = undefined;
+  if (items.length > limit) {
+    const nextItem = items.pop(); // return the last item from the array
+    nextCursor = nextItem?.id;
+  }
+  const extendedPosts = await addUserDataToPosts(items);
+  return {
+    posts: extendedPosts,
+    nextCursor,
+  };
+}),
+
+
+
   getPostsByUserId: publicProcedure
     .input(
       z.object({

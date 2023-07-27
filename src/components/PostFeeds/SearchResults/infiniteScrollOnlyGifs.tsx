@@ -14,7 +14,7 @@ export const InfiniteScrollOnlyGifs = (props: {
     fetchNextPage,
     isLoading: postsLoading,
     isFetchingNextPage: isFetchingNextPage,
-  } = api.posts.infiniteScrollSearchResults.useInfiniteQuery(
+  } = api.posts.infiniteScrollSearchResultsGifs.useInfiniteQuery(
     {
       query: props.query,
       selector: props.selector,
