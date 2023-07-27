@@ -150,21 +150,21 @@ export const OnlyUserSearchResults = (props: {
     return <LoadingSpinner />;
   }
 
-  if (toShow?.length === 0)
+  if (toShow?.length === 0 && !isLoading && !isLoadingUserList)
     return <div className="mt-4 text-center">No users found.</div>;
 
-  if (!data || data.pages[0] instanceof Array || !data.pages[0]?.users) {
+ /*  if (!data || data.pages[0] instanceof Array || !data.pages[0]?.users) {
     return <div className="text-center">No users found.</div>;
-  }
+  } */
 
   return (
     <div className="flex flex-col">
       {isLoading ||
-        (isLoadingUserList && (
+        isLoadingUserList && (
           <div className="mx-auto">
             <LoadingSpinner size={42} />
           </div>
-        ))}
+        )}
       {data?.pages?.map((page, pageIndex) =>
         page.users.map((user: UserType, userIndex: number) => {
           const isLastUser =

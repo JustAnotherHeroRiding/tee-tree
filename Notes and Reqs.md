@@ -123,7 +123,7 @@ Let's implement some features I have already implemented before in order to lear
 - When typing a query, it should show possible trends or users #DONE 
 - Let us concatenate both ref arrays into one for the possible results #DONE 
 - The suggested results div is too small on phones #DONE 
-- Add the feeds for photos and gif feeds
+- Add the feeds for photos and gif feeds #DONE 
 
 ## Image upload icon
 - The icon is not in line with the other icons #DONE 
