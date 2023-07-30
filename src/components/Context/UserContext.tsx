@@ -2,17 +2,18 @@ import React from "react";
 import { api } from "~/utils/api";
 import type { PropsWithChildren } from "react";
 import { type NextPage } from "next";
+import type { User } from "../ReusableElements/CreatePostWizard";
 
-type UserType = {
+/* type UserType = {
   id: string;
   username: string | null;
   profileImageUrl: string | null;
   firstName: string | null;
   lastName: string | null;
-};
+}; */
 
 type UserContextType = {
-  userList: UserType[];
+  userList: User[];
   isLoading: boolean;
 };
 

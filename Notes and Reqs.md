@@ -138,7 +138,7 @@ Let's implement some features I have already implemented before in order to lear
 - Let's make the profile picture consistent across the user types #DONE 
 - Follow buttons #DONE 
 - Do not show a profile if it is the current user !!! #DONE 
-- Make the profiles link
+- Make the profiles link #DONE 
 - Hover profile card, let's turn the other implementation into a component
 - Clicking on Show more should open a page with all users that the current user is not following
 - The user id will be passed in the url

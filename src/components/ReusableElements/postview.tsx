@@ -44,6 +44,8 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useRouter } from "next/router";
+import { UserHoverCard } from "./UserHover";
+import { type User } from "./CreatePostWizard";
 
 dayjs.extend(relativeTime);
 
@@ -200,7 +202,16 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                 <Link href={`/@${username}`} className="peer hover:underline">
                   {username}
                 </Link>
-                <div
+                <UserHoverCard  user={user as User}
+  userList={userList}
+  mentionedUserId={mentionedUserId}
+username={username}
+isFollowingLoading={isFollowingLoading}  isFollowing={isFollowing}
+  followingData={followingData}
+  mutate={mutate}
+  followingCount={followingCount}
+  followerCount={followerCount} />
+                {/* <div
                   className="invisible absolute right-0 top-16 z-10
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
             p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100"
@@ -265,7 +276,7 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                       </div>
                     </Link>
                   </div>
-                </div>
+                </div> */}
               </span>
             </div>
           </span>

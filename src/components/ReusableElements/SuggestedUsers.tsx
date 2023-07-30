@@ -97,7 +97,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
           className="flex cursor-pointer flex-col px-4 py-2 hover:bg-gray-900"
           onClick={() => void router.push(`/@${user.username ?? ""}`)}
         >       
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center group">
           <Link href={`/@${user.username ?? ""}`}>
                     
             <Image
@@ -108,7 +108,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
               height={64}
             />
             </Link>
-            <div className="ml-4 flex flex-col">
+            <div className="ml-4 flex flex-col group">
               <div className="flex justify-between">
               <Link href={`/@${user.username ?? ""}`} className="m-auto w-[120px] font-bold ">
                 <span className="hover:underline">
