@@ -170,7 +170,7 @@ export const followRouter = createTRPCRouter({
       const allUsers = await clerkClient.users.getUserList();
       
       // Filter out the followed users
-      const usersNotFollowing = allUsers.filter(user => !followedUserIds.includes(user.id));
+      const usersNotFollowing = allUsers.filter(user => !followedUserIds.includes(user.id) && user.id !== currentUserId);
 
       return usersNotFollowing.map(filterUserForClient);
     }),

@@ -96,7 +96,7 @@ export const UserSearchResults = (props: { query: string  }) => {
         {threeUsers.map((userResult) => (
           <div className="flex-shrink-0 relative flex flex-row px-2 py-4" key={userResult.id}>
             <Image
-              src={userResult.profilePicture}
+              src={userResult.profileImageUrl}
               alt={`${userResult.username ?? ""}'s profile pic `}
               className="rounded-full border-2 h-16 w-16 border-black bg-black"
               width={64}

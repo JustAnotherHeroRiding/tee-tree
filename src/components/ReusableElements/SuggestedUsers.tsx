@@ -2,10 +2,73 @@ import { api } from "~/utils/api";
 import { LoadingSpinner } from "./loading";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
+import toast from "react-hot-toast";
 
 export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
 
   const { data: suggestedUsers, isLoading } = api.follow.getNotFollowingCurrentUser.useQuery();
+  
+  const { data: followingData } = api.follow.getFollowingCurrentUser.useQuery();
+
+  const { user: currentUser } = useUser();
+
+    const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>(
+      {}
+    );
+    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+
+
+    useEffect(() => {
+      if (followingData) {
+        const followingMap = followingData.reduce<{ [key: string]: boolean }>(
+          (acc, user) => {
+            acc[user.followed.followingId] = true;
+            return acc;
+          },
+          {}
+        );
+        setIsFollowing(followingMap);
+      }
+    }, [followingData]);
+
+    const { mutate } =
+    api.profile.followUser.useMutation({
+      onMutate: (variables) => {
+        // Set the loading state for this user ID to true as the request starts
+        setLoadingStates(prev => ({ ...prev, [variables.userToFollowId]: true }));
+      },
+      onSuccess: (data, variables) => {
+        console.log(`You are now following the user.`);
+
+        // Create a copy of the 'isFollowing' and 'followerCount' states
+        const newIsFollowing = { ...isFollowing };
+
+        // Check if the current user is already following the user
+        if (isFollowing[variables.userToFollowId]) {
+          // If so, set 'isFollowing[userId]' to false to indicate that the current user has unfollowed the user
+          newIsFollowing[variables.userToFollowId] = false;
+          setIsFollowing(newIsFollowing);   
+        } else {
+          // Otherwise, set 'isFollowing[userId]' to true to indicate that the current user is now following the user
+          newIsFollowing[variables.userToFollowId] = true;
+          setIsFollowing(newIsFollowing);
+        }
+        setLoadingStates(prev => ({ ...prev, [variables.userToFollowId]: false }));
+
+      },
+      onError: (e, variables) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Follow! Are you logged in?");
+        }
+        setLoadingStates(prev => ({ ...prev, [variables.userToFollowId]: false }));
+
+      },
+    });
 
 
 
@@ -26,16 +89,35 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
           key={user.id}
           className="flex cursor-pointer flex-col hover:bg-gray-900 px-4 py-2"
         >
-            <div className="flex flex-row">
+            <div className="flex flex-row items-center">
             <Image
               src={user.profileImageUrl ?? ""}
               alt={`${user.profileImageUrl ?? ""}'s profile pic `}
-              className="rounded-full border-2 h-12 w-12 border-black bg-black"
+              className="rounded-full h-12 w-12  bg-black"
               width={64}
               height={64}
             />
-          
-            <p className="font-bold">{user.username}</p>
+            <div className="ml-4 flex flex-col">
+              <div className="flex justify-between">
+            <span className="my-auto font-bold w-[100px]">{user.firstName}{" "}{user.lastName}</span>
+            {currentUser?.id !== user?.id &&
+                      user &&
+                      (!loadingStates[user.id] ? (
+                        <button
+                          className={`ml-auto mb-auto rounded-3xl border border-slate-400 bg-slate-800
+              px-4 py-2 transition-all duration-300 hover:bg-slate-900 hover:text-white `}
+                          onClick={() => mutate({ userToFollowId: user.id })}
+                          disabled={loadingStates[user.id]}
+                        >{`${
+                          isFollowing[user.id] ? "Unfollow" : "Follow"
+                        }`}</button>
+                      ) : (
+                        <div className="ml-auto flex items-center justify-center">
+                          <LoadingSpinner size={32} />
+                        </div>
+                      ))}            </div>
+            <p className="text-slate-300  truncate w-[200px]">@{user.username}</p>
+              </div>
             </div>
         </div>
       ))}

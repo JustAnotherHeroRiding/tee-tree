@@ -175,7 +175,7 @@ export const OnlyUserSearchResults = (props: {
             <div key={user.id} className="relative">
               <div className="flex flex-row px-2 py-4">
                 <Image
-                  src={user.profilePicture}
+                  src={user.profileImageUrl}
                   alt={`${user.username ?? ""}'s profile pic `}
                   className="rounded-full border-2 w-16 h-16 border-black bg-black"
                   width={64}
@@ -214,7 +214,7 @@ export const OnlyUserSearchResults = (props: {
           ) : (
             <div className="relative flex flex-row px-2 py-4" key={user.id}>
               <Image
-                src={user.profilePicture}
+                src={user.profileImageUrl}
                 alt={`${user.username ?? ""}'s profile pic `}
                 className="rounded-full border-2 border-black bg-black"
                 width={64}

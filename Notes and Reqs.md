@@ -64,7 +64,7 @@ Let's implement some features I have already implemented before in order to lear
 - Make the emoji selector work for the create post wizard
 
 ### User and trend suggestion in the edit post view
-- Add user and trend suggesting in the edit post text area
+- Add user and trend suggestions in the edit post text area
 - Make the text blue when you are editing it
 
 ### Bug alert
@@ -135,7 +135,10 @@ Let's implement some features I have already implemented before in order to lear
 - Endpoint to fetch users that the current user is not following #DONE 
 - Display users that the current user is not following on the right below the trends #DONE 
 - It should be limited to 3 #DONE 
-- Let's make the profile picture consistent across the user types
+- Let's make the profile picture consistent across the user types #DONE 
+- Follow buttons #DONE 
+- Do not show a profile if it is the current user !!! #DONE 
+- Make the profiles link
 - Clicking on Show more should open a page with all users that the current user is not following
 - The user id will be passed in the url
 
