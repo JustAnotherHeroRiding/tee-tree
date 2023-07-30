@@ -5,10 +5,13 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
   const { data: suggestedUsers, isLoading } =
     api.follow.getNotFollowingCurrentUser.useQuery();
+
+    const router = useRouter();
 
   const { data: followingData } = api.follow.getFollowingCurrentUser.useQuery();
 
@@ -92,6 +95,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
         <div
           key={user.id}
           className="flex cursor-pointer flex-col px-4 py-2 hover:bg-gray-900"
+          onClick={() => void router.push(`/@${user.username ?? ""}`)}
         >       
           <div className="flex flex-row items-center">
           <Link href={`/@${user.username ?? ""}`}>
@@ -122,7 +126,9 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
                     <button
                       className={`ml-auto mt-auto rounded-3xl border border-slate-400 bg-slate-800
               px-4 py-2 transition-all duration-300 hover:bg-slate-900 hover:text-white `}
-                      onClick={() => mutate({ userToFollowId: user.id })}
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        mutate({ userToFollowId: user.id })}}
                       disabled={loadingStates[user.id]}
                     >{`${
                       isFollowing[user.id] ? "Unfollow" : "Follow"

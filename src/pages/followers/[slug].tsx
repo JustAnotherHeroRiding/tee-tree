@@ -160,11 +160,14 @@ function isCurrentUserFollowing(currentUserId: string, follower: FollowedWithAut
             <div className="relative flex flex-row py-4 px-2" key={follower.follower.id}>
               <Image src={follower.author.profileImageUrl}
                 alt={`${follower.author.username ?? ""}'s profile pic `}
-                className="rounded-full border-2 border-black bg-black"
+                className="rounded-full border-2 border-black bg-black w-16 h-16"
                 width={64}
                 height={64} />
-              <Link href={`/@${follower.author.username}`}>              
-              <h2 className="mb ml-4">@{follower.author.username}</h2>
+              <Link href={`/@${follower.author.username}`}>
+                <div className="flex flex-col mr-auto">
+              <span className="font-bold hover:underline">{follower.author.firstName}{" "}{follower.author.lastName}</span>              
+              <h2 className="text-slate-300">@{follower.author.username}</h2>
+              </div>
               </Link>
               {follower.author.id !== user?.id && user &&
                 (!isLoadingFollowButton ?

@@ -68,6 +68,8 @@ export type FollowerWithAuthor = {
     username: string;
     id: string;
     profileImageUrl: string;
+    firstName : string | null;
+    lastName : string | null;
   };
 };
 
@@ -77,6 +79,8 @@ export type FollowedWithAuthor = {
     username: string;
     id: string;
     profileImageUrl: string;
+    firstName : string | null;
+    lastName : string | null;
   };
 };
 
