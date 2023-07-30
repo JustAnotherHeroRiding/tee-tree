@@ -139,9 +139,10 @@ Let's implement some features I have already implemented before in order to lear
 - Follow buttons #DONE 
 - Do not show a profile if it is the current user !!! #DONE 
 - Make the profiles link #DONE 
-- Hover profile card, let's turn the other implementation into a component
-- Clicking on Show more should open a page with all users that the current user is not following
-- The user id will be passed in the url
+- Hover profile card, let's turn the other implementation into a component #DONE 
+- Clicking on Show more should open a page with all users that the current user is not following #DONE 
+- The user id will be passed in the url - This is how twitter does it but I do not need it as I can fetch the user id from the backend directly #DONE 
+- The current user is also showing up, this is weird
 
 ## Mentioning users
 - If the word starts with an @ and is part of the list of users then then it should be blue #DONE 

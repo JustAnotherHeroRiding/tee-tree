@@ -20,6 +20,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
 
   const { data: suggestedUsers, isLoading } =
     api.follow.getNotFollowingCurrentUser.useQuery();
+    
   const { user: currentUser } = useUser();
 
   const router = useRouter();
@@ -177,7 +178,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
                   mutate={mutate}
                   followingCount={followingCount}
                   followerCount={followerCount}
-                  location="suggested"
+                  location={sideBar ? "sidebar" : "standalone"}
                 />
                 <Link
                   href={`/@${user.username ?? ""}`}
@@ -217,7 +218,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
       ))}
       {sideBar && (
         <Link
-          href="/i/suggested"
+          href="/i/suggested_users"
           className="rounded-b-2xl px-4 py-2
       text-start text-Intone-300 hover:bg-gray-900"
         >

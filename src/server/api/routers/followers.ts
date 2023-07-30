@@ -162,16 +162,17 @@ export const followRouter = createTRPCRouter({
         where: { followerId: currentUserId },
       });
 
-      // If the user is not following anyone, return all users from Clerk
+      // Fetch all users from Clerk
+      const allUsers = await clerkClient.users.getUserList();
+
+      // If the user is not following anyone, return all users from Clerk except the current user
       if (!followedUsers || followedUsers.length === 0) {
-        return await clerkClient.users.getUserList(); 
+        return allUsers.filter(user => user.id !== currentUserId).map(filterUserForClient); 
       }
 
       // Extract the followed user ids
       const followedUserIds = followedUsers.map(user => user.followingId);
       
-      // Fetch all users from Clerk
-      const allUsers = await clerkClient.users.getUserList();
       
       // Filter out the followed users
       const usersNotFollowing = allUsers.filter(user => !followedUserIds.includes(user.id) && user.id !== currentUserId);

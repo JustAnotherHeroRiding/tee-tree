@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { type FollowedWithAuthor } from "~/server/api/routers/followers";
 import { LoadingSpinner } from "./loading";
-
+import { useRouter } from "next/router";
 
 type MutateFunction = (params: { userToFollowId: string }) => void;
 
@@ -19,11 +19,22 @@ export const UserHoverCard = (props: {
   followingCount: Record<string, number>;
   followerCount: Record<string, number>;
   location: string;
-
 }) => {
+  const router = useRouter();
+
   return (
     <div
-      className={`invisible absolute ${props.location === "post" ? "right-0 top-16": " right-4 -top-60"} z-10
+      className={`invisible absolute overflow ${
+        props.location === "post"
+          ? "right-0 top-16"
+          : router.pathname.startsWith("/i/trends")
+          ? "top-36 right-0"
+          : props.location === "sidebar"
+          ? "-top-60 right-4"
+          : props.location === "standalone"
+          ? "-top-30 right-2"
+          : ""
+      } z-10
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
             p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100`}
     >
@@ -45,14 +56,19 @@ export const UserHoverCard = (props: {
             <button
               className={`mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800 px-4
          py-1 transition-all duration-300 hover:bg-slate-900 hover:text-white 
-         ${props.isFollowingLoading ? "scale-110 animate-pulse text-blue-700" : ""}`}
-              onMouseUp={(event) =>{
+         ${
+           props.isFollowingLoading
+             ? "scale-110 animate-pulse text-blue-700"
+             : ""
+         }`}
+              onMouseUp={(event) => {
                 event.stopPropagation();
                 props.mutate({
-                  userToFollowId: props.mentionedUser.id ? props.mentionedUser.id : "",
-                })
-            }
-              }
+                  userToFollowId: props.mentionedUser.id
+                    ? props.mentionedUser.id
+                    : "",
+                });
+              }}
               disabled={false}
             >{`${
               props.isFollowing[props.mentionedUser.id] ? "Unfollow" : "Follow"
@@ -64,8 +80,12 @@ export const UserHoverCard = (props: {
           ))}
       </div>
       <Link href={`/@${props.username}`} className="mt-4 flex flex-col">
-        <span className="font-bold text-white">{props.mentionedUser.firstName}{" "}{props.mentionedUser.lastName}</span>
-        <span className="cursor-pointer text-slate-300 hover:underline">@{props.username}</span>
+        <span className="font-bold text-white">
+          {props.mentionedUser.firstName} {props.mentionedUser.lastName}
+        </span>
+        <span className="cursor-pointer text-slate-300 hover:underline">
+          @{props.username}
+        </span>
       </Link>
       <div className="mt-4 flex flex-row">
         <Link href={`/followers/@${props.username}`}>
