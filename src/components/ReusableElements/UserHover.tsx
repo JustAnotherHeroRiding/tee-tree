@@ -10,7 +10,7 @@ type MutateFunction = (params: { userToFollowId: string }) => void;
 export const UserHoverCard = (props: {
   user: User;
   userList: User[];
-  mentionedUserId: string;
+  mentionedUser: User;
   username: string;
   isFollowingLoading: boolean;
   isFollowing: Record<string, boolean>;
@@ -18,13 +18,14 @@ export const UserHoverCard = (props: {
   mutate: MutateFunction;
   followingCount: Record<string, number>;
   followerCount: Record<string, number>;
+  location: string;
 
 }) => {
   return (
     <div
-      className="invisible absolute right-0 top-16 z-10
+      className={`invisible absolute ${props.location === "post" ? "right-0 top-16": " right-4 -top-60"} z-10
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
-            p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100"
+            p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100`}
     >
       <div className="flex min-w-[250px] flex-row justify-between">
         <Image
@@ -38,7 +39,7 @@ export const UserHoverCard = (props: {
           height={56}
         />
 
-        {props.mentionedUserId !== props.user?.id &&
+        {props.mentionedUser.id !== props.user?.id &&
           props.user &&
           (props.followingData ? (
             <button
@@ -48,13 +49,13 @@ export const UserHoverCard = (props: {
               onMouseUp={(event) =>{
                 event.stopPropagation();
                 props.mutate({
-                  userToFollowId: props.mentionedUserId ? props.mentionedUserId : "",
+                  userToFollowId: props.mentionedUser.id ? props.mentionedUser.id : "",
                 })
             }
               }
               disabled={false}
             >{`${
-              props.isFollowing[props.mentionedUserId] ? "Unfollow" : "Follow"
+              props.isFollowing[props.mentionedUser.id] ? "Unfollow" : "Follow"
             }`}</button>
           ) : (
             <div className="mr-6 mt-6 flex items-center justify-center">
@@ -62,15 +63,16 @@ export const UserHoverCard = (props: {
             </div>
           ))}
       </div>
-      <Link href={`/@${props.username}`} className="mt-4 flex flex-row">
-        @<span className="cursor-pointer hover:underline">{props.username}</span>
+      <Link href={`/@${props.username}`} className="mt-4 flex flex-col">
+        <span className="font-bold text-white">{props.mentionedUser.firstName}{" "}{props.mentionedUser.lastName}</span>
+        <span className="cursor-pointer text-slate-300 hover:underline">@{props.username}</span>
       </Link>
       <div className="mt-4 flex flex-row">
         <Link href={`/followers/@${props.username}`}>
           <div className="mb-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
             <h1>Followers</h1>
             <h1 className="text-bold ml-2 text-2xl">
-              {props.followerCount[props.mentionedUserId] || 0}
+              {props.followerCount[props.mentionedUser.id] || 0}
             </h1>
           </div>
         </Link>
@@ -78,7 +80,7 @@ export const UserHoverCard = (props: {
           <div className="mb-4 ml-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
             <h1>Following</h1>
             <h1 className="text-bold ml-2 text-2xl">
-              {props.followingCount[props.mentionedUserId] || 0}
+              {props.followingCount[props.mentionedUser.id] || 0}
             </h1>
           </div>
         </Link>

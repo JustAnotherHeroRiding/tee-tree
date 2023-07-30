@@ -202,81 +202,19 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
                 <Link href={`/@${username}`} className="peer hover:underline">
                   {username}
                 </Link>
-                <UserHoverCard  user={user as User}
-  userList={userList}
-  mentionedUserId={mentionedUserId}
-username={username}
-isFollowingLoading={isFollowingLoading}  isFollowing={isFollowing}
-  followingData={followingData}
-  mutate={mutate}
-  followingCount={followingCount}
-  followerCount={followerCount} />
-                {/* <div
-                  className="invisible absolute right-0 top-16 z-10
-            scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
-            p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100"
-                >
-                  <div className="flex min-w-[250px] flex-row justify-between">
-                    <Image
-                      className="h-14 w-14 rounded-full"
-                      src={
-                        userList.find((user) => user.username === username)
-                          ?.profileImageUrl as string
-                      }
-                      alt={`@${username} profile picture`}
-                      width={56}
-                      height={56}
-                    />
-
-                    {mentionedUserId !== user?.id &&
-                      user &&
-                      (followingData ? (
-                        <button
-                          className={`mr-4 mt-4 rounded-3xl border border-slate-400 bg-slate-800 px-4
-         py-1 transition-all duration-300 hover:bg-slate-900 hover:text-white 
-         ${isFollowingLoading ? "scale-110 animate-pulse text-blue-700" : ""}`}
-                          onClick={() =>
-                            mutate({
-                              userToFollowId: mentionedUserId
-                                ? mentionedUserId
-                                : "",
-                            })
-                          }
-                          disabled={false}
-                        >{`${
-                          isFollowing[mentionedUserId] ? "Unfollow" : "Follow"
-                        }`}</button>
-                      ) : (
-                        <div className="mr-6 mt-6 flex items-center justify-center">
-                          <LoadingSpinner size={32} />
-                        </div>
-                      ))}
-                  </div>
-                  <Link href={`/@${username}`} className="mt-4 flex flex-row">
-                    @
-                    <span className="cursor-pointer hover:underline">
-                      {username}
-                    </span>
-                  </Link>
-                  <div className="mt-4 flex flex-row">
-                    <Link href={`/followers/@${username}`}>
-                      <div className="mb-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
-                        <h1>Followers</h1>
-                        <h1 className="text-bold ml-2 text-2xl">
-                          {followerCount[mentionedUserId] || 0}
-                        </h1>
-                      </div>
-                    </Link>
-                    <Link href={`/following/@${username}`}>
-                      <div className="mb-4 ml-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
-                        <h1>Following</h1>
-                        <h1 className="text-bold ml-2 text-2xl">
-                          {followingCount[mentionedUserId] || 0}
-                        </h1>
-                      </div>
-                    </Link>
-                  </div>
-                </div> */}
+                <UserHoverCard
+                  user={user as User}
+                  userList={userList}
+                  mentionedUser={mentionedUser}
+                  username={username}
+                  isFollowingLoading={isFollowingLoading}
+                  isFollowing={isFollowing}
+                  followingData={followingData}
+                  mutate={mutate}
+                  followingCount={followingCount}
+                  followerCount={followerCount}
+                  location="post"
+                />
               </span>
             </div>
           </span>
@@ -921,7 +859,7 @@ const PostViewComponent = (props: PostWithUser) => {
                   <button
                     data-tooltip-id="copyLink-tooltip"
                     data-tooltip-content="Copy to Clipboard"
-                    className="flex my-2 flex-col items-center  justify-center rounded-xl hover:bg-gray-700"
+                    className="my-2 flex flex-col items-center  justify-center rounded-xl hover:bg-gray-700"
                     onClick={() => {
                       void copyToClipboard();
                     }}
@@ -940,7 +878,7 @@ const PostViewComponent = (props: PostWithUser) => {
                   <TwitterShareButton
                     url={window.location.hostname + "/post" + `/${post.id}`}
                   >
-                    <span className="flex py-2 flex-col items-center justify-center rounded-xl hover:bg-gray-700">
+                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
                       <TwitterIcon size={32} round={true} />
 
                       <p className="phone:hidden">Twitter</p>
