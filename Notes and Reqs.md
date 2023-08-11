@@ -71,6 +71,9 @@ Let's implement some features I have already implemented before in order to lear
 - Button cant appear inside of a button for the share modal #DONE 
 - The buttons are too cramped, I should add another column on phone screen sizes and make it wider #DONE 
 
+#### Quick Fix
+- Trends in posts should link to the search results for that trend
+
 ## Retweets
 - Create the retweet model #DONE 
 - Retweet trpc mutation #DONE 
@@ -142,7 +145,8 @@ Let's implement some features I have already implemented before in order to lear
 - Hover profile card, let's turn the other implementation into a component #DONE 
 - Clicking on Show more should open a page with all users that the current user is not following #DONE 
 - The user id will be passed in the url - This is how twitter does it but I do not need it as I can fetch the user id from the backend directly #DONE 
-- The current user is also showing up, this is weird
+- The current user is also showing up, this is weird #DONE 
+- It will show a sign in button when the user is not logged in #DONE 
 
 ## Mentioning users
 - If the word starts with an @ and is part of the list of users then then it should be blue #DONE 
