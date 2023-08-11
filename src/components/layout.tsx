@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { SearchInput } from "./ReusableElements/SearchForm";
 import { SuggestedUsers } from "./ReusableElements/SuggestedUsers";
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 
 export const PageLayout = (props: PropsWithChildren) => {
   const router = useRouter();
-  const {user} = useUser();
+  const { user } = useUser();
 
   return (
     <>
@@ -40,8 +40,10 @@ export const PageLayout = (props: PropsWithChildren) => {
         >
           {props.children}
         </div>
-        <div className="gray-thin-scrollbar fixed right-[3%] max-h-[100vh] w-1/5 overflow-y-scroll
-         scrollbar-none trendsbreakpoint:hidden">
+        <div
+          className="gray-thin-scrollbar fixed right-[3%] max-h-[100vh] w-1/5 overflow-y-scroll
+         scrollbar-none trendsbreakpoint:hidden"
+        >
           <div className="sticky top-0 mb-6 bg-black py-2">
             <SearchInput src="trends" />
           </div>
@@ -59,11 +61,25 @@ export const PageLayout = (props: PropsWithChildren) => {
                 <h1 className="mb-4 px-4 py-2 text-2xl font-bold">
                   Who to follow
                 </h1>
-                <SuggestedUsers />
+                {user ? (
+                  <SuggestedUsers />
+                ) : (
+                  <>
+                    <h1 className="mb-4 px-4 py-2 text-2xl">You are not logged in</h1>
+                    <SignInButton>
+                      <div
+                        className="mb-2 ml-2 flex w-fit cursor-pointer 
+rounded-3xl border border-slate-400 px-4 py-2 hover:bg-slate-700"
+                      >
+                        <h1>Sign In or Register</h1>
+                      </div>
+                    </SignInButton>
+                  </>
+                )}
               </div>
             )}
           </div>
-          <div className="px-4 py-2 mb-24">
+          <div className="mb-24 px-4 py-2">
             <p className="text-twitter-200">© 2023 Kristijan Kocev</p>
           </div>
         </div>
