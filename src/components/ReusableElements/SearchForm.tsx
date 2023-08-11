@@ -5,7 +5,6 @@ import { UserContext } from "../Context/UserContext";
 import { LoadingSpinner } from "./loading";
 import React from "react";
 import { UserCardSearchResults } from "./UserMentionSuggestions";
-import type { User } from "./CreatePostWizard";
 import { api } from "~/utils/api";
 import Link from "next/link";
 
@@ -131,7 +130,7 @@ export const SearchInput = (props: { src: string }) => {
                 return (
                   <UserCardSearchResults
                     key={index}
-                    user={user as User}
+                    user={user}
                     index={index}
                     highlightedIndex={highlightedIndex}
                     scrollRef={
