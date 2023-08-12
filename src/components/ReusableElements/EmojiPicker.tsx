@@ -38,8 +38,8 @@ const EmojiSelector: React.FC<EmojiSelectorProps> = ({
         setShowEmojis(false);
           setTimeout(() => {
             setAnimateFadeEnd(false); // Reset animateFadeEnd after fade-out animation is complete
-          }, 500);
-        }, 500);
+          }, 400);
+        }, 400);
       }
     });
   
@@ -52,8 +52,8 @@ const EmojiSelector: React.FC<EmojiSelectorProps> = ({
     return (
       <div
         ref={ref}
-        className={`absolute right-0 top-4 z-10 transition-all duration-500 ease-in-out ${
-          !animateFadeEnd ? "opacity-100 block" : !showEmojis ? "opacity-0 hidden" : "opacity-0"
+        className={`absolute right-0 opacity-0 top-4 z-10 transition-all duration-[400ms] ease-in-out ${
+          !animateFadeEnd ? "opacity-100 block" :  "opacity-0"
         }`}
       >
         <Picker

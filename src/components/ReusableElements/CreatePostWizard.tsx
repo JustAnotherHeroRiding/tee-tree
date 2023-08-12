@@ -689,6 +689,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
         <FontAwesomeIcon
           onClick={() => {
+            setAnimateFadeEndEmoji(false)
             if (showEmojis) {
               setShowEmojis(false);
             } else if (!showEmojis) {
@@ -709,6 +710,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           }}
         />
         {showEmojis && (
+          
           <EmojiSelector
             input={input}
             setInput={setInput}
