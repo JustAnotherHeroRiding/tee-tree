@@ -175,9 +175,10 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   const coloredWords = words.map((word, index) => {
     if (word.startsWith("#")) {
       return (
-        <span key={index} className="text-Intone-300 hover:underline">
+        <Link key={index} href={`/i/search?q=${word.slice(1)}&src=post_trend_click&selector=top`}
+         className="text-Intone-300 hover:underline">
           {word}
-        </span>
+        </Link>
       );
     } else if (word.startsWith("@") && userList) {
       const mentionedUser = userList.find(

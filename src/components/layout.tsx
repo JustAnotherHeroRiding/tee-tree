@@ -15,7 +15,7 @@ export const PageLayout = (props: PropsWithChildren) => {
       <main className="relative flex h-screen justify-center">
         <div className="fixed left-[3%] showSidebar:hidden">
           <Link
-            className="flex flex-row items-center justify-center rounded-xl hover:bg-slate-700"
+            className="flex flex-row items-center justify-center rounded-xl hover:text-Intone-300"
             href={"/"}
           >
             <svg

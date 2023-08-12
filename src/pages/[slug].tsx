@@ -147,7 +147,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="sticky top-0 z-[10] flex  items-center justify-between pb-2 backdrop-blur-sm">
           <Link href={"/"}>
             <FontAwesomeIcon
-              className="absolute left-4 top-4
+              className="absolute left-4 top-4 
         h-8 w-8 transform rounded-3xl px-2 py-1 transition-all
         duration-300 hover:scale-125 hover:bg-slate-900 hover:text-white"
               icon={faArrowLeftLong}

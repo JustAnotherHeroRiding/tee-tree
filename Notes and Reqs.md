@@ -25,13 +25,13 @@ Let's implement some features I have already implemented before in order to lear
 - Allow users to follow users from the following/followers pages #DONE 
 - Fix following or not following for the 2 pages for all the users #DONE 
 - Clicking outside the modal or clicking escape should close the edit profile modal #DONE 
-- Pinned posts for each profile
 - Sticky div at the top with the arrow to go back #DONE 
 - Page for Liked posts #DONE 
 - Username and posts counts on the stick div #DONE 
 - If a user has no followers or following then display a message #DONE 
 - Display First and Last Name for Users #DONE 
 - Collage of images that the user has posted on the profile view on the right side
+- Pinned posts for each profile
 
 ## Posts
 - Editing posts #DONE 
@@ -72,7 +72,7 @@ Let's implement some features I have already implemented before in order to lear
 - The buttons are too cramped, I should add another column on phone screen sizes and make it wider #DONE 
 
 #### Quick Fix
-- Trends in posts should link to the search results for that trend
+- Trends in posts should link to the search results for that trend #DONE 
 
 ## Retweets
 - Create the retweet model #DONE 
