@@ -68,12 +68,12 @@ export default {
       },
       keyframes: {
         fadeOut: {
-          '0%': { opacity: `100` },
-          '100%': { opacity: `0` },
+          '0%': { display: `block` },
+          '100%': {display: 'none'},
         },
         fadeIn: {
-          '0%': { opacity: `0` },
-          '100%': { opacity: `100` },
+          '0%': { display: `none` },
+          '100%': {display: 'block'},
         },
       },
       animation: {

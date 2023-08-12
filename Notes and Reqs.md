@@ -61,7 +61,9 @@ Let's implement some features I have already implemented before in order to lear
 - Make post content be selectable #DONE
 
 ### Emoji selector
-- Make the emoji selector work for the create post wizard
+- Make the emoji selector work for the create post wizard #DONE 
+- Fade out animation is not working as it is hidden instantly #DONE 
+##### I added the animation but it becomes really slow even when the emoji selector is hidden
 
 ### User and trend suggestion in the edit post view
 - Add user and trend suggestions in the edit post text area

@@ -706,6 +706,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             backgroundColor: "rgb(51 65 85)",
           }}
         />
+        {showEmojis && (
           <EmojiSelector
             input={input}
             setInput={setInput}
@@ -714,6 +715,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             setShowEmojis={setShowEmojis}
             showEmojis={showEmojis}
           />
+        )}
       </div>
       {previewUrl && (
         <div className="relative mx-auto mt-6 w-[300px] overflow-auto">

@@ -138,9 +138,9 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
     return <LoadingSpinner />;
   }
 
-  if (!suggestedUsers) return <h1>You follow everyone!</h1>;
+  if (!suggestedUsers && !loadingUserList) return <h1 className="py-2 text-center">You follow everyone!</h1>;
 
-  const slicedUsers = suggestedUsers.slice(0, limit);
+  const slicedUsers = suggestedUsers?.slice(0, limit);
 
   return (
     <div className="relative flex flex-col">
@@ -149,7 +149,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
           <LoadingSpinner size={42} />
         </div>
       )}
-      {slicedUsers.map((user) => (
+      {slicedUsers?.map((user) => (
         <div
           key={user.id}
           className="flex cursor-pointer flex-col px-4 py-2 hover:bg-gray-900"
