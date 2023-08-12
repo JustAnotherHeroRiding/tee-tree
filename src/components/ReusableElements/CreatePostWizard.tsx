@@ -19,6 +19,7 @@ import Compressor from "compressorjs";
 import { Tooltip } from "react-tooltip";
 import { UserContext } from "../Context/UserContext";
 import { UserCard } from "./UserMentionSuggestions";
+import EmojiSelector from "./EmojiPicker";
 
 dayjs.extend(relativeTime);
 
@@ -39,6 +40,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 }) => {
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
+
+  const [showEmojis, setShowEmojis] = useState(false);
 
   const { data: trends, isLoading: loadingTrends } =
     api.posts.getTrends.useQuery({});
@@ -249,23 +252,23 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     setInput(words.join(" "));
 
     // New array for highlighted words
-  const highlightedWords: (string | undefined)[] = [];
+    const highlightedWords: (string | undefined)[] = [];
 
-  // Highlight all words that start with @ or #
-  for(let i = 0; i < words.length; i++){
-    const word = words[i];
-    if (word) {  // if word is not undefined
-      if (word.startsWith("@") || word.startsWith("#")) {
-        highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
-      } else {
-        highlightedWords[i] = words[i];
+    // Highlight all words that start with @ or #
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      if (word) {
+        // if word is not undefined
+        if (word.startsWith("@") || word.startsWith("#")) {
+          highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
+        } else {
+          highlightedWords[i] = words[i];
+        }
       }
     }
-  }
 
-
-  const highlightedInput = highlightedWords.join(" ");
-  setHighlightedInput(highlightedInput);
+    const highlightedInput = highlightedWords.join(" ");
+    setHighlightedInput(highlightedInput);
     setTextLength(words.join(" ").length);
     // Stop showing the drop-down
     setIsTypingUsername(false);
@@ -278,24 +281,24 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     words[words.length - 1] = `${selectedTrend}`;
     setInput(words.join(" "));
 
-      // New array for highlighted words
-  const highlightedWords: (string | undefined)[] = [];
+    // New array for highlighted words
+    const highlightedWords: (string | undefined)[] = [];
 
-  // Highlight all words that start with @ or #
-  for(let i = 0; i < words.length; i++){
-    const word = words[i];
-    if (word) {  // if word is not undefined
-      if (word.startsWith("@") || word.startsWith("#")) {
-        highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
-      } else {
-        highlightedWords[i] = words[i];
+    // Highlight all words that start with @ or #
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      if (word) {
+        // if word is not undefined
+        if (word.startsWith("@") || word.startsWith("#")) {
+          highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
+        } else {
+          highlightedWords[i] = words[i];
+        }
       }
     }
-  }
 
-
-  const highlightedInput = highlightedWords.join(" ");
-  setHighlightedInput(highlightedInput);
+    const highlightedInput = highlightedWords.join(" ");
+    setHighlightedInput(highlightedInput);
     setTextLength(words.join(" ").length);
 
     // Stop showing the drop-down
@@ -434,17 +437,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           >
             {!trends && <LoadingSpinner />}
             {possibleTrends &&
-              possibleTrends.map((trend , index) => {
+              possibleTrends.map((trend, index) => {
                 if (!trendRefs.current[index]) {
                   trendRefs.current[index] = React.createRef<HTMLLIElement>();
                 }
                 return (
                   <li
-                  ref={
-                    trendRefs.current?.[index] ||
-                    React.createRef<HTMLLIElement>()
-                  }
-                    className={`${index == highlightedTrend ? "bg-Intone-200" : ""} px-4 py-2   hover:bg-Intone-200`}
+                    ref={
+                      trendRefs.current?.[index] ||
+                      React.createRef<HTMLLIElement>()
+                    }
+                    className={`${
+                      index == highlightedTrend ? "bg-Intone-200" : ""
+                    } px-4 py-2   hover:bg-Intone-200`}
                     onClick={() => selectTrend(trend[0])}
                     key={`${trend[0]}+${trend[1]}`}
                   >
@@ -523,7 +528,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                       });
                     }
                     return nextHighlightedTrend;
-                  });                }
+                  });
+                }
               } else if (
                 e.key === "ArrowUp" &&
                 (isTypingTrend || isTypingUsername)
@@ -543,8 +549,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                     }
                     return nextHighlightedUser;
                   });
-                }
-                else if (isTypingTrend && trends && highlightedTrend > 0) {
+                } else if (isTypingTrend && trends && highlightedTrend > 0) {
                   setPrevHighlightedTrend(highlightedTrend);
                   setHighlightedTrend((prevhighlightedTrend) => {
                     const nextHighlightedTrend = prevhighlightedTrend - 1;
@@ -556,7 +561,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                       });
                     }
                     return nextHighlightedTrend;
-                  });                }
+                  });
+                }
               } else if (e.key === "Tab") {
                 // Split input into an array of words
                 const words = input.split(" ");
@@ -662,7 +668,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           <Image
             className="cursor-pointer rounded bg-white hover:bg-slate-300"
             src="/gif.png"
-            alt="emoji"
+            alt="Upload Gif"
             width={24}
             height={24}
             priority={true}
@@ -680,6 +686,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         </label>
 
         <FontAwesomeIcon
+          onClick={() => {
+            if (showEmojis) {
+              setShowEmojis(false);
+            } else if (!showEmojis) {
+              setShowEmojis(true);
+            }
+          }}
           className="CreatePostWizard-Icons"
           icon={faFaceSmile}
           data-tooltip-id="emoji-tooltip"
@@ -693,6 +706,14 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             backgroundColor: "rgb(51 65 85)",
           }}
         />
+          <EmojiSelector
+            input={input}
+            setInput={setInput}
+            textLength={textLength}
+            setTextLength={setTextLength}
+            setShowEmojis={setShowEmojis}
+            showEmojis={showEmojis}
+          />
       </div>
       {previewUrl && (
         <div className="relative mx-auto mt-6 w-[300px] overflow-auto">

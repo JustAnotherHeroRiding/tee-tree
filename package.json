@@ -33,6 +33,7 @@
     "cloudinary-video-player": "^1.9.10",
     "compressorjs": "^1.2.1",
     "dayjs": "^1.11.8",
+    "emoji-picker-react": "^4.4.10",
     "filesize": "^10.0.7",
     "next": "^13.4.8",
     "react": "18.2.0",

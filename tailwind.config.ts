@@ -6,6 +6,7 @@ export default {
   theme: {
     
     extend: {
+      
       screens: {
         'phone': {'max': '385px'},
         'showSidebar': {'max': '645px'},
@@ -64,7 +65,21 @@ export default {
       fontFamily: {
         'Figtree' : "Figtree",
         'Roboto' : 'Roboto'
-      }
+      },
+      keyframes: {
+        fadeOut: {
+          '0%': { opacity: `100` },
+          '100%': { opacity: `0` },
+        },
+        fadeIn: {
+          '0%': { opacity: `0` },
+          '100%': { opacity: `100` },
+        },
+      },
+      animation: {
+        fadeOut: 'fadeOut 0.5s ease-out',
+        fadeIn: 'fadeIn 0.5s ease-out',
+      },
     },
   },
   plugins: [
