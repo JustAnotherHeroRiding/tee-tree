@@ -180,9 +180,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     },
   });
 
-  useEffect(() => {
-    console.log(previewUrl);
-  }, [previewUrl]);
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: async (post) => {

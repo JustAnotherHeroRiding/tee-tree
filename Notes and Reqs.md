@@ -68,6 +68,7 @@ Let's implement some features I have already implemented before in order to lear
 
 ### User and trend suggestion in the edit post view
 - Add user and trend suggestions in the edit post text area
+- Fetch the data for the users and trends, perhaps turn the trends into a global context like the users
 - Make the text blue when you are editing it #DONE 
 
 ### Bug alert
@@ -76,6 +77,9 @@ Let's implement some features I have already implemented before in order to lear
 
 #### Quick Fix
 - Trends in posts should link to the search results for that trend #DONE 
+
+#### Image Modal
+- Make the images be bigger and take up almost the entire screen with responsive size for phones when clicked
 
 ## Retweets
 - Create the retweet model #DONE 
