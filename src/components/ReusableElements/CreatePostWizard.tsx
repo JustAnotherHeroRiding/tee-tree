@@ -463,7 +463,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         )}
         <Image
           className="h-14 w-14 rounded-full"
-          src={user.profileImageUrl}
+          src={user.imageUrl}
           alt="Profile Image"
           width={56}
           height={56}

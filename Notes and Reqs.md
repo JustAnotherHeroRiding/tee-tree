@@ -64,10 +64,11 @@ Let's implement some features I have already implemented before in order to lear
 - Make the emoji selector work for the create post wizard #DONE 
 - Fade out animation is not working as it is hidden instantly #DONE 
 ##### I added the animation but it becomes really slow even when the emoji selector is hidden
+- Added a state to manage the animation and hide the emoji selector as typing is really slow when it is rendered #DONE 
 
 ### User and trend suggestion in the edit post view
 - Add user and trend suggestions in the edit post text area
-- Make the text blue when you are editing it
+- Make the text blue when you are editing it #DONE 
 
 ### Bug alert
 - Button cant appear inside of a button for the share modal #DONE 

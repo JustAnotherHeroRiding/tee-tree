@@ -531,11 +531,83 @@ const PostViewComponent = (props: PostWithUser) => {
 
   const [textLength, setTextLength] = useState(post.content.length);
 
+  const [isTypingUsername, setIsTypingUsername] = useState(false);
+  const [isTypingTrend, setIsTypingTrend] = useState(false);
+
+  const [typedUsername, setTypedUsername] = useState("");
+  const [typedTrend, setTypedTrend] = useState("");
+
+  const [highlightedUser, setHighlightedUser] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [prevHighlightedUser, setPrevHighlightedUser] = useState(-1);
+
+  const [highlightedTrend, setHighlightedTrend] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [prevhighlightedTrend, setPrevHighlightedTrend] = useState(-1);
+
+  const userRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
+  const trendRefs = useRef<React.RefObject<HTMLLIElement>[]>([]);
+
+  const createMarkup = (text: string) => {
+    return text.replace(
+      /(@|#)\S+/g,
+      '<span class="text-Intone-300">$&</span>'
+    );
+  };
+
+  const [highlightedInput, setHighlightedInput] = useState(createMarkup(post.content));
+  const [possibleTrends, setPossibleTrends] = useState<[string, number][]>([]);
+  const [possibleUsernames, setPossibleUsernames] = useState<User[]>([]);
+
+
+
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setTextLength(event.target.textLength);
+
+    const words = event.target.value.split(" ");
+    const lastWord = words[words.length - 1];
+
+    // Create the highlighted HTML version of the entered text
+    const createMarkup = (text: string) => {
+      return text.replace(
+        /(@|#)\S+/g,
+        '<span class="text-Intone-300">$&</span>'
+      );
+    };
+
+    setHighlightedInput(createMarkup(event.target.value));
+
+    if (lastWord) {
+      if (lastWord.startsWith("@") && lastWord.length > 1) {
+        if (possibleUsernames.length === 0) {
+          setIsTypingUsername(false);
+          setHighlightedUser(0);
+        } else {
+          setIsTypingUsername(true);
+        }
+        setTypedUsername(lastWord.slice(1));
+      } else if (lastWord.startsWith("#") && lastWord.length > 1) {
+        if (possibleTrends.length === 0) {
+          setHighlightedTrend(0);
+          setIsTypingTrend(false);
+        } else {
+          setIsTypingTrend(true);
+        }
+        setTypedTrend(lastWord.slice(1));
+      } else {
+        setHighlightedUser(0);
+        setIsTypingUsername(false);
+      }
+    } else {
+      setHighlightedUser(0);
+      setHighlightedTrend(0);
+      setIsTypingUsername(false);
+      setIsTypingTrend(false);
+    }
   };
+
 
   async function copyToClipboard() {
     let urlBase = window.location.hostname;
@@ -610,7 +682,7 @@ const PostViewComponent = (props: PostWithUser) => {
             <div className="relative">
               <button
                 className="absolute right-0 top-4 rounded-3xl
-          px-1 py-1 hover:bg-slate-700 hover:text-white
+          px-1 py-1 hover:bg-slate-700 hover:text-white z-10
           "
                 onClick={() => {
                   setIsEditing(false);
@@ -624,7 +696,13 @@ const PostViewComponent = (props: PostWithUser) => {
               <h1 className="absolute right-8 top-0 rounded-3xl">
                 {textLength}/280
               </h1>
-
+              <div className="relative w-full">
+              <div
+            className="absolute text-transparent pointer-events-none pb-2 pl-4 pr-8 pt-4"
+            dangerouslySetInnerHTML={{
+              __html: highlightedInput.replace(/\n/g, "<br/>"),
+            }}
+          />
               <TextareaAutosize
                 maxLength={280}
                 ref={textareaRef}
@@ -633,6 +711,7 @@ const PostViewComponent = (props: PostWithUser) => {
                 defaultValue={post.content}
                 onChange={handleTextareaChange}
               />
+            </div>
             </div>
           ) : isEditingPostUpdating ? (
             <div className="mx-auto flex justify-center">
