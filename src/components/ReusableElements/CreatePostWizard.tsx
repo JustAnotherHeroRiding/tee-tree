@@ -42,6 +42,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
   const [showEmojis, setShowEmojis] = useState(false);
+  const [animateFadeEndEmoji, setAnimateFadeEndEmoji] = useState(false);
+
 
   const { data: trends, isLoading: loadingTrends } =
     api.posts.getTrends.useQuery({});
@@ -714,6 +716,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             setTextLength={setTextLength}
             setShowEmojis={setShowEmojis}
             showEmojis={showEmojis}
+            animateFadeEnd={animateFadeEndEmoji}
+            setAnimateFadeEnd={setAnimateFadeEndEmoji}
           />
         )}
       </div>

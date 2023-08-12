@@ -14,6 +14,8 @@ interface EmojiSelectorProps {
   setTextLength: React.Dispatch<React.SetStateAction<number>>;
   showEmojis: boolean;
   setShowEmojis: React.Dispatch<React.SetStateAction<boolean>>;
+  animateFadeEnd: boolean;
+  setAnimateFadeEnd: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EmojiSelector: React.FC<EmojiSelectorProps> = ({
@@ -23,16 +25,17 @@ const EmojiSelector: React.FC<EmojiSelectorProps> = ({
     setTextLength,
     showEmojis,
     setShowEmojis,
+    animateFadeEnd,
+    setAnimateFadeEnd
   }) => {
     const ref = useRef<HTMLDivElement>(null);
     const [firstRender, setFirstRender] = useState(true);
-    const [animateFadeEnd, setAnimateFadeEnd] = useState(false);
   
     useOutsideClick(ref, () => {
       if (showEmojis) {
-        setShowEmojis(false);
+        setAnimateFadeEnd(true);
         setTimeout(() => {
-          setAnimateFadeEnd(true);
+        setShowEmojis(false);
           setTimeout(() => {
             setAnimateFadeEnd(false); // Reset animateFadeEnd after fade-out animation is complete
           }, 500);
@@ -50,7 +53,7 @@ const EmojiSelector: React.FC<EmojiSelectorProps> = ({
       <div
         ref={ref}
         className={`absolute right-0 top-4 z-10 transition-all duration-500 ease-in-out ${
-          showEmojis ? "opacity-100 block" : animateFadeEnd ? "opacity-0 hidden" : "opacity-0"
+          !animateFadeEnd ? "opacity-100 block" : !showEmojis ? "opacity-0 hidden" : "opacity-0"
         }`}
       >
         <Picker
@@ -59,7 +62,6 @@ const EmojiSelector: React.FC<EmojiSelectorProps> = ({
           autoFocusSearch={false}
           lazyLoadEmojis={true}
           onEmojiClick={(emoji) => {
-            console.log(emoji);
             setInput(input + emoji.emoji);
             setTextLength(textLength + emoji.emoji.length);
           }}
