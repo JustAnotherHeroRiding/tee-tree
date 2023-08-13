@@ -95,7 +95,8 @@ Let's implement some features I have already implemented before in order to lear
 - Clicking on the comment icon should open a modal where users can post a reply to the tweet with the original tweet above #DONE 
 - New model for the replies #DONE 
 - The original post should be shown above the textarea for the reply #DONE 
-- There should be a line between the two profile pics . This needs a lot more work as the current solution is clunky
+- There should be a line between the two profile pics . This needs a lot more work as the current solution is clunky #DONE 
+- Let's add the second line directly in the create post wizard above the image but only on the reply wizard
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Profile page should have a replies page
 - On the single post all replies should be shown with scrolling

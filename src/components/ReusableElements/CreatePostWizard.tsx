@@ -25,6 +25,7 @@ dayjs.extend(relativeTime);
 
 interface CreatePostWizardProps {
   homePage: boolean;
+  src?: string;
 }
 
 export type User = {
@@ -37,6 +38,7 @@ export type User = {
 
 export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
+  src = "newPost",
 }) => {
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
@@ -456,14 +458,29 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               })}
           </ul>
         )}
-        <Image
-          className="h-14 w-14 rounded-full"
-          src={user.imageUrl}
-          alt="Profile Image"
-          width={56}
-          height={56}
-          priority={true}
-        />
+        {src === "newPost" ? (
+          <Image
+            className="h-14 w-14 rounded-full"
+            src={user.imageUrl}
+            alt="Profile Image"
+            width={56}
+            height={56}
+            priority={true}
+          />
+        ) : (
+          <div className="flex flex-col flex-shrink-0">
+            <div className="z-0 mx-auto border"></div>
+            <Image
+              className="h-14 w-14 rounded-full"
+              src={user.imageUrl}
+              alt="Profile Image"
+              width={56}
+              height={56}
+              priority={true}
+            />
+          </div>
+        )}
+
         <h1 className="absolute -top-4 right-0 rounded-3xl">
           {textLength}/280
         </h1>
@@ -476,7 +493,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           />
           <TextareaAutosize
             placeholder="What's on your mind?"
-            className="w-full grow resize-none max-h-[45vh] gray-thin-scrollbar bg-transparent outline-none"
+            className="gray-thin-scrollbar max-h-[45vh] w-full grow resize-none bg-transparent outline-none"
             value={input}
             maxLength={280}
             onChange={(e) => handleTextareaChange(e)}

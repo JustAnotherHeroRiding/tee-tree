@@ -1338,7 +1338,7 @@ const PostViewComponent = (props: PostWithUser) => {
                       width={56}
                       height={56}
                     />
-                    <div className="z-0 mx-auto h-full border"></div>
+                    <div className="z-0 mx-auto h-full border -mb-12"></div>
                   </div>
                   <div className="relative flex w-full flex-col">
                     <div className="flex gap-1 text-slate-300">
@@ -1374,8 +1374,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </span>
                   </div>
                 </div>
-                  <div className="z-0 mx-auto h-full border"></div>
-                  <CreatePostWizard homePage={homePage} />
+                  <CreatePostWizard homePage={homePage} src='reply' />
                 <button
                   className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
                   onClick={() => setShowCommentModal(false)}
