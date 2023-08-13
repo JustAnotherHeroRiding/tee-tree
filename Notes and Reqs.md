@@ -67,8 +67,8 @@ Let's implement some features I have already implemented before in order to lear
 - Added a state to manage the animation and hide the emoji selector as typing is really slow when it is rendered #DONE 
 
 ### User and trend suggestion in the edit post view
-- Add user and trend suggestions in the edit post text area
-- Fetch the data for the users and trends, perhaps turn the trends into a global context like the users
+- Add user and trend suggestions in the edit post text area #DONE 
+- Fetch the data for the users and trends, perhaps turn the trends into a global context like the users #DONE 
 - Make the text blue when you are editing it #DONE 
 
 ### Bug alert

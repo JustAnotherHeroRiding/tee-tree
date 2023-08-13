@@ -176,8 +176,13 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   const coloredWords = words.map((word, index) => {
     if (word.startsWith("#")) {
       return (
-        <Link key={index} href={`/i/search?q=${word.slice(1)}&src=post_trend_click&selector=top`}
-         className="text-Intone-300 hover:underline">
+        <Link
+          key={index}
+          href={`/i/search?q=${word.slice(
+            1
+          )}&src=post_trend_click&selector=top`}
+          className="text-Intone-300 hover:underline"
+        >
           {word}
         </Link>
       );
@@ -556,13 +561,12 @@ const PostViewComponent = (props: PostWithUser) => {
   const trendRefs = useRef<React.RefObject<HTMLLIElement>[]>([]);
 
   const createMarkup = (text: string) => {
-    return text.replace(
-      /(@|#)\S+/g,
-      '<span class="text-Intone-300">$&</span>'
-    );
+    return text.replace(/(@|#)\S+/g, '<span class="text-Intone-300">$&</span>');
   };
 
-  const [highlightedInput, setHighlightedInput] = useState(createMarkup(post.content));
+  const [highlightedInput, setHighlightedInput] = useState(
+    createMarkup(post.content)
+  );
   const [possibleTrends, setPossibleTrends] = useState<[string, number][]>([]);
   const [possibleUsernames, setPossibleUsernames] = useState<User[]>([]);
 
@@ -585,7 +589,6 @@ const PostViewComponent = (props: PostWithUser) => {
       setHighlightedUser(0);
     }
   }, [userList, typedUsername]);
-
 
   useEffect(() => {
     // Filter trends based on typedTrend
@@ -665,7 +668,6 @@ const PostViewComponent = (props: PostWithUser) => {
     setIsTypingTrend(false);
   };
 
-
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -713,7 +715,6 @@ const PostViewComponent = (props: PostWithUser) => {
       setIsTypingTrend(false);
     }
   };
-
 
   async function copyToClipboard() {
     let urlBase = window.location.hostname;
@@ -784,71 +785,71 @@ const PostViewComponent = (props: PostWithUser) => {
             }
           }}
         >
-                  {isTypingUsername && (
-          <ul
-            className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+          {isTypingUsername && (
+            <ul
+              className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
             max-h-[250px] w-fit max-w-[350px]
             flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
-          >
-            {possibleUsernames.map((user, index) => {
-              if (!userRefs.current[index]) {
-                userRefs.current[index] = React.createRef<HTMLDivElement>();
-              }
-
-              return (
-                <UserCard
-                  key={index}
-                  user={user}
-                  index={index}
-                  setInput={setInput}
-                  input={input}
-                  setIsTypingUsername={setIsTypingUsername}
-                  setTextLength={setTextLength}
-                  highlightedUser={highlightedUser}
-                  scrollRef={
-                    userRefs.current?.[index] ||
-                    React.createRef<HTMLDivElement>()
-                  }
-                />
-              );
-            })}
-          </ul>
-        )}
-        {isTypingTrend && possibleTrends.length > 0 && (
-          <ul
-            className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
-            max-h-[250px] w-fit min-w-[200px]
-            max-w-[350px] flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
-          >
-            {!trends && <LoadingSpinner />}
-            {possibleTrends &&
-              possibleTrends.map((trend, index) => {
-                if (!trendRefs.current[index]) {
-                  trendRefs.current[index] = React.createRef<HTMLLIElement>();
+            >
+              {possibleUsernames.map((user, index) => {
+                if (!userRefs.current[index]) {
+                  userRefs.current[index] = React.createRef<HTMLDivElement>();
                 }
+
                 return (
-                  <li
-                    ref={
-                      trendRefs.current?.[index] ||
-                      React.createRef<HTMLLIElement>()
+                  <UserCard
+                    key={index}
+                    user={user}
+                    index={index}
+                    setInput={setInput}
+                    input={input}
+                    setIsTypingUsername={setIsTypingUsername}
+                    setTextLength={setTextLength}
+                    highlightedUser={highlightedUser}
+                    scrollRef={
+                      userRefs.current?.[index] ||
+                      React.createRef<HTMLDivElement>()
                     }
-                    className={`${
-                      index == highlightedTrend ? "bg-Intone-200" : ""
-                    } px-4 py-2   hover:bg-Intone-200`}
-                    onClick={() => selectTrend(trend[0])}
-                    key={`${trend[0]}+${trend[1]}`}
-                  >
-                    {trend[0]}
-                  </li>
+                  />
                 );
               })}
-          </ul>
-        )}
+            </ul>
+          )}
+          {isTypingTrend && possibleTrends.length > 0 && (
+            <ul
+              className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+            max-h-[250px] w-fit min-w-[200px]
+            max-w-[350px] flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
+            >
+              {!trends && <LoadingSpinner />}
+              {possibleTrends &&
+                possibleTrends.map((trend, index) => {
+                  if (!trendRefs.current[index]) {
+                    trendRefs.current[index] = React.createRef<HTMLLIElement>();
+                  }
+                  return (
+                    <li
+                      ref={
+                        trendRefs.current?.[index] ||
+                        React.createRef<HTMLLIElement>()
+                      }
+                      className={`${
+                        index == highlightedTrend ? "bg-Intone-200" : ""
+                      } px-4 py-2   hover:bg-Intone-200`}
+                      onClick={() => selectTrend(trend[0])}
+                      key={`${trend[0]}+${trend[1]}`}
+                    >
+                      {trend[0]}
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
           {isEditing ? (
             <div className="relative">
               <button
-                className="absolute right-0 top-4 rounded-3xl
-          px-1 py-1 hover:bg-slate-700 hover:text-white z-10
+                className="absolute right-0 top-4 z-10
+          rounded-3xl px-1 py-1 hover:bg-slate-700 hover:text-white
           "
                 onClick={() => {
                   setIsEditing(false);
@@ -865,22 +866,126 @@ const PostViewComponent = (props: PostWithUser) => {
                 {textLength}/280
               </h1>
               <div className="relative w-full">
-              <div
-            className="absolute text-transparent pointer-events-none pb-2 pl-4 pr-8 pt-4"
-            dangerouslySetInnerHTML={{
-              __html: highlightedInput.replace(/\n/g, "<br/>"),
-            }}
-          />
-              <TextareaAutosize
-                maxLength={280}
-                ref={textareaRef}
-                className="h-full min-h-[80px] w-full resize-none 
-                rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
-                //defaultValue={post.content}
-                value={input}
-                onChange={(e) => handleTextareaChange(e)}
+                <div
+                  className="pointer-events-none absolute pb-2 pl-4 pr-8 pt-4 text-transparent"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightedInput.replace(/\n/g, "<br/>"),
+                  }}
                 />
-            </div>
+                <TextareaAutosize
+                  maxLength={280}
+                  ref={textareaRef}
+                  className="h-full min-h-[80px] w-full resize-none max-h-[45vh] gray-thin-scrollbar
+                rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
+                  //defaultValue={post.content}
+                  value={input}
+                  onChange={(e) => handleTextareaChange(e)}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === "ArrowDown" &&
+                      (isTypingTrend || isTypingUsername)
+                    ) {
+                      // Down arrow key pressed
+                      e.preventDefault();
+                      if (
+                        isTypingUsername &&
+                        highlightedUser < possibleUsernames.length - 1
+                      ) {
+                        setPrevHighlightedUser(highlightedUser);
+                        setHighlightedUser((prevHighlightedUser) => {
+                          const nextHighlightedUser = prevHighlightedUser + 1;
+                          const nextRef = userRefs.current[nextHighlightedUser];
+                          if (nextRef && nextRef.current) {
+                            nextRef.current.scrollIntoView({
+                              behavior: "smooth",
+                              block: "nearest",
+                            });
+                          }
+                          return nextHighlightedUser;
+                        });
+                      } else if (
+                        isTypingTrend &&
+                        trends &&
+                        highlightedTrend < possibleTrends?.length - 1
+                      ) {
+                        setPrevHighlightedTrend(highlightedTrend);
+                        setHighlightedTrend((prevhighlightedTrend) => {
+                          const nextHighlightedTrend = prevhighlightedTrend + 1;
+                          const nextRef =
+                            trendRefs.current[nextHighlightedTrend];
+                          if (nextRef && nextRef.current) {
+                            nextRef.current.scrollIntoView({
+                              behavior: "smooth",
+                              block: "nearest",
+                            });
+                          }
+                          return nextHighlightedTrend;
+                        });
+                      }
+                    } else if (
+                      e.key === "ArrowUp" &&
+                      (isTypingTrend || isTypingUsername)
+                    ) {
+                      // Up arrow key pressed
+                      e.preventDefault();
+                      if (highlightedUser > 0 && isTypingUsername) {
+                        setPrevHighlightedUser(highlightedUser);
+                        setHighlightedUser((prevHighlightedUser) => {
+                          const nextHighlightedUser = prevHighlightedUser - 1;
+                          const nextRef = userRefs.current[nextHighlightedUser];
+                          if (nextRef && nextRef.current) {
+                            nextRef.current.scrollIntoView({
+                              behavior: "smooth",
+                              block: "nearest",
+                            });
+                          }
+                          return nextHighlightedUser;
+                        });
+                      } else if (
+                        isTypingTrend &&
+                        trends &&
+                        highlightedTrend > 0
+                      ) {
+                        setPrevHighlightedTrend(highlightedTrend);
+                        setHighlightedTrend((prevhighlightedTrend) => {
+                          const nextHighlightedTrend = prevhighlightedTrend - 1;
+                          const nextRef =
+                            trendRefs.current[nextHighlightedTrend];
+                          if (nextRef && nextRef.current) {
+                            nextRef.current.scrollIntoView({
+                              behavior: "smooth",
+                              block: "nearest",
+                            });
+                          }
+                          return nextHighlightedTrend;
+                        });
+                      }
+                    } else if (e.key === "Tab") {
+                      // Split input into an array of words
+                      const words = input.split(" ");
+                      // Get the last word
+                      const lastWord = words.slice(-1)[0];
+                      // Check if the last word isn't just an @ or a #
+                      if (
+                        (lastWord && lastWord.length > 1 && isTypingTrend) ||
+                        isTypingUsername
+                      ) {
+                        e.preventDefault();
+                        if (isTypingUsername) {
+                          selectUser(highlightedUser);
+                        } else if (isTypingTrend) {
+                          // This is a placeholder
+                          selectTrend(
+                            possibleTrends[highlightedTrend]?.[0] ?? ""
+                          );
+                        }
+                        // Tab key pressed
+                        // Select the currently highlighted user
+                      }
+                    }
+                  }}
+                />
+              </div>
             </div>
           ) : isEditingPostUpdating ? (
             <div className="mx-auto flex justify-center">

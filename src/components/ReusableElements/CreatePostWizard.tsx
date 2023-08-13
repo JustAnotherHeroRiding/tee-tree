@@ -44,7 +44,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [showEmojis, setShowEmojis] = useState(false);
   const [animateFadeEndEmoji, setAnimateFadeEndEmoji] = useState(false);
 
-
   const { data: trends, isLoading: loadingTrends } =
     api.posts.getTrends.useQuery({});
 
@@ -179,7 +178,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     },
   });
-
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: async (post) => {
@@ -478,18 +476,18 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           />
           <TextareaAutosize
             placeholder="What's on your mind?"
-            className="w-full grow resize-none bg-transparent outline-none"
+            className="w-full grow resize-none max-h-[45vh] gray-thin-scrollbar bg-transparent outline-none"
             value={input}
             maxLength={280}
             onChange={(e) => handleTextareaChange(e)}
             disabled={isPosting}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              /*  if (e.key === "Enter") {
                 e.preventDefault();
                 if (input !== "") {
                   mutate({ content: input });
                 }
-              } else if (
+              } else */ if (
                 e.key === "ArrowDown" &&
                 (isTypingTrend || isTypingUsername)
               ) {
@@ -686,7 +684,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
         <FontAwesomeIcon
           onClick={() => {
-            setAnimateFadeEndEmoji(false)
+            setAnimateFadeEndEmoji(false);
             if (showEmojis) {
               setShowEmojis(false);
             } else if (!showEmojis) {
@@ -707,7 +705,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           }}
         />
         {showEmojis && (
-          
           <EmojiSelector
             input={input}
             setInput={setInput}
