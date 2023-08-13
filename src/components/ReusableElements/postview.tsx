@@ -46,6 +46,7 @@ import {
 import { useRouter } from "next/router";
 import { UserHoverCard } from "./UserHover";
 import { type User } from "./CreatePostWizard";
+import { UserCard } from "./UserMentionSuggestions";
 
 dayjs.extend(relativeTime);
 
@@ -254,9 +255,15 @@ const PostViewComponent = (props: PostWithUser) => {
   const [retweeted, setRetweeted] = useState(false);
 
   const { user } = useUser();
+  const { userList } = useContext(UserContext);
+
+  const { data: trends, isLoading: loadingTrends } =
+    api.posts.getTrends.useQuery({});
 
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const [input, setInput] = useState(post.content);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const modalDeletePostRef = useRef<HTMLDivElement>(null);
@@ -559,11 +566,110 @@ const PostViewComponent = (props: PostWithUser) => {
   const [possibleTrends, setPossibleTrends] = useState<[string, number][]>([]);
   const [possibleUsernames, setPossibleUsernames] = useState<User[]>([]);
 
+  useEffect(() => {
+    const filteredUsernames = userList
+      .filter(
+        (user) =>
+          user.username &&
+          user.username.toLowerCase().includes(typedUsername.toLowerCase())
+      )
+      .map(({ id, username, profileImageUrl, firstName, lastName }) => ({
+        id,
+        username,
+        profileImageUrl: profileImageUrl || "",
+        firstName: firstName || "",
+        lastName: lastName || "",
+      }));
+    if (filteredUsernames) {
+      setPossibleUsernames(filteredUsernames.slice(0, 6));
+      setHighlightedUser(0);
+    }
+  }, [userList, typedUsername]);
+
+
+  useEffect(() => {
+    // Filter trends based on typedTrend
+    if (trends && !loadingTrends) {
+      const filteredTrends = trends.filter(
+        (trend) =>
+          trend[0] && // Checking if trend name exists.
+          trend[0].toLowerCase().includes(typedTrend.toLowerCase()) // Checking if trend name includes the typed trend.
+      );
+
+      // If filteredTrends exists, update possibleTrends.
+      if (filteredTrends) {
+        setPossibleTrends(filteredTrends.slice(0, 6)); // Limiting array to first 6 items.
+        setHighlightedTrend(0);
+      }
+    }
+  }, [trends, typedTrend, loadingTrends]);
+
+  const selectUser = (highlightedUser: number) => {
+    // Replace typed username with selected username
+    const words = input.split(" ");
+    const selectedUsername = possibleUsernames[highlightedUser]?.username ?? "";
+    words[words.length - 1] = `@${selectedUsername}`;
+    setInput(words.join(" "));
+
+    // New array for highlighted words
+    const highlightedWords: (string | undefined)[] = [];
+
+    // Highlight all words that start with @ or #
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      if (word) {
+        // if word is not undefined
+        if (word.startsWith("@") || word.startsWith("#")) {
+          highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
+        } else {
+          highlightedWords[i] = words[i];
+        }
+      }
+    }
+
+    const highlightedInput = highlightedWords.join(" ");
+    setHighlightedInput(highlightedInput);
+    setTextLength(words.join(" ").length);
+    // Stop showing the drop-down
+    setIsTypingUsername(false);
+  };
+
+  const selectTrend = (highlightedTrend: string) => {
+    // Replace typed username with selected username
+    const words = input.split(" ");
+    const selectedTrend = highlightedTrend;
+    words[words.length - 1] = `${selectedTrend}`;
+    setInput(words.join(" "));
+
+    // New array for highlighted words
+    const highlightedWords: (string | undefined)[] = [];
+
+    // Highlight all words that start with @ or #
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      if (word) {
+        // if word is not undefined
+        if (word.startsWith("@") || word.startsWith("#")) {
+          highlightedWords[i] = `<span class="text-Intone-300">${word}</span>`;
+        } else {
+          highlightedWords[i] = words[i];
+        }
+      }
+    }
+
+    const highlightedInput = highlightedWords.join(" ");
+    setHighlightedInput(highlightedInput);
+    setTextLength(words.join(" ").length);
+
+    // Stop showing the drop-down
+    setIsTypingTrend(false);
+  };
 
 
   const handleTextareaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
+    setInput(event.target.value);
     setTextLength(event.target.textLength);
 
     const words = event.target.value.split(" ");
@@ -678,6 +784,66 @@ const PostViewComponent = (props: PostWithUser) => {
             }
           }}
         >
+                  {isTypingUsername && (
+          <ul
+            className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+            max-h-[250px] w-fit max-w-[350px]
+            flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
+          >
+            {possibleUsernames.map((user, index) => {
+              if (!userRefs.current[index]) {
+                userRefs.current[index] = React.createRef<HTMLDivElement>();
+              }
+
+              return (
+                <UserCard
+                  key={index}
+                  user={user}
+                  index={index}
+                  setInput={setInput}
+                  input={input}
+                  setIsTypingUsername={setIsTypingUsername}
+                  setTextLength={setTextLength}
+                  highlightedUser={highlightedUser}
+                  scrollRef={
+                    userRefs.current?.[index] ||
+                    React.createRef<HTMLDivElement>()
+                  }
+                />
+              );
+            })}
+          </ul>
+        )}
+        {isTypingTrend && possibleTrends.length > 0 && (
+          <ul
+            className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+            max-h-[250px] w-fit min-w-[200px]
+            max-w-[350px] flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
+          >
+            {!trends && <LoadingSpinner />}
+            {possibleTrends &&
+              possibleTrends.map((trend, index) => {
+                if (!trendRefs.current[index]) {
+                  trendRefs.current[index] = React.createRef<HTMLLIElement>();
+                }
+                return (
+                  <li
+                    ref={
+                      trendRefs.current?.[index] ||
+                      React.createRef<HTMLLIElement>()
+                    }
+                    className={`${
+                      index == highlightedTrend ? "bg-Intone-200" : ""
+                    } px-4 py-2   hover:bg-Intone-200`}
+                    onClick={() => selectTrend(trend[0])}
+                    key={`${trend[0]}+${trend[1]}`}
+                  >
+                    {trend[0]}
+                  </li>
+                );
+              })}
+          </ul>
+        )}
           {isEditing ? (
             <div className="relative">
               <button
@@ -686,6 +852,8 @@ const PostViewComponent = (props: PostWithUser) => {
           "
                 onClick={() => {
                   setIsEditing(false);
+                  setIsTypingTrend(false);
+                  setIsTypingUsername(false);
                 }}
               >
                 <FontAwesomeIcon
@@ -708,9 +876,10 @@ const PostViewComponent = (props: PostWithUser) => {
                 ref={textareaRef}
                 className="h-full min-h-[80px] w-full resize-none 
                 rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
-                defaultValue={post.content}
-                onChange={handleTextareaChange}
-              />
+                //defaultValue={post.content}
+                value={input}
+                onChange={(e) => handleTextareaChange(e)}
+                />
             </div>
             </div>
           ) : isEditingPostUpdating ? (
