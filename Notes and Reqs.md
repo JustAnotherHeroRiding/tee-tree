@@ -79,7 +79,7 @@ Let's implement some features I have already implemented before in order to lear
 - Trends in posts should link to the search results for that trend #DONE 
 
 #### Image Modal
-- Make the images be bigger and take up almost the entire screen with responsive size for phones when clicked
+- Make the images be bigger and take up almost the entire screen with responsive size for phones when clicked #DONE 
 
 ## Retweets
 - Create the retweet model #DONE 
