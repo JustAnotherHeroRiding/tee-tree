@@ -879,7 +879,7 @@ const PostViewComponent = (props: PostWithUser) => {
                 <TextareaAutosize
                   maxLength={280}
                   ref={textareaRef}
-                  className="h-full min-h-[80px] w-full resize-none max-h-[45vh] gray-thin-scrollbar
+                  className="gray-thin-scrollbar h-full max-h-[45vh] min-h-[80px] w-full resize-none
                 rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
                   //defaultValue={post.content}
                   value={input}
@@ -1097,7 +1097,7 @@ const PostViewComponent = (props: PostWithUser) => {
           <div className="modalparent">
             <div
               ref={modalMediaFullRef}
-              className="modal relative flex w-fit h-[85vh] items-center 
+              className="modal relative flex h-[85vh] w-fit items-center 
             justify-center rounded-xl border border-slate-400 bg-black p-4"
             >
               <FontAwesomeIcon
@@ -1111,8 +1111,8 @@ const PostViewComponent = (props: PostWithUser) => {
                     objectFit: "fill",
                     maxWidth: "85vw",
                     maxHeight: "80vh",
-                    width: 'auto',
-                    heigth: 'auto',
+                    width: "auto",
+                    heigth: "auto",
                     borderWidth: "1px",
                     borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
                     borderRadius: "0.375rem",
@@ -1129,8 +1129,8 @@ const PostViewComponent = (props: PostWithUser) => {
                     objectFit: "fill",
                     maxWidth: "85vw",
                     maxHeight: "80vh",
-                    width: 'auto',
-                    heigth: 'auto',
+                    width: "auto",
+                    heigth: "auto",
                     borderWidth: "1px",
                     borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
                     borderRadius: "0.375rem",
@@ -1170,7 +1170,7 @@ const PostViewComponent = (props: PostWithUser) => {
           <button
             data-tooltip-id="comment-tooltip"
             data-tooltip-content="Comment"
-            onClick={() =>setShowCommentModal(true)}
+            onClick={() => setShowCommentModal(true)}
           >
             {" "}
             <FontAwesomeIcon
@@ -1317,28 +1317,72 @@ const PostViewComponent = (props: PostWithUser) => {
             </div>
           )}
           {showCommentModal && (
-                    <div
-                      className={`modalparent transform transition-transform duration-300 ease-in-out ${
-                        showCommentModal
-                          ? "visible scale-100 opacity-100"
-                          : "invisible scale-0 opacity-0"
-                      }`}
-                    >
-                      <div
-                        ref={modalCommentPostRef}
-                        className="modalDeletePost mx-auto flex h-fit w-[35vw] flex-col
-        rounded-3xl border border-indigo-200 bg-black p-8"
-                      >
-                        <CreatePostWizard homePage={homePage} />
-                        <button
-                          className="rounded-3xl border px-2 py-2 mt-2 w-fit hover:bg-Intone-700"
-                          onClick={() => setShowCommentModal(false)}
-                        >
-                          Cancel
-                        </button>
-                      </div>
+            <div
+              className={`modalparent transform transition-transform duration-300 ease-in-out ${
+                showCommentModal
+                  ? "visible scale-100 opacity-100"
+                  : "invisible scale-0 opacity-0"
+              }`}
+            >
+              <div
+                ref={modalCommentPostRef}
+                className="modalDeletePost mx-auto flex h-fit w-[35vw] flex-col
+        rounded-3xl border border-indigo-200 bg-black px-8 pb-4 pt-8"
+              >
+                <div
+                  className="flex gap-3 border-slate-400 phone:relative mb-4"
+                >
+                  <Image
+                    className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
+                    src={author?.profileImageUrl}
+                    alt={`@${author.username}profile picture`}
+                    width={56}
+                    height={56}
+                  />
+                  <div className="relative flex w-full flex-col">
+                    <div className="flex gap-1 text-slate-300">
+                      <Link href={`/@${author.username}`}>
+                        @
+                        <span className="hover:text-white hover:underline">{`${author.username}`}</span>
+                      </Link>
+                      <span className="font-thin">{` · ${dayjs(
+                        post.createdAt
+                      ).fromNow()}`}</span>
+                      {post.isEdited && (
+                        <>
+                          <p
+                            className="text-3xl text-slate-100"
+                            data-tooltip-id="edited-tooltip"
+                            data-tooltip-content="This post was edited."
+                          >
+                            *
+                          </p>
+                          <Tooltip
+                            id="edited-tooltip"
+                            place="bottom"
+                            style={{
+                              borderRadius: "24px",
+                              backgroundColor: "rgb(51 65 85)",
+                            }}
+                          />
+                        </>
+                      )}
                     </div>
-                  )}
+                    <span className="select-text text-2xl sm:whitespace-pre-wrap">
+                      <PostContent content={post.content} />
+                    </span>
+                  </div>
+                </div>
+                <CreatePostWizard homePage={homePage} />
+                <button
+                  className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
+                  onClick={() => setShowCommentModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
 
           <button
             onClick={() => setShowShareModal(true)}
