@@ -46,7 +46,38 @@ model Post {
   likes     Like[]
   retweets Retweet[]
   isEdited  Boolean  @default(false)
+
+   // Field for one-to-many relationship with Reply
+  replies   Reply[]
+
   @@index([authorId])
+}
+
+model Reply {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  content   String   @db.VarChar(280)
+
+  // Fields for image, gif, and video URLs
+  imageUrl  String?
+  gifUrl String?
+  videoUrl String?
+
+  // Field for author ID
+  authorId  String
+
+  // Field for parent post ID
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+
+  // Fields for self-referential relationship
+  parentId  String?
+  parent    Reply?   @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Reply[]  @relation("ReplyToReply")
+
+  @@index([authorId])
+  @@index([postId])
+  @@index([parentId])
 }
 
 

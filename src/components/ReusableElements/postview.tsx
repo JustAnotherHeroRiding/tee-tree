@@ -45,7 +45,7 @@ import {
 } from "react-share";
 import { useRouter } from "next/router";
 import { UserHoverCard } from "./UserHover";
-import { type User } from "./CreatePostWizard";
+import { CreatePostWizard, type User } from "./CreatePostWizard";
 import { UserCard } from "./UserMentionSuggestions";
 
 dayjs.extend(relativeTime);
@@ -272,6 +272,10 @@ const PostViewComponent = (props: PostWithUser) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const modalDeletePostRef = useRef<HTMLDivElement>(null);
+
+  const [showCommentModal, setShowCommentModal] = useState(false);
+
+  const modalCommentPostRef = useRef<HTMLDivElement>(null);
 
   const [showMediaFullScreen, setShowMediaFullScreen] = useState(false);
 
@@ -1166,6 +1170,7 @@ const PostViewComponent = (props: PostWithUser) => {
           <button
             data-tooltip-id="comment-tooltip"
             data-tooltip-content="Comment"
+            onClick={() =>setShowCommentModal(true)}
           >
             {" "}
             <FontAwesomeIcon
@@ -1311,6 +1316,29 @@ const PostViewComponent = (props: PostWithUser) => {
               </div>
             </div>
           )}
+          {showCommentModal && (
+                    <div
+                      className={`modalparent transform transition-transform duration-300 ease-in-out ${
+                        showCommentModal
+                          ? "visible scale-100 opacity-100"
+                          : "invisible scale-0 opacity-0"
+                      }`}
+                    >
+                      <div
+                        ref={modalCommentPostRef}
+                        className="modalDeletePost mx-auto flex h-fit w-[35vw] flex-col
+        rounded-3xl border border-indigo-200 bg-black p-8"
+                      >
+                        <CreatePostWizard homePage={homePage} />
+                        <button
+                          className="rounded-3xl border px-2 py-2 mt-2 w-fit hover:bg-Intone-700"
+                          onClick={() => setShowCommentModal(false)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
           <button
             onClick={() => setShowShareModal(true)}

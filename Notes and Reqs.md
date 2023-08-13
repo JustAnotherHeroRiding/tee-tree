@@ -92,12 +92,18 @@ Let's implement some features I have already implemented before in order to lear
 
 
 ## Comments
-- Clicking on the comment icon should open a modal where users can post a reply to the tweet with the original tweet above
+- Clicking on the comment icon should open a modal where users can post a reply to the tweet with the original tweet above #DONE 
+- New model for the replies
+- The original post should be shown above the textarea for the reply
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Profile page should have a replies page
+- On the single post all replies should be shown with scrolling
 
 ## Post View
 - Add a sticky div #DONE 
+
+#### Highlighted Words Bug
+- If I type a trend or mention and then add a bunch of empty lines the highlighted words overlay div will be displaced
 
 
 ## Main Page
