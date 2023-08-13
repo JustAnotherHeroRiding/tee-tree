@@ -1326,14 +1326,13 @@ const PostViewComponent = (props: PostWithUser) => {
             >
               <div
                 ref={modalCommentPostRef}
-                className="modalDeletePost mx-auto flex h-fit w-[35vw] flex-col
-        rounded-3xl border border-indigo-200 bg-black px-8 pb-4 pt-8"
+                className="modalDeletePost mx-auto flex h-fit w-[95vw] flex-col rounded-3xl border
+        border-indigo-200 bg-black px-8 pb-4 pt-8 sm:w-[55vw] lg:w-[35vw]"
               >
-                <div
-                  className="flex gap-3 border-slate-400 phone:relative mb-4"
-                >
+                <div className="mb-4 flex gap-3 border-slate-400 phone:relative">
+                  <hr className="fixed left-[58px] z-0 mt-2 sm:h-[60%] h-[55%]  overflow-hidden border"></hr>
                   <Image
-                    className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
+                    className="z-[1] h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
                     src={author?.profileImageUrl}
                     alt={`@${author.username}profile picture`}
                     width={56}
@@ -1373,7 +1372,9 @@ const PostViewComponent = (props: PostWithUser) => {
                     </span>
                   </div>
                 </div>
+
                 <CreatePostWizard homePage={homePage} />
+
                 <button
                   className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
                   onClick={() => setShowCommentModal(false)}

@@ -95,7 +95,7 @@ Let's implement some features I have already implemented before in order to lear
 - Clicking on the comment icon should open a modal where users can post a reply to the tweet with the original tweet above #DONE 
 - New model for the replies #DONE 
 - The original post should be shown above the textarea for the reply #DONE 
-- There should be a line between the two profile pics
+- There should be a line between the two profile pics . This needs a lot more work as the current solution is clunky
 - Comments for tweets, further comments for them too. Implement twitter threads
 - Profile page should have a replies page
 - On the single post all replies should be shown with scrolling
@@ -147,6 +147,7 @@ Let's implement some features I have already implemented before in order to lear
 
 ## Messaging
 - Separate page where users can message each other
+- Let's create a new branch separate from the main branch where I will work on Messaging then then merge them
 
 ## Recommended Users to follow
 - Endpoint to fetch users that the current user is not following #DONE 
