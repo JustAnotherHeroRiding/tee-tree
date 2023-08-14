@@ -99,7 +99,11 @@ Let's implement some features I have already implemented before in order to lear
 - Let's add the second line directly in the create post wizard above the image but only on the reply wizard #DONE 
 - Fetch number of replies for each post in all the post fetching endpoints #DONE 
 - Mutation for posting replies, depending on the src passed it will be decided which mutation to call inside the createpostwizard #DONE 
-- Profile page should have a replies page
+- Profile page should have a replies page #DONE 
+- I currently cannot read the parent post as the type is not PostWithAuthor so they props deconstruct is not working #DONE 
+- Check if the user is liking a reply or post and make the use a different mutation
+- Lines between the profile pictures for replies
+- The feed should be all the replies that the user has posted
 - After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - Clicking on a reply should open it with the main post above it

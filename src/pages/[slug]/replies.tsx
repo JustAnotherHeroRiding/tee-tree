@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
+import { InfiniteScrollProfileRepliesFeed } from "~/components/PostFeeds/infiniteScrollProfileRepliesFeed";
 
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
@@ -316,7 +317,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             )}
           </div>
         </div>
-        <h1 className="text-center">Replies</h1>
+        <InfiniteScrollProfileRepliesFeed userId={data.id}/>
       </PageLayout>
     </>
   );

@@ -251,6 +251,8 @@ const PostViewComponent = (props: PostWithUser) => {
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
   const { post, author } = props;
+
+
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
 
