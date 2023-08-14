@@ -39,7 +39,6 @@ export interface ReplyWithParent extends PostWithAuthor {
   parentPost: PostWithAuthor;
 }
 
-
 // Function to generate the signature
 function generateSignature(publicId: string, apiSecret: string) {
   const timestamp = Math.round(new Date().getTime() / 1000);
@@ -75,7 +74,9 @@ const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   });
 };
 
-const addUserDataToReplies = async (replies: ExtendedPost[]): Promise<ReplyWithParent[]> => {
+const addUserDataToReplies = async (
+  replies: ExtendedPost[]
+): Promise<ReplyWithParent[]> => {
   const users = (
     await clerkClient.users.getUserList({
       userId: replies.flatMap((reply) => [
@@ -88,7 +89,7 @@ const addUserDataToReplies = async (replies: ExtendedPost[]): Promise<ReplyWithP
 
   const parentPostIds: string[] = replies
     .map((reply) => reply.post?.id)
-    .filter((id): id is string => typeof id === 'string');
+    .filter((id): id is string => typeof id === "string");
 
   const parentPosts = parentPostIds.length
     ? await prisma.post.findMany({
@@ -135,7 +136,9 @@ const addUserDataToReplies = async (replies: ExtendedPost[]): Promise<ReplyWithP
 
       const enrichedParentPost: PostWithAuthor = {
         post: parentPost,
-        author: users.find((user) => user.id === parentPost.authorId) || {} as PostAuthor, // Initialize with empty object
+        author:
+          users.find((user) => user.id === parentPost.authorId) ||
+          ({} as PostAuthor), // Initialize with empty object
       };
 
       enrichedReply.parentPost = enrichedParentPost;
@@ -144,7 +147,6 @@ const addUserDataToReplies = async (replies: ExtendedPost[]): Promise<ReplyWithP
     return enrichedReply;
   });
 };
-
 
 type ResponseData = {
   result: string;
@@ -1109,7 +1111,84 @@ export const postsRouter = createTRPCRouter({
       return deletedPost;
     }),
 
-  likePost: privateProcedure
+    likePost: privateProcedure
+    .input(
+      z.object({
+        postId: z.string().optional(),
+        replyId: z.string().optional(),
+      })
+      .refine((data) => {
+        const { postId, replyId } = data;
+        if ((!postId && !replyId) || (postId && replyId)) {
+          throw new Error("Either 'postId' or 'replyId' must be provided, but not both.");
+        }
+        return true;
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+      const { postId, replyId } = input;
+
+  
+      if (replyId) {
+        console.log("Liking a reply")
+        const existingReplyLike = await ctx.prisma.like.findFirst({
+          where: {
+            replyId: replyId,
+            authorId,
+          },
+        });
+  
+        if (existingReplyLike) {
+          console.log("Existing reply like found");
+          // If the user already liked the reply, remove the like
+          await ctx.prisma.like.delete({
+            where: {
+              id: existingReplyLike.id,
+            },
+          });
+        } else {
+          // If the user hasn't liked the reply yet, add a new like
+          await ctx.prisma.like.create({
+            data: {
+              replyId: replyId,
+              authorId,
+            },
+          });
+        }
+      } else {
+        // Like a post
+        const existingPostLike = await ctx.prisma.like.findFirst({
+          where: {
+            postId,
+            authorId,
+          },
+        });
+  
+        if (existingPostLike) {
+          console.log("Existing post like found");
+          // If the user already liked the post, remove the like
+          await ctx.prisma.like.delete({
+            where: {
+              id: existingPostLike.id,
+            },
+          });
+        } else if (postId) {
+          // If the user hasn't liked the post yet, add a new like
+          await ctx.prisma.like.create({
+            data: {
+              postId,
+              authorId,
+            },
+          });
+        }
+      }
+  
+      return { success: true };
+    }),
+  
+
+ /*  likePost: privateProcedure
     .input(z.object({ postId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
@@ -1138,7 +1217,7 @@ export const postsRouter = createTRPCRouter({
       }
 
       return { success: true };
-    }),
+    }), */
   retweetPost: privateProcedure
     .input(z.object({ postId: z.string() }))
     .mutation(async ({ ctx, input }) => {

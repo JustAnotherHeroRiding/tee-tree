@@ -47,11 +47,15 @@ import { useRouter } from "next/router";
 import { UserHoverCard } from "./UserHover";
 import { CreatePostWizard, type User } from "./CreatePostWizard";
 import { UserCard } from "./UserMentionSuggestions";
-import {type PostWithAuthor } from "~/server/api/routers/posts";
+import {
+  type ExtendedPost,
+  type PostAuthor,
+  type PostWithAuthor,
+} from "~/server/api/routers/posts";
 
 dayjs.extend(relativeTime);
 
-export type PostWithUser = PostWithAuthor
+export type PostWithUser = PostWithAuthor;
 
 type PostContentProps = {
   content: string;
@@ -248,11 +252,16 @@ export const PostContent: FC<PostContentProps> = ({ content }) => {
   );
 };
 
-const PostViewComponent = (props: PostWithUser) => {
+type PostViewComponentProps = {
+  type?: string;
+  post: ExtendedPost;
+  author: PostAuthor;
+};
+
+const PostViewComponent = (props: PostViewComponentProps) => {
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
-  const { post, author } = props;
-
+  const { post, author, type } = props;
 
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
@@ -384,6 +393,9 @@ const PostViewComponent = (props: PostWithUser) => {
       } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
         // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
         void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+      } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+        // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+        void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
       } else if (location.pathname.startsWith("/post/")) {
         void ctx.posts.getById.invalidate();
       } else if (location.pathname.startsWith("/@")) {
@@ -413,6 +425,9 @@ const PostViewComponent = (props: PostWithUser) => {
         } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
@@ -438,6 +453,9 @@ const PostViewComponent = (props: PostWithUser) => {
         } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
@@ -465,6 +483,9 @@ const PostViewComponent = (props: PostWithUser) => {
         } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
         } else if (location.pathname.startsWith("/post/")) {
           void ctx.posts.getById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
@@ -514,6 +535,9 @@ const PostViewComponent = (props: PostWithUser) => {
         } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
@@ -757,7 +781,9 @@ const PostViewComponent = (props: PostWithUser) => {
         <div className="flex gap-1 text-slate-300">
           <Link href={`/@${author.username ?? ""}`}>
             @
-            <span className="hover:text-white hover:underline">{`${author.username ?? ""}`}</span>
+            <span className="hover:text-white hover:underline">{`${
+              author.username ?? ""
+            }`}</span>
           </Link>
           <span className="font-thin">{` · ${dayjs(
             post.createdAt
@@ -1155,7 +1181,13 @@ const PostViewComponent = (props: PostWithUser) => {
             data-tooltip-id="like-tooltip"
             data-tooltip-content="Like"
             disabled={isLiking}
-            onClick={() => mutate({ postId: post.id })}
+            onClick={() => {
+              if (type === "reply") {
+                mutate({ replyId: post.id });
+              } else {
+                mutate({ postId: post.id });
+              }
+            }}
             className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
           ${liked ? "text-red-600" : "hover:text-red-300"} whitespace-normal ${
               isLiking
@@ -1176,14 +1208,16 @@ const PostViewComponent = (props: PostWithUser) => {
             data-tooltip-id="comment-tooltip"
             data-tooltip-content="Comment"
             onClick={() => setShowCommentModal(true)}
-            className="flex w-fit cursor-pointer flex-row items-center text-3xl group "
+            className="group flex w-fit cursor-pointer flex-row items-center text-3xl "
           >
             {" "}
             <FontAwesomeIcon
               icon={faComment}
-              className="group-hover:text-Intone-300 group-hover:scale-110 transition-all duration-300 mr-2 h-6 w-6 "
+              className="mr-2 h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:text-Intone-300 "
             />{" "}
-            <p className="group-hover:text-Intone-300 group-hover:scale-110 transition-all duration-300">{replies}</p>
+            <p className="transition-all duration-300 group-hover:scale-110 group-hover:text-Intone-300">
+              {replies}
+            </p>
           </button>
 
           <button
@@ -1333,7 +1367,7 @@ const PostViewComponent = (props: PostWithUser) => {
             >
               <div
                 ref={modalCommentPostRef}
-                className="modalDeletePost mx-auto flex h-fit w-[95vw] flex-col rounded-3xl border
+                className="modalComment mx-auto flex h-fit w-[95vw] flex-col rounded-3xl border
         border-indigo-200 bg-black px-8 pb-4 pt-8 sm:w-[55vw] lg:w-[35vw]"
               >
                 <div className="mb-4 flex gap-3 border-slate-400 phone:relative">
@@ -1345,13 +1379,15 @@ const PostViewComponent = (props: PostWithUser) => {
                       width={56}
                       height={56}
                     />
-                    <div className="z-0 mx-auto h-full border -mb-12"></div>
+                    <div className="z-0 mx-auto -mb-12 h-full border"></div>
                   </div>
                   <div className="relative flex w-full flex-col">
                     <div className="flex gap-1 text-slate-300">
                       <Link href={`/@${author.username ?? ""}`}>
                         @
-                        <span className="hover:text-white hover:underline">{`${author.username ?? ""}`}</span>
+                        <span className="hover:text-white hover:underline">{`${
+                          author.username ?? ""
+                        }`}</span>
                       </Link>
                       <span className="font-thin">{` · ${dayjs(
                         post.createdAt
@@ -1381,7 +1417,12 @@ const PostViewComponent = (props: PostWithUser) => {
                     </span>
                   </div>
                 </div>
-                  <CreatePostWizard homePage={homePage} src='reply' parentPostId={post.id} setShowCommentModal={setShowCommentModal}  />
+                <CreatePostWizard
+                  homePage={homePage}
+                  src="reply"
+                  parentPostId={post.id}
+                  setShowCommentModal={setShowCommentModal}
+                />
                 <button
                   className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
                   onClick={() => setShowCommentModal(false)}

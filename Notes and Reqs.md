@@ -102,6 +102,8 @@ Let's implement some features I have already implemented before in order to lear
 - Profile page should have a replies page #DONE 
 - I currently cannot read the parent post as the type is not PostWithAuthor so they props deconstruct is not working #DONE 
 - Check if the user is liking a reply or post and make the use a different mutation
+- Add a separate mutation for editing a reply
+- The page for a separate post should also fetch replies
 - Lines between the profile pictures for replies
 - The feed should be all the replies that the user has posted
 - After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets
@@ -109,6 +111,7 @@ Let's implement some features I have already implemented before in order to lear
 - Clicking on a reply should open it with the main post above it
 - Click outside or esc to close the modal, perhaps use the hook
 - On the single post all replies should be shown with scrolling
+- If there are multiple replies to a single post then the parent should only be shown once
 
 ## Post View
 - Add a sticky div #DONE 
@@ -116,6 +119,7 @@ Let's implement some features I have already implemented before in order to lear
 #### Highlighted Words Bug
 - If I type a trend or mention and then add a bunch of empty lines the highlighted words overlay div will be displaced
 - It is now also bugged when typing a new post but it works on the reply modal
+- It seems that it does not recognize the spaces and only works if I leave one space between the words the rest gets swallowed and that is why they are out of place
 
 
 ## Main Page

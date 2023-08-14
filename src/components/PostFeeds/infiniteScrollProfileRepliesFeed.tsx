@@ -79,9 +79,10 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
                 {...{
                   post: fullPost.parentPost.post,
                   author: fullPost.parentPost.author,
+                  type: 'reply_parent'
                 }}
               />
-              <PostView {...{ post: fullPost.post, author: fullPost.author }} />{" "}
+              <PostView {...{ post: fullPost.post, author: fullPost.author }} type="reply" />{" "}
               <div
                 ref={lastPostElementRef}
                 className="infiniteScrollTriggerDiv"
@@ -93,10 +94,11 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
                 {...{
                   post: fullPost.parentPost.post,
                   author: fullPost.parentPost.author,
+                  type: 'reply_parent'
                 }}
               />{" "}
               <PostView
-                {...{ post: fullPost.post, author: fullPost.author }}
+                {...{ post: fullPost.post, author: fullPost.author, type: 'reply' }}
                 key={fullPost.post.id}
               />{" "}
             </>
