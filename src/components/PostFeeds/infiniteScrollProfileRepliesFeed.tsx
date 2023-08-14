@@ -89,7 +89,7 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
               ></div>
             </div>
           ) : (
-            <>
+            <div key={fullPost.post.id}>
               <PostView
                 {...{
                   post: fullPost.parentPost.post,
@@ -99,9 +99,9 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
               />{" "}
               <PostView
                 {...{ post: fullPost.post, author: fullPost.author, type: 'reply' }}
-                key={fullPost.post.id}
+                
               />{" "}
-            </>
+            </div>
           );
         })
       )}

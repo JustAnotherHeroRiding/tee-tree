@@ -101,8 +101,9 @@ Let's implement some features I have already implemented before in order to lear
 - Mutation for posting replies, depending on the src passed it will be decided which mutation to call inside the createpostwizard #DONE 
 - Profile page should have a replies page #DONE 
 - I currently cannot read the parent post as the type is not PostWithAuthor so they props deconstruct is not working #DONE 
-- Check if the user is liking a reply or post and make the use a different mutation
+- Check if the user is liking a reply or post and make the use a different mutation #DONE 
 - Add a separate mutation for editing a reply
+- And for retweeting
 - The page for a separate post should also fetch replies
 - Lines between the profile pictures for replies
 - The feed should be all the replies that the user has posted
