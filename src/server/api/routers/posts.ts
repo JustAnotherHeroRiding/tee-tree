@@ -1111,34 +1111,35 @@ export const postsRouter = createTRPCRouter({
       return deletedPost;
     }),
 
-    likePost: privateProcedure
+  likePost: privateProcedure
     .input(
-      z.object({
-        postId: z.string().optional(),
-        replyId: z.string().optional(),
-      })
-      .refine((data) => {
-        const { postId, replyId } = data;
-        if ((!postId && !replyId) || (postId && replyId)) {
-          throw new Error("Either 'postId' or 'replyId' must be provided, but not both.");
-        }
-        return true;
-      })
+      z
+        .object({
+          postId: z.string().optional(),
+          replyId: z.string().optional(),
+        })
+        .refine((data) => {
+          const { postId, replyId } = data;
+          if ((!postId && !replyId) || (postId && replyId)) {
+            throw new Error(
+              "Either 'postId' or 'replyId' must be provided, but not both."
+            );
+          }
+          return true;
+        })
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
       const { postId, replyId } = input;
 
-  
       if (replyId) {
-        console.log("Liking a reply")
         const existingReplyLike = await ctx.prisma.like.findFirst({
           where: {
             replyId: replyId,
             authorId,
           },
         });
-  
+
         if (existingReplyLike) {
           console.log("Existing reply like found");
           // If the user already liked the reply, remove the like
@@ -1164,7 +1165,7 @@ export const postsRouter = createTRPCRouter({
             authorId,
           },
         });
-  
+
         if (existingPostLike) {
           console.log("Existing post like found");
           // If the user already liked the post, remove the like
@@ -1183,67 +1184,83 @@ export const postsRouter = createTRPCRouter({
           });
         }
       }
-  
+
       return { success: true };
     }),
-  
 
- /*  likePost: privateProcedure
-    .input(z.object({ postId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const authorId = ctx.userId;
-
-      const existingLike = await ctx.prisma.like.findFirst({
-        where: {
-          postId: input.postId,
-          authorId: authorId,
-        },
-      });
-
-      if (existingLike) {
-        console.log("existing like found");
-        // If the user already liked the post, remove the like
-        await ctx.prisma.like.delete({
-          where: { id: existingLike.id },
-        });
-      } else {
-        // If the user hasn't liked the post yet, add a new like
-        await ctx.prisma.like.create({
-          data: {
-            postId: input.postId,
-            authorId: authorId,
-          },
-        });
-      }
-
-      return { success: true };
-    }), */
   retweetPost: privateProcedure
-    .input(z.object({ postId: z.string() }))
+    .input(
+      z
+        .object({
+          postId: z.string().optional(),
+          replyId: z.string().optional(),
+        })
+        .refine((data) => {
+          const { postId, replyId } = data;
+          if ((!postId && !replyId) || (postId && replyId)) {
+            throw new Error(
+              "Either 'postId' or 'replyId' must be provided, but not both."
+            );
+          }
+          return true;
+        })
+    )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
+      const { postId, replyId } = input;
 
-      const existingRetweet = await ctx.prisma.retweet.findFirst({
-        where: {
-          postId: input.postId,
-          authorId: authorId,
-        },
-      });
-
-      if (existingRetweet) {
-        console.log("existing like found");
-        // If the user already liked the post, remove the like
-        await ctx.prisma.retweet.delete({
-          where: { id: existingRetweet.id },
-        });
-      } else {
-        // If the user hasn't liked the post yet, add a new like
-        await ctx.prisma.retweet.create({
-          data: {
-            postId: input.postId,
-            authorId: authorId,
+      if (replyId) {
+        console.log("Retweeting a reply");
+        const existingReplyRetweet = await ctx.prisma.retweet.findFirst({
+          where: {
+            replyId: replyId,
+            authorId,
           },
         });
+
+        if (existingReplyRetweet) {
+          console.log("Existing reply retweet found");
+          // If the user already retweeted the reply, remove the retweet
+          await ctx.prisma.retweet.delete({
+            where: {
+              id: existingReplyRetweet.id,
+            },
+          });
+        } else {
+          // If the user hasn't retweeted the reply yet, add a new retweet
+          await ctx.prisma.retweet.create({
+            data: {
+              replyId: replyId,
+              authorId,
+            },
+          });
+        }
+      } else {
+        // Retweet a post
+        const existingPostRetweet = await ctx.prisma.retweet.findFirst({
+          where: {
+            postId,
+            authorId,
+          },
+        });
+
+        if (existingPostRetweet) {
+          console.log("Existing post retweet found");
+          // If the user already retweeted the post, remove the retweet
+          await ctx.prisma.retweet.delete({
+            where: {
+              id: existingPostRetweet.id,
+            },
+          });
+        } else if (postId) {
+          // If the user hasn't retweeted the post yet, add a new retweet
+          await ctx.prisma.retweet.create({
+            data: {
+              postId,
+              authorId,
+            },
+          });
+        }
       }
 
       return { success: true };

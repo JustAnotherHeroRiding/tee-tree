@@ -575,16 +575,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         <h1 className="absolute -top-4 right-0 rounded-3xl">
           {textLength}/280
         </h1>
-        <div className="relative w-full">
+        <div className="relative w-full overflow-auto max-h-[45vh] gray-thin-scrollbar">
           <div
-            className="absolute text-transparent"
+            className="absolute text-transparent whitespace-pre-wrap"
             dangerouslySetInnerHTML={{
               __html: highlightedInput.replace(/\n/g, "<br/>"),
             }}
           />
           <TextareaAutosize
             placeholder="What's on your mind?"
-            className="gray-thin-scrollbar max-h-[45vh] w-full grow resize-none bg-transparent outline-none"
+            className="w-full grow resize-none bg-transparent outline-none"
             value={input}
             maxLength={280}
             onChange={(e) => handleTextareaChange(e)}

@@ -27,8 +27,8 @@ model Like {
 model Retweet {
   id       String  @id @default(cuid())
   authorId String
-  postId   String
-  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId   String?
+  post     Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
   Reply    Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
   replyId  String?
 

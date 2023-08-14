@@ -888,6 +888,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
           "
                 onClick={() => {
                   setIsEditing(false);
+                  setInput(post.content);
                   setIsTypingTrend(false);
                   setIsTypingUsername(false);
                 }}
@@ -900,9 +901,9 @@ const PostViewComponent = (props: PostViewComponentProps) => {
               <h1 className="absolute right-8 top-0 rounded-3xl">
                 {textLength}/280
               </h1>
-              <div className="relative w-full">
+              <div className="relative w-full overflow-auto max-h-[45vh] gray-thin-scrollbar">
                 <div
-                  className="pointer-events-none absolute pb-2 pl-4 pr-8 pt-4 text-transparent"
+                  className="pointer-events-none whitespace-pre-wrap absolute pb-2 pl-4 pr-8 pt-4 text-transparent"
                   dangerouslySetInnerHTML={{
                     __html: highlightedInput.replace(/\n/g, "<br/>"),
                   }}
@@ -910,7 +911,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                 <TextareaAutosize
                   maxLength={280}
                   ref={textareaRef}
-                  className="gray-thin-scrollbar h-full max-h-[45vh] min-h-[80px] w-full resize-none
+                  className="min-h-[80px] w-full resize-none
                 rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
                   //defaultValue={post.content}
                   value={input}
@@ -1221,7 +1222,13 @@ const PostViewComponent = (props: PostViewComponentProps) => {
           </button>
 
           <button
-            onClick={() => retweetPost({ postId: post.id })}
+            onClick={() => {
+              if (type === "reply") {
+                retweetPost({ replyId: post.id });
+              } else {
+                retweetPost({ postId: post.id });
+              }
+            }}
             className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
         ${
           retweeted ? "text-green-600" : "hover:text-green-300"
