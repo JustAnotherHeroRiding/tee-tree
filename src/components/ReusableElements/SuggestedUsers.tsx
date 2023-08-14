@@ -20,7 +20,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
 
   const { data: suggestedUsers, isLoading } =
     api.follow.getNotFollowingCurrentUser.useQuery();
-    
+
   const { user: currentUser } = useUser();
 
   const router = useRouter();
@@ -138,7 +138,8 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
     return <LoadingSpinner />;
   }
 
-  if (!suggestedUsers && !loadingUserList) return <h1 className="py-2 text-center">You follow everyone!</h1>;
+  if ((!suggestedUsers && !loadingUserList) || suggestedUsers?.length === 0)
+    return <h1 className="py-2 text-center">You follow everyone!</h1>;
 
   const slicedUsers = suggestedUsers?.slice(0, limit);
 

@@ -40,7 +40,7 @@ body {
 
     .post-button-fontAwesome {
         @apply w-6 h-6 transition-all 
-        duration-300 hover:scale-110 hover:text-slate-700 rounded-3xl
+        duration-300 hover:scale-110 hover:text-Intone-300 rounded-3xl
     }
 
     .selector-on-symbol { 

@@ -36,7 +36,7 @@ export const PageLayout = (props: PropsWithChildren) => {
 
         <div
           className="gray-thin-scrollbar h-full min-h-screen w-full overflow-y-scroll  border-x border-slate-400 
-            sm:max-w-[500px] md:max-w-[500px] lg:max-w-[650px] phone:border-none"
+            sm:max-w-[500px] md:max-w-[550px] lg:max-w-[650px] phone:border-none"
         >
           {props.children}
         </div>

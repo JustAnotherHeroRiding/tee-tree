@@ -10,7 +10,7 @@ import {
 import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
-import type { Post, Like, Retweet } from "@prisma/client";
+import type { Post, Like, Retweet, Reply } from "@prisma/client";
 import { env } from "~/env.mjs";
 import crypto from "crypto";
 import { countHashtags } from "~/server/helpers/countHashtags";
@@ -18,6 +18,7 @@ import { countHashtags } from "~/server/helpers/countHashtags";
 export type ExtendedPost = Post & {
   likes: Like[];
   retweets: Retweet[];
+  replies: Reply[];
 };
 
 export type PostAuthor = {
@@ -114,6 +115,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
+          replies: true,
         },
       });
 
@@ -135,6 +137,7 @@ export const postsRouter = createTRPCRouter({
       include: {
         likes: true,
         retweets: true, // Include the likes relation in the result
+        replies: true,
       },
     });
 
@@ -158,6 +161,7 @@ export const postsRouter = createTRPCRouter({
       include: {
         likes: true,
         retweets: true, // Include the likes relation in the result
+        replies: true,
       },
     });
 
@@ -222,6 +226,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
+          replies: true,
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -258,6 +263,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
+          replies: true,
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -309,6 +315,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true,
+          replies: true,
         },
       });
 
@@ -367,6 +374,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true,
+          replies: true,
         },
       });
 
@@ -425,6 +433,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true,
+          replies: true,
         },
       });
 
@@ -457,6 +466,7 @@ export const postsRouter = createTRPCRouter({
           include: {
             likes: true,
             retweets: true, // Include the likes relation in the result
+            replies: true,
           },
         })
         .then(addUserDataToPosts)
@@ -511,6 +521,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
+          replies: true,
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -555,6 +566,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
+          replies: true,
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -677,6 +689,7 @@ export const postsRouter = createTRPCRouter({
           include: {
             likes: true,
             retweets: true,
+            replies: true,
           },
         })
         .then(addUserDataToPosts);
@@ -722,6 +735,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
+          replies: true,
         },
       });
 
@@ -745,6 +759,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
+          replies: true,
         },
       });
 

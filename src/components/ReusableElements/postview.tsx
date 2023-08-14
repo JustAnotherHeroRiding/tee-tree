@@ -360,11 +360,13 @@ const PostViewComponent = (props: PostWithUser) => {
 
   const [likes, setLikes] = useState(0);
   const [retweets, setRetweets] = useState(0);
+  const [replies, setReplies] = useState(0);
 
   useEffect(() => {
     setLikes(post.likes.length);
     setRetweets(post.retweets.length);
-  }, [post.likes, post.retweets.length]);
+    setReplies(post.replies.length);
+  }, [post.likes, post.retweets.length, post.replies.length]);
 
   const ctx = api.useContext();
 
@@ -1171,12 +1173,14 @@ const PostViewComponent = (props: PostWithUser) => {
             data-tooltip-id="comment-tooltip"
             data-tooltip-content="Comment"
             onClick={() => setShowCommentModal(true)}
+            className="flex w-fit cursor-pointer flex-row items-center text-3xl "
           >
             {" "}
             <FontAwesomeIcon
               icon={faComment}
-              className="post-button-fontAwesome"
+              className="post-button-fontAwesome mr-2 h-6 w-6"
             />{" "}
+            <p>{replies}</p>
           </button>
 
           <button

@@ -96,8 +96,10 @@ Let's implement some features I have already implemented before in order to lear
 - New model for the replies #DONE 
 - The original post should be shown above the textarea for the reply #DONE 
 - There should be a line between the two profile pics . This needs a lot more work as the current solution is clunky #DONE 
-- Let's add the second line directly in the create post wizard above the image but only on the reply wizard
-- Comments for tweets, further comments for them too. Implement twitter threads
+- Let's add the second line directly in the create post wizard above the image but only on the reply wizard #DONE 
+- Fetch number of replies for each post in all the post fetching endpoints #DONE 
+- Mutation for posting replies, depending on the src passed it will be decided which mutation to call
+- Click outside or esc to close the modal, perhaps use the hook
 - Profile page should have a replies page
 - On the single post all replies should be shown with scrolling
 
