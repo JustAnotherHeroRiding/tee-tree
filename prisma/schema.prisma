@@ -2,35 +2,39 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
-
-
 model Like {
-  id        String  @id @default(cuid())
-  authorId  String
-  postId    String
-  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  id       String  @id @default(cuid())
+  authorId String
+  postId   String
+  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  Reply    Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId  String?
 
   @@index([authorId, postId], name: "UniqueLike")
   @@index([postId])
+  @@index([replyId])
 }
 
 model Retweet {
-  id        String  @id @default(cuid())
-  authorId  String
-  postId    String
-  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  id       String  @id @default(cuid())
+  authorId String
+  postId   String
+  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  Reply    Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId  String?
 
   @@index([authorId, postId], name: "UniqueRetweet")
   @@index([postId])
+  @@index([replyId])
 }
 
 model Post {
@@ -38,17 +42,17 @@ model Post {
   createdAt DateTime @default(now())
   content   String   @db.VarChar(280)
 
-  imageUrl  String?  // new field for image URL
-  gifUrl String?
+  imageUrl String? // new field for image URL
+  gifUrl   String?
   videoUrl String? // url for cloudinary
 
-  authorId  String
-  likes     Like[]
+  authorId String
+  likes    Like[]
   retweets Retweet[]
-  isEdited  Boolean  @default(false)
+  isEdited Boolean   @default(false)
 
-   // Field for one-to-many relationship with Reply
-  replies   Reply[]
+  // Field for one-to-many relationship with Reply
+  replies Reply[]
 
   @@index([authorId])
 }
@@ -59,27 +63,30 @@ model Reply {
   content   String   @db.VarChar(280)
 
   // Fields for image, gif, and video URLs
-  imageUrl  String?
-  gifUrl String?
+  imageUrl String?
+  gifUrl   String?
   videoUrl String?
 
+  likes    Like[]
+  retweets Retweet[]
+  isEdited Boolean   @default(false)
+
   // Field for author ID
-  authorId  String
+  authorId String
 
   // Field for parent post ID
-  postId    String
-  post      Post     @relation(fields: [postId], references: [id])
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
 
   // Fields for self-referential relationship
-  parentId  String?
-  parent    Reply?   @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  replies   Reply[]  @relation("ReplyToReply")
+  parentId String?
+  parent   Reply?  @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies  Reply[] @relation("ReplyToReply")
 
   @@index([authorId])
   @@index([postId])
   @@index([parentId])
 }
-
 
 model Follow {
   id          String @id @default(cuid())
@@ -88,5 +95,3 @@ model Follow {
 
   @@index([followerId, followingId], name: "UniqueFollow")
 }
-
-

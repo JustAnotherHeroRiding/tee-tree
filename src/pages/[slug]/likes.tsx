@@ -318,6 +318,22 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               <hr className="mt-4"></hr>
             )}
           </div>
+          <div className="flex w-1/2 flex-col items-center justify-center">
+            <Link href={username ? `/@${username}/replies` : "/"}>
+              <button
+                className={`mx-auto ${
+                  feedSelector === "replies" ? "text-white" : "text-slate-400"
+                }`}
+              >
+                Replies
+              </button>
+            </Link>
+            {feedSelector === "replies" ? (
+              <hr className="selector-on-symbol"></hr>
+            ) : (
+              <hr className="mt-4"></hr>
+            )}
+          </div>
         </div>
         <InfiniteScrollProfileLikedFeed userId={data.id} />
       </PageLayout>

@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
-import { InfiniteScrollProfileFeed } from "~/components/PostFeeds/infiniteScrollProfileFeed";
+
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({ username });
@@ -27,7 +27,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
   const [postsCount, setPostsCount] = useState(0);
 
-  const [feedSelector] = useState<string>("posts");
+  const [feedSelector] = useState<string>("replies");
 
   const [showForm, setShowForm] = useState(false);
 
@@ -144,19 +144,18 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-        <div className="sticky top-0 z-[10] flex  items-center justify-between pb-2 backdrop-blur-sm">
-          <Link href={"/"}>
+        <div className="sticky top-0 z-50 flex items-center justify-between pb-2 backdrop-blur-sm">
+          <Link href={`/@${username}`}>
             <FontAwesomeIcon
-              className="absolute left-4 top-4 
+              className="absolute left-4 top-4
         h-8 w-8 transform rounded-3xl px-2 py-1 transition-all
         duration-300 hover:scale-125 hover:bg-slate-900 hover:text-white"
               icon={faArrowLeftLong}
             />
           </Link>
-
-          <div className="ml-16 mr-auto mt-2 flex flex-col">
-            <h2 className="text-xl font-semibold">{username}</h2>
-            <p>{`${postsCount} Posts`}</p>
+          <div className="flex flex-col mr-auto ml-16 mt-2">
+          <h2 className="text-xl font-semibold">{username}</h2>
+          <p>{`${postsCount} Posts`}</p>
           </div>
 
           {data.id !== user?.id &&
@@ -223,7 +222,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               </div>
             </div>
           </div>
-
           <Image
             src={data.profileImageUrl}
             alt={`${data.username ?? ""}'s profile pic `}
@@ -233,13 +231,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           />
         </div>
         <div className="h-[64px]"></div>
-        {data.firstName && data.lastName && (
-          <span className="p-4 text-2xl font-bold">
-            {data.firstName} {data.lastName}
-          </span>
-        )}
         <div className="flex flex-row items-center justify-between">
-          <h1 className="p-4 text-2xl font-bold text-slate-300">{`@${
+          <h1 className="p-4 text-2xl font-bold">{`@${
             data.username ?? ""
           }`}</h1>
           {data.id === user?.id && user && (
@@ -253,22 +246,17 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           )}
         </div>
         {followersData ? (
-          <div className="flex flex-row text-slate-300">
-            <Link href={username ? `followers/@${username}` : "/"}>
-              <div className="mb-4 ml-4 flex flex-row items-center ">
-                <h1 className="hover:underline">
-                  Followers{" "}
-                  <span className="text-white text-2xl">{followerCount}</span>
-                </h1>
+          <div className="flex flex-row">
+            <Link href={username ? `/followers/@${username}` : "/"}>
+              <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 hover:text-white">
+                <h1>Followers</h1>
+                <h1 className="text-bold ml-2 text-2xl">{followerCount}</h1>
               </div>
             </Link>
-            <Link href={username ? `following/@${username}` : "/"}>
-              <div className="mb-4 ml-4 flex flex-row items-center">
-                <h1 className="hover:underline">
-                  
-                  Following{" "}
-                  <span className="text-white text-2xl">{followingCount}</span>
-                </h1>
+            <Link href={username ? `/following/@${username}` : "/"}>
+              <div className="mb-4 ml-4 flex flex-row items-center text-slate-300 hover:text-white">
+                <h1>Following</h1>
+                <h1 className="text-bold ml-2 text-2xl">{followingCount}</h1>
               </div>
             </Link>
           </div>
@@ -328,10 +316,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             )}
           </div>
         </div>
-        <InfiniteScrollProfileFeed
-          userId={data.id}
-          username={data.username ?? ""}
-        />
+        <h1 className="text-center">Replies</h1>
       </PageLayout>
     </>
   );

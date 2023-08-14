@@ -26,6 +26,8 @@ dayjs.extend(relativeTime);
 interface CreatePostWizardProps {
   homePage: boolean;
   src?: string;
+  parentPostId?: string;
+  setShowCommentModal?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export type User = {
@@ -39,6 +41,8 @@ export type User = {
 export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
   src = "newPost",
+  parentPostId = "",
+  setShowCommentModal
 }) => {
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
@@ -161,7 +165,48 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     }
   );
 
+  const { mutate: mutateAddImageToReply } =
+    api.posts.addImageToReply.useMutation({
+      onSuccess: () => {
+        if (homePage || !imageFile) {
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
+        } else {
+          void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+        }
+        setImageFile(undefined);
+        setPreviewUrl("");
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to upload the image.");
+        }
+      },
+    });
+
   const { mutate: mutateAddGifToPost } = api.posts.addGifToPost.useMutation({
+    onSuccess: () => {
+      if (homePage || !gifFile) {
+        void ctx.posts.infiniteScrollAllPosts.invalidate();
+      } else {
+        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+      }
+      setGifFile(undefined);
+      setPreviewUrl("");
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to upload the gif`.");
+      }
+    },
+  });
+
+  const { mutate: mutateAddGifToReply } = api.posts.addGifToReply.useMutation({
     onSuccess: () => {
       if (homePage || !gifFile) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
@@ -221,6 +266,52 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     },
   });
+
+  const { mutate: postReply, isLoading: isPostingReply } =
+    api.posts.replyToPost.useMutation({
+      onSuccess: async (reply) => {
+        if (imageFile) {
+          const imageResponseJson = await imageUpload(imageFile);
+          if (imageResponseJson) {
+            mutateAddImageToReply({
+              id: reply.id,
+              publicId: imageResponseJson.public_id,
+            });
+          }
+        } else if (gifFile) {
+          const gifResponseJson = await gifUpload(gifFile);
+          if (gifResponseJson) {
+            mutateAddGifToReply({
+              id: reply.id,
+              publicId: gifResponseJson.public_id,
+            });
+          }
+        }
+
+        setInput("");
+        setTextLength(0);
+        setIsTypingUsername(false);
+        setIsTypingTrend(false);
+        setHighlightedInput("");
+        if (setShowCommentModal) {
+          setShowCommentModal(false)
+        }
+        
+        if (homePage || !imageFile) {
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
+        } else {
+          void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+        }
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Post Reply! Please try again later.");
+        }
+      },
+    });
 
   const [textLength, setTextLength] = useState(0);
 
@@ -468,7 +559,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             priority={true}
           />
         ) : (
-          <div className="flex flex-col flex-shrink-0">
+          <div className="flex flex-shrink-0 flex-col">
             <div className="z-0 mx-auto border"></div>
             <Image
               className="h-14 w-14 rounded-full"
@@ -605,17 +696,24 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           <button
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 
       px-4 py-1 hover:bg-slate-700"
-            onClick={() => mutate({ content: input })}
+            onClick={() => {
+              if (src === "reply") {
+                postReply({ content: input, postId: parentPostId });
+              } else {
+                mutate({ content: input });
+              }
+            }}
           >
             Post
           </button>
         )}
 
-        {isPosting && (
-          <div className="flex items-center justify-center">
-            <LoadingSpinner size={20} />
-          </div>
-        )}
+        {isPosting ||
+          (isPostingReply && (
+            <div className="flex items-center justify-center">
+              <LoadingSpinner size={20} />
+            </div>
+          ))}
       </div>
       {LoadingUserList && (
         <div className="flex items-center justify-center">

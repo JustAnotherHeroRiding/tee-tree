@@ -98,9 +98,12 @@ Let's implement some features I have already implemented before in order to lear
 - There should be a line between the two profile pics . This needs a lot more work as the current solution is clunky #DONE 
 - Let's add the second line directly in the create post wizard above the image but only on the reply wizard #DONE 
 - Fetch number of replies for each post in all the post fetching endpoints #DONE 
-- Mutation for posting replies, depending on the src passed it will be decided which mutation to call
-- Click outside or esc to close the modal, perhaps use the hook
+- Mutation for posting replies, depending on the src passed it will be decided which mutation to call inside the createpostwizard #DONE 
 - Profile page should have a replies page
+- After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets
+- Replies should also appear on the main feed, with the original post nested inside the reply
+- Clicking on a reply should open it with the main post above it
+- Click outside or esc to close the modal, perhaps use the hook
 - On the single post all replies should be shown with scrolling
 
 ## Post View
@@ -108,6 +111,7 @@ Let's implement some features I have already implemented before in order to lear
 
 #### Highlighted Words Bug
 - If I type a trend or mention and then add a bunch of empty lines the highlighted words overlay div will be displaced
+- It is now also bugged when typing a new post but it works on the reply modal
 
 
 ## Main Page

@@ -1173,14 +1173,14 @@ const PostViewComponent = (props: PostWithUser) => {
             data-tooltip-id="comment-tooltip"
             data-tooltip-content="Comment"
             onClick={() => setShowCommentModal(true)}
-            className="flex w-fit cursor-pointer flex-row items-center text-3xl "
+            className="flex w-fit cursor-pointer flex-row items-center text-3xl group "
           >
             {" "}
             <FontAwesomeIcon
               icon={faComment}
-              className="post-button-fontAwesome mr-2 h-6 w-6"
+              className="group-hover:text-Intone-300 group-hover:scale-110 transition-all duration-300 mr-2 h-6 w-6 "
             />{" "}
-            <p>{replies}</p>
+            <p className="group-hover:text-Intone-300 group-hover:scale-110 transition-all duration-300">{replies}</p>
           </button>
 
           <button
@@ -1378,7 +1378,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     </span>
                   </div>
                 </div>
-                  <CreatePostWizard homePage={homePage} src='reply' />
+                  <CreatePostWizard homePage={homePage} src='reply' parentPostId={post.id} setShowCommentModal={setShowCommentModal}  />
                 <button
                   className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
                   onClick={() => setShowCommentModal(false)}
