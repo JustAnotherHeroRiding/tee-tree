@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
-import { PostView, type PostWithUser } from "../ReusableElements/postview";
+import { PostView } from "../ReusableElements/postview";
+import { type ReplyWithParent } from "~/server/api/routers/posts";
 
 export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
   const [page, setPage] = useState(0);
@@ -67,7 +68,7 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
   return (
     <div className="flex flex-col">
       {data?.pages?.map((page, pageIndex) =>
-        page.posts.map((fullPost: PostWithUser, postIndex) => {
+        page.posts.map((fullPost: ReplyWithParent, postIndex) => {
           const isLastPost =
             pageIndex === data.pages.length - 1 &&
             postIndex === page.posts.length - 1;
@@ -75,9 +76,12 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
               <PostView
-                {...{ post: fullPost.post, author: fullPost.post.author }}
+                {...{
+                  post: fullPost.parentPost.post,
+                  author: fullPost.parentPost.author,
+                }}
               />
-              <PostView {...{ post: fullPost, author: fullPost.author }} />{" "}
+              <PostView {...{ post: fullPost.post, author: fullPost.author }} />{" "}
               <div
                 ref={lastPostElementRef}
                 className="infiniteScrollTriggerDiv"
@@ -86,10 +90,13 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
           ) : (
             <>
               <PostView
-                {...{ post: fullPost.post, author: fullPost.post.author }}
+                {...{
+                  post: fullPost.parentPost.post,
+                  author: fullPost.parentPost.author,
+                }}
               />{" "}
               <PostView
-                {...{ post: fullPost, author: fullPost.author }}
+                {...{ post: fullPost.post, author: fullPost.author }}
                 key={fullPost.post.id}
               />{" "}
             </>

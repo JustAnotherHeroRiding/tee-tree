@@ -14,25 +14,31 @@ import type { Post, Like, Retweet, Reply } from "@prisma/client";
 import { env } from "~/env.mjs";
 import crypto from "crypto";
 import { countHashtags } from "~/server/helpers/countHashtags";
+import { prisma } from "~/server/db";
 
 export type ExtendedPost = Post & {
   likes: Like[];
   retweets: Retweet[];
   replies: Reply[];
   post?: Post;
-  author? : PostAuthor
+  author?: PostAuthor;
 };
 
 export type PostAuthor = {
-  username: string;
+  username: string | null;
   id: string;
-  profilePicture: string;
+  profileImageUrl: string;
 };
 
 export type PostWithAuthor = {
   post: ExtendedPost;
   author: PostAuthor;
 };
+
+export interface ReplyWithParent extends PostWithAuthor {
+  parentPost: PostWithAuthor;
+}
+
 
 // Function to generate the signature
 function generateSignature(publicId: string, apiSecret: string) {
@@ -69,73 +75,75 @@ const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   });
 };
 
-
-const addUserDataToReplies = async (posts: ExtendedPost[]) => {
+const addUserDataToReplies = async (replies: ExtendedPost[]): Promise<ReplyWithParent[]> => {
   const users = (
     await clerkClient.users.getUserList({
-      userId: posts.flatMap((post) => [post.authorId, ...(post.post?.authorId ? [post.post.authorId] : [])]),
+      userId: replies.flatMap((reply) => [
+        reply.authorId,
+        ...(reply.post?.authorId ? [reply.post.authorId] : []),
+      ]),
       limit: 100,
     })
   ).map(filterUserForClient);
 
-  const parentPostIds = posts.map((post) => post.post?.id).filter(Boolean);
+  const parentPostIds: string[] = replies
+    .map((reply) => reply.post?.id)
+    .filter((id): id is string => typeof id === 'string');
 
-  const parentPosts = await prisma.post.findMany({
-    where: {
-      id: {
-        in: parentPostIds,
-      },
-    },
-    include: {
-      likes: true,
-      retweets: true,
-      replies: true,
-    },
-  });
+  const parentPosts = parentPostIds.length
+    ? await prisma.post.findMany({
+        where: {
+          id: { in: parentPostIds },
+        },
+        include: {
+          likes: true,
+          retweets: true,
+          replies: true,
+        },
+      })
+    : [];
 
-  return posts.map((post) => {
-    const author = users.find((user) => user.id === post.authorId);
+  return replies.map((reply) => {
+    const author = users.find((user) => user.id === reply.authorId);
 
     if (!author || !author.username) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Author for post not found",
+        message: "Author for reply not found",
       });
     }
 
-    const enrichedPost: ExtendedPost = {
-      ...post,
+    const enrichedReply: ReplyWithParent = {
+      post: reply,
       author: {
         ...author,
         username: author.username,
       },
+      parentPost: {} as PostWithAuthor, // Initialize with empty object
     };
 
-    if (post.post) {
-      const parentPostId = post.post.id;
+    if (reply.post) {
+      const parentPostId = reply.post.id;
       const parentPost = parentPosts.find((p) => p.id === parentPostId);
 
       if (!parentPost) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Parent post not found",
+          message: "Parent post not found for reply",
         });
       }
 
-      const enrichedParentPost: Partial<ExtendedPost> = {
-        ...parentPost,
-        likes: parentPost.likes,
-        retweets: parentPost.retweets,
-        author: users.find((user) => user.id === parentPost.authorId),
+      const enrichedParentPost: PostWithAuthor = {
+        post: parentPost,
+        author: users.find((user) => user.id === parentPost.authorId) || {} as PostAuthor, // Initialize with empty object
       };
 
-      enrichedPost.post = enrichedParentPost as Post;
+      enrichedReply.parentPost = enrichedParentPost;
     }
 
-    return enrichedPost;
+    return enrichedReply;
   });
 };
-
 
 
 type ResponseData = {
@@ -607,7 +615,7 @@ export const postsRouter = createTRPCRouter({
       };
     }),
 
-    infiniteScrollRepliesByUserId: publicProcedure
+  infiniteScrollRepliesByUserId: publicProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -622,7 +630,7 @@ export const postsRouter = createTRPCRouter({
       const { limit, skip, cursor } = input;
       const items = await ctx.prisma.reply.findMany({
         where: {
-           authorId: input.userId 
+          authorId: input.userId,
         },
         take: limit + 1,
         skip: skip,
@@ -632,9 +640,9 @@ export const postsRouter = createTRPCRouter({
         },
         include: {
           likes: true, // Include the likes relation in the result
-          retweets: true, 
+          retweets: true,
           replies: true,
-          post: true
+          post: true,
         },
       });
       let nextCursor: typeof cursor | undefined = undefined;
@@ -745,7 +753,7 @@ export const postsRouter = createTRPCRouter({
         },
         include: {
           likes: true,
-          replies:true,
+          replies: true,
           retweets: {
             include: {
               post: true, // Include the author of each Retweet object

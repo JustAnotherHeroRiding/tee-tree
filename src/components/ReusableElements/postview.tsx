@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { api, type RouterOutputs } from "~/utils/api";
+import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import {
   faComment,
@@ -47,10 +47,11 @@ import { useRouter } from "next/router";
 import { UserHoverCard } from "./UserHover";
 import { CreatePostWizard, type User } from "./CreatePostWizard";
 import { UserCard } from "./UserMentionSuggestions";
+import {type PostWithAuthor } from "~/server/api/routers/posts";
 
 dayjs.extend(relativeTime);
 
-export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+export type PostWithUser = PostWithAuthor
 
 type PostContentProps = {
   content: string;
@@ -748,15 +749,15 @@ const PostViewComponent = (props: PostWithUser) => {
       <Image
         className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
         src={author?.profileImageUrl}
-        alt={`@${author.username}profile picture`}
+        alt={`@${author.username ?? ""}profile picture`}
         width={56}
         height={56}
       />
       <div className="relative flex w-full flex-col">
         <div className="flex gap-1 text-slate-300">
-          <Link href={`/@${author.username}`}>
+          <Link href={`/@${author.username ?? ""}`}>
             @
-            <span className="hover:text-white hover:underline">{`${author.username}`}</span>
+            <span className="hover:text-white hover:underline">{`${author.username ?? ""}`}</span>
           </Link>
           <span className="font-thin">{` · ${dayjs(
             post.createdAt
@@ -1340,7 +1341,7 @@ const PostViewComponent = (props: PostWithUser) => {
                     <Image
                       className="z-[1] h-14 w-14 rounded-full"
                       src={author?.profileImageUrl}
-                      alt={`@${author.username}profile picture`}
+                      alt={`@${author.username ?? ""}profile picture`}
                       width={56}
                       height={56}
                     />
@@ -1348,9 +1349,9 @@ const PostViewComponent = (props: PostWithUser) => {
                   </div>
                   <div className="relative flex w-full flex-col">
                     <div className="flex gap-1 text-slate-300">
-                      <Link href={`/@${author.username}`}>
+                      <Link href={`/@${author.username ?? ""}`}>
                         @
-                        <span className="hover:text-white hover:underline">{`${author.username}`}</span>
+                        <span className="hover:text-white hover:underline">{`${author.username ?? ""}`}</span>
                       </Link>
                       <span className="font-thin">{` · ${dayjs(
                         post.createdAt
