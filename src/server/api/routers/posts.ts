@@ -248,7 +248,13 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
-          replies: true,
+          replies:{
+            include: {
+              likes: true,
+              retweets: true,
+              replies: true,
+            }
+          }
         },
       });
 
@@ -260,7 +266,22 @@ export const postsRouter = createTRPCRouter({
       }
 
       const postsWithUserData = await addUserDataToPosts([post]);
-      return postsWithUserData[0];
+      const postWithUserReplies = postsWithUserData[0];
+
+      if (!postWithUserReplies) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      let replies: ReplyWithParent[] = [];
+
+      if (postWithUserReplies.post.replies.length > 0) {
+        replies = await addUserDataToReplies(postWithUserReplies.post.replies as ExtendedPost[]);
+      }
+
+      return { ...postWithUserReplies, replies };
     }),
 
   getReplyById: publicProcedure
@@ -1210,7 +1231,7 @@ export const postsRouter = createTRPCRouter({
       }
     }),
 
-    deletePost: privateProcedure
+  deletePost: privateProcedure
     .input(
       z
         .object({
@@ -1220,34 +1241,36 @@ export const postsRouter = createTRPCRouter({
         .refine((data) => {
           const { postId, replyId } = data;
           if ((!postId && !replyId) || (postId && replyId)) {
-            throw new Error("Either 'postId' or 'replyId' must be provided, but not both.");
+            throw new Error(
+              "Either 'postId' or 'replyId' must be provided, but not both."
+            );
           }
           return true;
         })
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
-  
+
       if (input.replyId) {
         const reply = await ctx.prisma.reply.findUnique({
           where: { id: input.replyId },
           include: { replies: true }, // Include child replies
         });
-      
+
         if (!reply || reply.authorId !== authorId) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "Not authorized to delete this reply",
           });
         }
-      
+
         // Recursively delete child replies
         async function deleteChildReplies(replyId: string) {
           const childReplies = reply?.replies.filter(
             (childReply) => childReply.parentId === replyId
           );
           if (!childReplies) return;
-      
+
           for (const childReply of childReplies) {
             await deleteChildReplies(childReply.id);
             await ctx.prisma.reply.delete({
@@ -1255,43 +1278,41 @@ export const postsRouter = createTRPCRouter({
             });
           }
         }
-      
+
         // Delete the reply and its child replies
         await deleteChildReplies(reply.id);
-      
+
         // Now delete the main reply
         const deletedReply = await ctx.prisma.reply.delete({
           where: { id: input.replyId },
         });
-      
+
         return deletedReply;
       }
-      
-  
+
       if (input.postId) {
         // Check if the user is the author of the post
         const post = await ctx.prisma.post.findUnique({
           where: { id: input.postId },
         });
-  
+
         if (!post || post.authorId !== authorId) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "Not authorized to delete this post",
           });
         }
-  
+
         // Delete the post
         const deletedPost = await ctx.prisma.post.delete({
           where: { id: input.postId },
         });
-  
+
         return deletedPost;
       }
-  
+
       throw new Error("Either 'postId' or 'replyId' must be provided.");
     }),
-  
 
   likePost: privateProcedure
     .input(

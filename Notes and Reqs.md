@@ -110,7 +110,11 @@ Let's implement some features I have already implemented before in order to lear
 ### Deleting Replies Forgot about it xD #DONE 
 - We need to somehow pass the information if the parent is a reply or a post so that it does not post a new post when trying to reply to a parent in the replies page #DONE Added the data type in the model itself with a default value like I did in the serialize methods for the capstone projects, helps to identify the data #FIXED 
 - Click outside or esc to close the modal, perhaps use the hook #DONE 
-- The page for a separate post/reply should also show the replies
+- The page for a separate post/reply should also show the replies #DONE Did it for posts let's do it for replies
+- Show replies to a reply
+- Invalidate the fetch request so that the new reply shows up
+- Show number of replies below each reply and fetch them upon clicking on the show more banner
+###### The relations for the replies are not being fetched as they are not included in post.replies
 - Lines between the profile pictures and no borders for replies
 - The feed should be all the replies that the user has posted
 - After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets

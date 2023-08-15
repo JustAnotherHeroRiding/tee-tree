@@ -28,7 +28,10 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
       <BackButton />
     </div>
 
-        <PostView {...data} />
+        <PostView {...data} type='single_post' />
+        {data.replies.map((reply) => (
+          <PostView key={reply.post.id} {...reply} type='reply' />
+        ))}
       </PageLayout>
     </>
   );
