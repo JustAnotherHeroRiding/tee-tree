@@ -105,7 +105,8 @@ Let's implement some features I have already implemented before in order to lear
 - Check if the user is liking a reply or post and make the use a different mutation #DONE 
 - Add a separate mutation for editing a reply #DONE  
 - And for retweeting #DONE 
-- And for replying to a reply - This will have to handled from the CreatePostWizard
+- And for replying to a reply - This will have to handled from the CreatePostWizard #DONE 
+- Clicking on a reply should open a separate page for the reply with the parent above
 - The page for a separate post should also fetch replies
 - Lines between the profile pictures for replies
 - The feed should be all the replies that the user has posted

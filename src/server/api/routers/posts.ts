@@ -23,6 +23,7 @@ export type ExtendedPost = Post & {
   parentId?: string | null;
   parentReply?: Reply | null;
   post?: Post | null;
+  postId?: string | null;
   author?: PostAuthor;
 };
 
@@ -162,11 +163,8 @@ const addUserDataToReplies = async (
 
       enrichedReply.parentPost = enrichedParentPost;
     } else if (reply.parentId) {
-
       const parentReplyId = reply.parentId;
-      const parentReply = parentReplies.find(
-        (r) => r.id === parentReplyId
-      );
+      const parentReply = parentReplies.find((r) => r.id === parentReplyId);
 
       if (!parentReply) {
         throw new TRPCError({
@@ -246,6 +244,29 @@ export const postsRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const post = await ctx.prisma.post.findUnique({
+        where: { id: input.id },
+        include: {
+          likes: true,
+          retweets: true, // Include the likes relation in the result
+          replies: true,
+        },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      const postsWithUserData = await addUserDataToPosts([post]);
+      return postsWithUserData[0];
+    }),
+
+  getReplyById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.reply.findUnique({
         where: { id: input.id },
         include: {
           likes: true,

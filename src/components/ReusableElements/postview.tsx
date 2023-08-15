@@ -825,7 +825,11 @@ const PostViewComponent = (props: PostViewComponentProps) => {
             event.stopPropagation();
             const selectedText = window.getSelection()?.toString();
             if (!isEditing && !selectedText) {
-              void router.push(`/post/${post.id}`);
+              if (type === "reply" || post.parentId || post.postId) {
+                void router.push(`/reply/${post.id}`);
+              } else {
+                void router.push(`/post/${post.id}`);
+              }
             }
           }}
         >
@@ -1436,7 +1440,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                 <CreatePostWizard
                   homePage={homePage}
                   src={type}
-                  parentType={type === 'reply' ? 'reply' : 'newPost'}
+                  parentType={type === "reply" ? "reply" : "newPost"}
                   parentPostId={post.id}
                   setShowCommentModal={setShowCommentModal}
                 />
