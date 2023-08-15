@@ -52,6 +52,7 @@ import {
   type PostAuthor,
   type PostWithAuthor,
 } from "~/server/api/routers/posts";
+import useOutsideClick from "../customHooks/outsideClick";
 
 dayjs.extend(relativeTime);
 
@@ -293,6 +294,12 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const [showShareModal, setShowShareModal] = useState(false);
 
+
+  useOutsideClick(modalCommentPostRef, () => {
+    if (showCommentModal) {
+      setShowCommentModal(false)
+    }
+  });
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -1378,7 +1385,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
             </div>
           )}
           {showCommentModal && (
-            <div
+            <div 
               className={`modalparent transform transition-transform duration-300 ease-in-out ${
                 showCommentModal
                   ? "visible scale-100 opacity-100"

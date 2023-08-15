@@ -109,13 +109,13 @@ Let's implement some features I have already implemented before in order to lear
 - Clicking on a reply should open a separate page for the reply with the parent above #DONE 
 ### Deleting Replies Forgot about it xD #DONE 
 - We need to somehow pass the information if the parent is a reply or a post so that it does not post a new post when trying to reply to a parent in the replies page #DONE Added the data type in the model itself with a default value like I did in the serialize methods for the capstone projects, helps to identify the data #FIXED 
-- The page for a separate post should also fetch replies
-- Lines between the profile pictures for replies
+- Click outside or esc to close the modal, perhaps use the hook #DONE 
+- The page for a separate post/reply should also show the replies
+- Lines between the profile pictures and no borders for replies
 - The feed should be all the replies that the user has posted
 - After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - Clicking on a reply should open it with the main post above it
-- Click outside or esc to close the modal, perhaps use the hook
 - On the single post all replies should be shown with scrolling
 - If there are multiple replies to a single post then the parent should only be shown once
 - Replies should have a banner above them in the main feed
