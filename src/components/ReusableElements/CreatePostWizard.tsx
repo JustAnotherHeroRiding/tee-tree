@@ -26,6 +26,7 @@ dayjs.extend(relativeTime);
 interface CreatePostWizardProps {
   homePage: boolean;
   src?: string;
+  parentType?: string;
   parentPostId?: string;
   setShowCommentModal?: React.Dispatch<React.SetStateAction<boolean>>
 }

@@ -64,7 +64,8 @@ Let's implement some features I have already implemented before in order to lear
 - Make the emoji selector work for the create post wizard #DONE 
 - Fade out animation is not working as it is hidden instantly #DONE 
 ##### I added the animation but it becomes really slow even when the emoji selector is hidden
-- Added a state to manage the animation and hide the emoji selector as typing is really slow when it is rendered #DONE 
+- Added a state to manage the animation and hide the emoji selector as typing is really slow when it is rendered #DONE
+- Add the emoji selector to the edit post textarea
 
 ### User and trend suggestion in the edit post view
 - Add user and trend suggestions in the edit post text area #DONE 
@@ -102,8 +103,9 @@ Let's implement some features I have already implemented before in order to lear
 - Profile page should have a replies page #DONE 
 - I currently cannot read the parent post as the type is not PostWithAuthor so they props deconstruct is not working #DONE 
 - Check if the user is liking a reply or post and make the use a different mutation #DONE 
-- Add a separate mutation for editing a reply 
+- Add a separate mutation for editing a reply #DONE  
 - And for retweeting #DONE 
+- And for replying to a reply - This will have to handled from the CreatePostWizard
 - The page for a separate post should also fetch replies
 - Lines between the profile pictures for replies
 - The feed should be all the replies that the user has posted

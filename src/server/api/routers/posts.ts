@@ -165,14 +165,27 @@ const ratelimit = new Ratelimit({
   prefix: "@upstash/ratelimit",
 });
 
-const EditPostInput = z.object({
-  postId: z.string(),
-  content: z
-    .string()
-    .regex(/^(?:[\w\W]*?[a-zA-Z0-9][\w\W]*){1,280}$/)
-    .min(1)
-    .max(280),
-});
+const EditPostInput = z
+  .object({
+    postId: z.string().optional(),
+    replyId: z.string().optional(),
+    content: z
+      .string()
+      .regex(
+        /^(?:[\s\S]*?[a-zA-Z0-9\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25AA}-\u{25AB}\u{23FA}\u{21AA}\u{21A9}\u{231A}-\u{231B}\u{23F0}\u{23F1}\u{23F2}\u{23F3}\u{23F8}-\u{23FA}][\s\S]*){1,280}$/u
+      )
+      .min(1)
+      .max(280),
+  })
+  .refine((data) => {
+    const { postId, replyId } = data;
+    if ((!postId && !replyId) || (postId && replyId)) {
+      throw new Error(
+        "Either 'postId' or 'replyId' must be provided, but not both."
+      );
+    }
+    return true;
+  });
 
 const FollowedWithAuthorSchema = z.object({
   followed: z.object({
@@ -977,31 +990,55 @@ export const postsRouter = createTRPCRouter({
       return repliesWithUserData[0];
     }),
 
-  editPost: privateProcedure
+    editPost: privateProcedure
     .input(EditPostInput)
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
-
-      // Check if the user is the author of the post
-      const post = await ctx.prisma.post.findUnique({
-        where: { id: input.postId },
-      });
-
-      if (!post || post.authorId !== authorId) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Not authorized to edit this post",
+      const { postId, replyId, content } = input;
+  
+      if (replyId) {
+        // Check if the user is the author of the reply
+        const reply = await ctx.prisma.reply.findUnique({
+          where: { id: replyId },
         });
+  
+        if (!reply || reply.authorId !== authorId) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Not authorized to edit this reply",
+          });
+        }
+  
+        // Update the reply
+        const updatedReply = await ctx.prisma.reply.update({
+          where: { id: replyId },
+          data: { content: content, isEdited: true },
+        });
+  
+        return updatedReply;
+      } else {
+        // Check if the user is the author of the post
+        const post = await ctx.prisma.post.findUnique({
+          where: { id: postId },
+        });
+  
+        if (!post || post.authorId !== authorId) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Not authorized to edit this post",
+          });
+        }
+  
+        // Update the post
+        const updatedPost = await ctx.prisma.post.update({
+          where: { id: postId },
+          data: { content: content, isEdited: true },
+        });
+  
+        return updatedPost;
       }
-
-      // Update the post
-      const updatedPost = await ctx.prisma.post.update({
-        where: { id: input.postId },
-        data: { content: input.content, isEdited: true },
-      });
-
-      return updatedPost;
     }),
+  
 
   deleteMediaPost: privateProcedure
     .input(z.object({ postId: z.string(), mediaType: z.string() }))

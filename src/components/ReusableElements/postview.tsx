@@ -555,11 +555,20 @@ const PostViewComponent = (props: PostViewComponentProps) => {
     });
 
   function handleSaveClick(newContent: string) {
-    // Call the editPost mutation with the post id and the new content
-    editPost({
-      postId: post.id,
-      content: newContent,
-    });
+    // Check the type and call the appropriate mutation
+    if (type === "reply") {
+      // Call the editPost mutation with the reply id and the new content
+      editPost({
+        replyId: post.id,
+        content: newContent,
+      });
+    } else {
+      // Call the editPost mutation with the post id and the new content
+      editPost({
+        postId: post.id,
+        content: newContent,
+      });
+    }
 
     // Exit the editing mode
     setIsEditing(false);
@@ -901,9 +910,9 @@ const PostViewComponent = (props: PostViewComponentProps) => {
               <h1 className="absolute right-8 top-0 rounded-3xl">
                 {textLength}/280
               </h1>
-              <div className="relative w-full overflow-auto max-h-[45vh] gray-thin-scrollbar">
+              <div className="gray-thin-scrollbar relative max-h-[45vh] w-full overflow-auto">
                 <div
-                  className="pointer-events-none whitespace-pre-wrap absolute pb-2 pl-4 pr-8 pt-4 text-transparent"
+                  className="pointer-events-none absolute whitespace-pre-wrap pb-2 pl-4 pr-8 pt-4 text-transparent"
                   dangerouslySetInnerHTML={{
                     __html: highlightedInput.replace(/\n/g, "<br/>"),
                   }}
@@ -1426,7 +1435,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                 </div>
                 <CreatePostWizard
                   homePage={homePage}
-                  src="reply"
+                  src={type}
+                  parentType={type === 'reply' ? 'reply' : 'newPost'}
                   parentPostId={post.id}
                   setShowCommentModal={setShowCommentModal}
                 />
