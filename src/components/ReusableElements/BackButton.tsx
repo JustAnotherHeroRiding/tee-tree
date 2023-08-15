@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 export function FormkitArrowleft() {
   return (
     <svg
-      className="absolute left-4 top-4 h-8 w-8 transform rounded-3xl transition-all duration-300 
+      className="absolute shrink-0 left-4 top-4 h-8 w-8 transform rounded-3xl transition-all duration-300 
       hover:scale-125 hover:bg-slate-900 hover:text-white"
       width="1.78em"
       height="1em"

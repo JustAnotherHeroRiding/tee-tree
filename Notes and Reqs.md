@@ -107,8 +107,8 @@ Let's implement some features I have already implemented before in order to lear
 - And for retweeting #DONE 
 - And for replying to a reply - This will have to handled from the CreatePostWizard #DONE 
 - Clicking on a reply should open a separate page for the reply with the parent above #DONE 
-### Deleting Replies Forgot about it xD
-- We need to somehow pass the information if the parent is a reply or a post so that it does not post a new post when trying to reply to a parent in the replies page #DONE Added the data type in the model itself with a default value like I did in the serialize methods for the capstone projects, helps to identify the data
+### Deleting Replies Forgot about it xD #DONE 
+- We need to somehow pass the information if the parent is a reply or a post so that it does not post a new post when trying to reply to a parent in the replies page #DONE Added the data type in the model itself with a default value like I did in the serialize methods for the capstone projects, helps to identify the data #FIXED 
 - The page for a separate post should also fetch replies
 - Lines between the profile pictures for replies
 - The feed should be all the replies that the user has posted

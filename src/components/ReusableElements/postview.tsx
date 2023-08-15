@@ -261,7 +261,7 @@ type PostViewComponentProps = {
 const PostViewComponent = (props: PostViewComponentProps) => {
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
-  const { post, author, type } = props;
+  const { post, author } = props;
 
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
@@ -1439,7 +1439,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                 </div>
                 <CreatePostWizard
                   homePage={homePage}
-                  src={type}
+                  src='reply'
                   parentType={post.dataType as string}
                   parentPostId={post.id}
                   showCommentModal={showCommentModal}

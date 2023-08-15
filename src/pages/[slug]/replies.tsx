@@ -147,7 +147,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-        <div className="sticky top-0 z-50 flex items-center justify-between pb-2 backdrop-blur-sm">
+        <div className="sticky top-0 z-50 flex flex-shrink-0 items-center justify-between pb-2 backdrop-blur-sm">
           <Link href={`/@${username}`}>
             <FormkitArrowleft />
           </Link>
