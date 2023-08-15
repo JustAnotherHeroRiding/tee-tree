@@ -6,13 +6,15 @@ import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { PageLayout } from "~/components/layout";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftLong, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { UserProfile, useUser } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import type { FollowerWithAuthor } from "~/server/api/routers/followers";
 import { InfiniteScrollProfileRepliesFeed } from "~/components/PostFeeds/infiniteScrollProfileRepliesFeed";
+import { FormkitArrowleft } from "~/components/ReusableElements/BackButton";
+
 
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
@@ -147,16 +149,11 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       <PageLayout>
         <div className="sticky top-0 z-50 flex items-center justify-between pb-2 backdrop-blur-sm">
           <Link href={`/@${username}`}>
-            <FontAwesomeIcon
-              className="absolute left-4 top-4 max-h-[24px] max-w-[24px]
-        h-8 w-8 transform rounded-3xl px-2 py-1 transition-all
-        duration-300 hover:scale-125 hover:bg-slate-900 hover:text-white"
-              icon={faArrowLeftLong}
-            />
+            <FormkitArrowleft />
           </Link>
-          <div className="flex flex-col mr-auto ml-16 mt-2">
-          <h2 className="text-xl font-semibold">{username}</h2>
-          <p>{`${postsCount} Posts`}</p>
+          <div className="ml-16 mr-auto mt-2 flex flex-col">
+            <h2 className="text-xl font-semibold">{username}</h2>
+            <p>{`${postsCount} Posts`}</p>
           </div>
 
           {data.id !== user?.id &&
@@ -317,7 +314,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             )}
           </div>
         </div>
-        <InfiniteScrollProfileRepliesFeed userId={data.id}/>
+        <InfiniteScrollProfileRepliesFeed userId={data.id} />
       </PageLayout>
     </>
   );
