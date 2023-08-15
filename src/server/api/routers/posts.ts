@@ -20,7 +20,9 @@ export type ExtendedPost = Post & {
   likes: Like[];
   retweets: Retweet[];
   replies: Reply[];
-  post?: Post;
+  parentId?: string | null;
+  parentReply?: Reply | null;
+  post?: Post | null;
   author?: PostAuthor;
 };
 
@@ -36,7 +38,8 @@ export type PostWithAuthor = {
 };
 
 export interface ReplyWithParent extends PostWithAuthor {
-  parentPost: PostWithAuthor;
+  parentPost?: PostWithAuthor;
+  parentReply?: ReplyWithParent;
 }
 
 // Function to generate the signature
@@ -88,11 +91,15 @@ const addUserDataToReplies = async (
   ).map(filterUserForClient);
 
   const parentPostIds: string[] = replies
-    .map((reply) => reply.post?.id)
-    .filter((id): id is string => typeof id === "string");
+    .map((reply) => reply.post?.id || reply.parentId || null)
+    .filter((id): id is string => id !== null);
 
-  const parentPosts = parentPostIds.length
-    ? await prisma.post.findMany({
+  let parentPosts: ExtendedPost[] = [];
+  let parentReplies: ExtendedPost[] = [];
+
+  if (parentPostIds.length) {
+    [parentPosts, parentReplies] = await Promise.all([
+      prisma.post.findMany({
         where: {
           id: { in: parentPostIds },
         },
@@ -101,10 +108,23 @@ const addUserDataToReplies = async (
           retweets: true,
           replies: true,
         },
-      })
-    : [];
+      }),
+      prisma.reply.findMany({
+        where: {
+          id: { in: parentPostIds },
+        },
+        include: {
+          likes: true,
+          retweets: true,
+          replies: true,
+        },
+      }),
+    ]);
+  }
 
-  return replies.map((reply) => {
+  const enrichedReplies: ReplyWithParent[] = [];
+
+  for (const reply of replies) {
     const author = users.find((user) => user.id === reply.authorId);
 
     if (!author || !author.username) {
@@ -120,9 +140,8 @@ const addUserDataToReplies = async (
         ...author,
         username: author.username,
       },
-      parentPost: {} as PostWithAuthor, // Initialize with empty object
+      parentPost: {} as PostWithAuthor,
     };
-
     if (reply.post) {
       const parentPostId = reply.post.id;
       const parentPost = parentPosts.find((p) => p.id === parentPostId);
@@ -138,14 +157,36 @@ const addUserDataToReplies = async (
         post: parentPost,
         author:
           users.find((user) => user.id === parentPost.authorId) ||
-          ({} as PostAuthor), // Initialize with empty object
+          ({} as PostAuthor),
       };
 
       enrichedReply.parentPost = enrichedParentPost;
+    } else if (reply.parentId) {
+
+      const parentReplyId = reply.parentId;
+      const parentReply = parentReplies.find(
+        (r) => r.id === parentReplyId
+      );
+
+      if (!parentReply) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Parent reply not found for reply",
+        });
+      }
+
+      enrichedReply.parentPost = {
+        post: parentReply,
+        author:
+          users.find((user) => user.id === parentReply.authorId) ||
+          ({} as PostAuthor),
+      };
     }
 
-    return enrichedReply;
-  });
+    enrichedReplies.push(enrichedReply);
+  }
+
+  return enrichedReplies;
 };
 
 type ResponseData = {
@@ -865,33 +906,59 @@ export const postsRouter = createTRPCRouter({
 
   replyToPost: privateProcedure
     .input(
-      z.object({
-        postId: z.string(),
-        content: z
-          .string()
-          .regex(
-            /^(?:[\s\S]*?[a-zA-Z0-9\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25AA}-\u{25AB}\u{23FA}\u{21AA}\u{21A9}\u{231A}-\u{231B}\u{23F0}\u{23F1}\u{23F2}\u{23F3}\u{23F8}-\u{23FA}][\s\S]*){1,280}$/u
-          )
-          .min(1)
-          .max(280),
-      })
+      z
+        .object({
+          postId: z.string().optional(),
+          replyId: z.string().optional(),
+          content: z
+            .string()
+            .regex(
+              /^(?:[\s\S]*?[a-zA-Z0-9\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25AA}-\u{25AB}\u{23FA}\u{21AA}\u{21A9}\u{231A}-\u{231B}\u{23F0}\u{23F1}\u{23F2}\u{23F3}\u{23F8}-\u{23FA}][\s\S]*){1,280}$/u
+            )
+            .min(1)
+            .max(280),
+        })
+        .refine((data) => {
+          const { postId, replyId } = data;
+          if ((!postId && !replyId) || (postId && replyId)) {
+            throw new Error(
+              "Either 'postId' or 'replyId' must be provided, but not both."
+            );
+          }
+          return true;
+        })
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
+      const { postId, replyId, content } = input;
 
       const { success } = await ratelimit.limit(authorId);
 
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const reply = await ctx.prisma.reply.create({
-        data: {
-          authorId,
-          postId: input.postId,
-          content: input.content,
-        },
-      });
+      if (replyId) {
+        // Reply to a reply
+        const reply = await ctx.prisma.reply.create({
+          data: {
+            authorId,
+            parentId: replyId,
+            content: content,
+          },
+        });
 
-      return reply;
+        return reply;
+      } else {
+        // Reply to a post
+        const reply = await ctx.prisma.reply.create({
+          data: {
+            authorId,
+            postId: postId,
+            content: content,
+          },
+        });
+
+        return reply;
+      }
     }),
 
   addImageToPost: privateProcedure
@@ -990,55 +1057,54 @@ export const postsRouter = createTRPCRouter({
       return repliesWithUserData[0];
     }),
 
-    editPost: privateProcedure
+  editPost: privateProcedure
     .input(EditPostInput)
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
       const { postId, replyId, content } = input;
-  
+
       if (replyId) {
         // Check if the user is the author of the reply
         const reply = await ctx.prisma.reply.findUnique({
           where: { id: replyId },
         });
-  
+
         if (!reply || reply.authorId !== authorId) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "Not authorized to edit this reply",
           });
         }
-  
+
         // Update the reply
         const updatedReply = await ctx.prisma.reply.update({
           where: { id: replyId },
           data: { content: content, isEdited: true },
         });
-  
+
         return updatedReply;
       } else {
         // Check if the user is the author of the post
         const post = await ctx.prisma.post.findUnique({
           where: { id: postId },
         });
-  
+
         if (!post || post.authorId !== authorId) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "Not authorized to edit this post",
           });
         }
-  
+
         // Update the post
         const updatedPost = await ctx.prisma.post.update({
           where: { id: postId },
           data: { content: content, isEdited: true },
         });
-  
+
         return updatedPost;
       }
     }),
-  
 
   deleteMediaPost: privateProcedure
     .input(z.object({ postId: z.string(), mediaType: z.string() }))

@@ -75,14 +75,21 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
 
           return isLastPost ? (
             <div key={fullPost.post.id} className="relative">
+              {fullPost.parentPost &&
+                fullPost.parentPost.post &&
+                fullPost.parentPost.author && (
+                  <PostView
+                    {...{
+                      post: fullPost.parentPost.post,
+                      author: fullPost.parentPost.author,
+                      type: "reply_parent",
+                    }}
+                  />
+                )}
               <PostView
-                {...{
-                  post: fullPost.parentPost.post,
-                  author: fullPost.parentPost.author,
-                  type: 'reply_parent'
-                }}
-              />
-              <PostView {...{ post: fullPost.post, author: fullPost.author }} type="reply" />{" "}
+                {...{ post: fullPost.post, author: fullPost.author }}
+                type="reply"
+              />{" "}
               <div
                 ref={lastPostElementRef}
                 className="infiniteScrollTriggerDiv"
@@ -90,16 +97,23 @@ export const InfiniteScrollProfileRepliesFeed = (props: { userId: string }) => {
             </div>
           ) : (
             <div key={fullPost.post.id}>
+              {fullPost.parentPost &&
+                fullPost.parentPost.post &&
+                fullPost.parentPost.author && (
+                  <PostView
+                    {...{
+                      post: fullPost.parentPost.post,
+                      author: fullPost.parentPost.author,
+                      type: "reply_parent",
+                    }}
+                  />
+                )}{" "}
               <PostView
                 {...{
-                  post: fullPost.parentPost.post,
-                  author: fullPost.parentPost.author,
-                  type: 'reply_parent'
+                  post: fullPost.post,
+                  author: fullPost.author,
+                  type: "reply",
                 }}
-              />{" "}
-              <PostView
-                {...{ post: fullPost.post, author: fullPost.author, type: 'reply' }}
-                
               />{" "}
             </div>
           );

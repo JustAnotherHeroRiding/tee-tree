@@ -28,7 +28,7 @@ interface CreatePostWizardProps {
   src?: string;
   parentType?: string;
   parentPostId?: string;
-  setShowCommentModal?: React.Dispatch<React.SetStateAction<boolean>>
+  setShowCommentModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type User = {
@@ -43,7 +43,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   homePage,
   src = "newPost",
   parentPostId = "",
-  setShowCommentModal
+  parentType = "post",
+  setShowCommentModal,
 }) => {
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
@@ -295,9 +296,9 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         setIsTypingTrend(false);
         setHighlightedInput("");
         if (setShowCommentModal) {
-          setShowCommentModal(false)
+          setShowCommentModal(false);
         }
-        
+
         if (homePage || !imageFile) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else {
@@ -576,9 +577,9 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         <h1 className="absolute -top-4 right-0 rounded-3xl">
           {textLength}/280
         </h1>
-        <div className="relative w-full overflow-auto max-h-[45vh] gray-thin-scrollbar">
+        <div className="gray-thin-scrollbar relative max-h-[45vh] w-full overflow-auto">
           <div
-            className="absolute text-transparent whitespace-pre-wrap"
+            className="absolute whitespace-pre-wrap text-transparent"
             dangerouslySetInnerHTML={{
               __html: highlightedInput.replace(/\n/g, "<br/>"),
             }}
@@ -698,7 +699,9 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 
       px-4 py-1 hover:bg-slate-700"
             onClick={() => {
-              if (src === "reply") {
+              if (src === "reply" && parentType === "reply") {
+                postReply({ content: input, replyId: parentPostId });
+              } else if (src === "reply" && parentType === "post") {
                 postReply({ content: input, postId: parentPostId });
               } else {
                 mutate({ content: input });
