@@ -1441,7 +1441,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                   homePage={homePage}
                   src='reply'
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                  parentType={post.dataType as string}
+                  parentType={post.dataType}
                   parentPostId={post.id}
                   showCommentModal={showCommentModal}
                   setShowCommentModal={setShowCommentModal}
