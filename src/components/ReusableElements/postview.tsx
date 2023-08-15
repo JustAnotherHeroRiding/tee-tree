@@ -556,7 +556,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   function handleSaveClick(newContent: string) {
     // Check the type and call the appropriate mutation
-    if (type === "reply") {
+    if (post.dataType === "reply") {
       // Call the editPost mutation with the reply id and the new content
       editPost({
         replyId: post.id,
@@ -825,7 +825,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
             event.stopPropagation();
             const selectedText = window.getSelection()?.toString();
             if (!isEditing && !selectedText) {
-              if (type === "reply" || post.parentId || post.postId) {
+              if (post.dataType === 'reply') {
                 void router.push(`/reply/${post.id}`);
               } else {
                 void router.push(`/post/${post.id}`);
@@ -1196,7 +1196,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
             data-tooltip-content="Like"
             disabled={isLiking}
             onClick={() => {
-              if (type === "reply") {
+              if (post.dataType === "reply") {
                 mutate({ replyId: post.id });
               } else {
                 mutate({ postId: post.id });
@@ -1236,7 +1236,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
           <button
             onClick={() => {
-              if (type === "reply") {
+              if (post.dataType === "reply") {
                 retweetPost({ replyId: post.id });
               } else {
                 retweetPost({ postId: post.id });
@@ -1529,7 +1529,11 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                         </p>
                         <button
                           className="my-4 rounded-3xl bg-red-700 px-2 py-2 hover:bg-red-800"
-                          onClick={() => deletePost({ postId: post.id })}
+                          onClick={() => {
+                            if (post.dataType === 'reply'){
+                              deletePost({ replyId: post.id })
+                            } else
+                            deletePost({ postId: post.id })}}
                         >
                           Delete
                         </button>

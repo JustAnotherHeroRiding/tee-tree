@@ -1210,30 +1210,88 @@ export const postsRouter = createTRPCRouter({
       }
     }),
 
-  deletePost: privateProcedure
-    .input(z.object({ postId: z.string() }))
+    deletePost: privateProcedure
+    .input(
+      z
+        .object({
+          postId: z.string().optional(),
+          replyId: z.string().optional(),
+        })
+        .refine((data) => {
+          const { postId, replyId } = data;
+          if ((!postId && !replyId) || (postId && replyId)) {
+            throw new Error("Either 'postId' or 'replyId' must be provided, but not both.");
+          }
+          return true;
+        })
+    )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
-
-      // Check if the user is the author of the post
-      const post = await ctx.prisma.post.findUnique({
-        where: { id: input.postId },
-      });
-
-      if (!post || post.authorId !== authorId) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Not authorized to delete this post",
+  
+      if (input.replyId) {
+        const reply = await ctx.prisma.reply.findUnique({
+          where: { id: input.replyId },
+          include: { replies: true }, // Include child replies
         });
+      
+        if (!reply || reply.authorId !== authorId) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Not authorized to delete this reply",
+          });
+        }
+      
+        // Recursively delete child replies
+        async function deleteChildReplies(replyId: string) {
+          const childReplies = reply?.replies.filter(
+            (childReply) => childReply.parentId === replyId
+          );
+          if (!childReplies) return;
+      
+          for (const childReply of childReplies) {
+            await deleteChildReplies(childReply.id);
+            await ctx.prisma.reply.delete({
+              where: { id: childReply.id },
+            });
+          }
+        }
+      
+        // Delete the reply and its child replies
+        await deleteChildReplies(reply.id);
+      
+        // Now delete the main reply
+        const deletedReply = await ctx.prisma.reply.delete({
+          where: { id: input.replyId },
+        });
+      
+        return deletedReply;
       }
-
-      // Delete the post
-      const deletedPost = await ctx.prisma.post.delete({
-        where: { id: input.postId },
-      });
-
-      return deletedPost;
+      
+  
+      if (input.postId) {
+        // Check if the user is the author of the post
+        const post = await ctx.prisma.post.findUnique({
+          where: { id: input.postId },
+        });
+  
+        if (!post || post.authorId !== authorId) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Not authorized to delete this post",
+          });
+        }
+  
+        // Delete the post
+        const deletedPost = await ctx.prisma.post.delete({
+          where: { id: input.postId },
+        });
+  
+        return deletedPost;
+      }
+  
+      throw new Error("Either 'postId' or 'replyId' must be provided.");
     }),
+  
 
   likePost: privateProcedure
     .input(
