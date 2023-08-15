@@ -50,6 +50,8 @@ model Post {
   likes    Like[]
   retweets Retweet[]
   isEdited Boolean   @default(false)
+  dataType  String   @default("post") // Added field to indicate data type
+
 
   // Field for one-to-many relationship with Reply
   replies Reply[]
@@ -77,6 +79,8 @@ model Reply {
   // Field for parent post ID
   postId String?
   post   Post?   @relation(fields: [postId], references: [id])
+  dataType  String   @default("reply") // Added field to indicate data type
+
 
   // Fields for self-referential relationship
   parentId String?

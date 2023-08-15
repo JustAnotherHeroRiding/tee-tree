@@ -1440,8 +1440,9 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                 <CreatePostWizard
                   homePage={homePage}
                   src={type}
-                  parentType={type === "reply" ? "reply" : "newPost"}
+                  parentType={post.dataType as string}
                   parentPostId={post.id}
+                  showCommentModal={showCommentModal}
                   setShowCommentModal={setShowCommentModal}
                 />
                 <button

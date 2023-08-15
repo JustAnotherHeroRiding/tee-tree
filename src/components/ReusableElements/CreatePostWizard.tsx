@@ -28,6 +28,7 @@ interface CreatePostWizardProps {
   src?: string;
   parentType?: string;
   parentPostId?: string;
+  showCommentModal?: boolean;
   setShowCommentModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -45,6 +46,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   parentPostId = "",
   parentType = "post",
   setShowCommentModal,
+  showCommentModal,
 }) => {
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
@@ -295,11 +297,14 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         setIsTypingUsername(false);
         setIsTypingTrend(false);
         setHighlightedInput("");
-        if (setShowCommentModal) {
+        if (showCommentModal && setShowCommentModal) {
           setShowCommentModal(false);
         }
 
-        if (homePage || !imageFile) {
+         if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+        } else if (homePage || !imageFile) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else {
           void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
@@ -699,9 +704,11 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 
       px-4 py-1 hover:bg-slate-700"
             onClick={() => {
-              if (src === "reply" && parentType === "reply") {
+              if ((src === "reply" || src === "reply_parent") && parentType === "reply") {
+                console.log("Reply triggered")
                 postReply({ content: input, replyId: parentPostId });
-              } else if (src === "reply" && parentType === "post") {
+              } else if ((src === "reply" || src === "reply_parent") && parentType === "post") {
+                console.log("Reply parent triggered")
                 postReply({ content: input, postId: parentPostId });
               } else {
                 mutate({ content: input });
