@@ -115,7 +115,7 @@ Let's implement some features I have already implemented before in order to lear
 - If it is a reply then it should also include the parent above
 - Sort replies by likes and number of comments if likes are the same and then by newest
 - Invalidate the fetch request so that the new reply shows up #DONE 
-- Show number of replies below each reply and fetch them upon clicking on the show more banner
+- Show number of replies below each reply and fetch them upon clicking on the show more banner without loading a new page
 ###### The relations for the replies are not being fetched as they are not included in post.replies
 - Lines between the profile pictures and no borders for replies
 - The feed should be all the replies that the user has posted
@@ -190,10 +190,11 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 
 ### Search results should also include replies
-- Currently it only queries for posts and not replies
+- Currently it only queries for posts and not replies #DONE 
+##### This needs more work as it fetches the limit from both posts and replies so it fetches double as many items per fetch trigger
 
 ### Trends should also include replies
-- Include replies in the trend fetching endpoint
+- Include replies in the trend fetching endpoint #DONE 
 ## Image upload icon
 - The icon is not in line with the other icons #DONE 
 

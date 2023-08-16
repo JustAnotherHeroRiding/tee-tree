@@ -157,13 +157,13 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
           onClick={() => void router.push(`/@${user.username ?? ""}`)}
         >
           <div className="flex flex-row items-center">
-            <Link href={`/@${user.username ?? ""}`}>
+            <Link href={`/@${user.username ?? ""}`} className="flex-shrink-0">
               <Image
                 src={user.profileImageUrl ?? ""}
                 alt={`${user.profileImageUrl ?? ""}'s profile pic `}
-                className="h-12 w-12 rounded-full  bg-black"
-                width={64}
-                height={64}
+                className="h-12 w-12 rounded-full flex-shrink-0  bg-black"
+                width={48}
+                height={48}
               />
             </Link>
             <div className="ml-4 flex flex-col">
@@ -189,7 +189,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
                     {user.firstName} {user.lastName}
                   </span>
 
-                  <p className="w-[200px]  truncate text-slate-300">
+                  <p className="w-[100px]  truncate text-slate-300">
                     @{user.username}
                   </p>
                 </Link>
@@ -198,7 +198,7 @@ export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
                   (!loadingStates[user.id] ? (
                     <button
                       className={`ml-auto mt-auto rounded-3xl border border-slate-400 bg-slate-800
-              px-4 py-2 transition-all duration-300 hover:bg-slate-900 hover:text-white `}
+              lg:px-4 lg:py-2 lg:text-md transition-all duration-300 hover:bg-slate-900 hover:text-white `}
                       onClick={(event) => {
                         event.stopPropagation();
                         mutate({ userToFollowId: user.id });

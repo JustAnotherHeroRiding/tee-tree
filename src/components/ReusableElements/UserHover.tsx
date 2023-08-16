@@ -24,13 +24,13 @@ export const UserHoverCard = (props: {
 
   return (
     <div
-      className={`invisible absolute overflow ${
+      className={`overflow invisible absolute ${
         props.location === "post"
           ? "right-0 top-16"
           : router.pathname.startsWith("/i/trends")
-          ? "top-36 right-0"
+          ? "right-0 top-36"
           : props.location === "sidebar"
-          ? "-top-60 right-4"
+          ? "-top-60 right-0"
           : props.location === "standalone"
           ? "-top-30 right-2"
           : ""
@@ -38,7 +38,11 @@ export const UserHoverCard = (props: {
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
             p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100`}
     >
-      <div className="flex min-w-[250px] flex-row justify-between">
+      <div
+        className={`flex ${
+          props.location === "sidebar" ? "min-w-[200px]" : "min-w-[250px]"
+        }  flex-row justify-between`}
+      >
         <Image
           className="h-14 w-14 rounded-full"
           src={
