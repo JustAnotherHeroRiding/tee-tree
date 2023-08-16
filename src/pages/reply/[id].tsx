@@ -5,19 +5,16 @@ import { PostView } from "~/components/ReusableElements/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
-
-
-
-
+import { CreatePostWizard } from "~/components/ReusableElements/CreatePostWizard";
+import { useHomePage } from "~/components/Context/HomePageContext";
 
 const SingleReplyPage: NextPage<{ id: string }> = ({ id }) => {
+  const { data } = api.posts.getReplyById.useQuery({ id });
 
-  const { data } = api.posts.getReplyById.useQuery({ id }, {retry: 1});
+  const { homePage } = useHomePage();
+ 
 
-
-
-  if (!data) return <div>404</div>
-
+  if (!data) return <div>404</div>;
 
   return (
     <>
@@ -27,27 +24,41 @@ const SingleReplyPage: NextPage<{ id: string }> = ({ id }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-      <div className="flex sticky top-0 z-50 h-16 items-center justify-between backdrop-blur-sm pb-2">
-      <BackButton />
-    </div>
-        <PostView {...data.parent}/>
+        <div className="sticky top-0 z-50 flex h-16 items-center justify-between pb-2 backdrop-blur-sm">
+          <h1 className="ml-16 mr-auto text-lg font-bold">Reply</h1>
+
+          <BackButton />
+        </div>
+        <div className="px-6">
+        <PostView {...data.parent} />
+        </div>
         <PostView {...data} />
-        {data.replies.map((reply) => (
-          <PostView key={reply.post.id} {...reply} type='reply' />
+        <div className="px-6 mt-6">
+        <CreatePostWizard
+                  homePage={homePage}
+                  src="reply"
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                  parentType={data.post.dataType}
+                  parentPostId={data.post.id}
+                  showLineAbove={false}
+                  placeholder="Post your reply!"
+                />
+                 {data.replies.map((reply) => (
+          <PostView key={reply.post.id} {...reply} type="reply" />
         ))}
+                </div>
+       
       </PageLayout>
     </>
   );
 };
-
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const helpers = generateSsgHelper();
 
   const id = context.params?.id;
 
-  if (typeof id !== 'string') throw new Error('id must be a string');
-
+  if (typeof id !== "string") throw new Error("id must be a string");
 
   await helpers.posts.getReplyById.prefetch({ id });
 
@@ -55,14 +66,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       trpcState: helpers.dehydrate(),
       id,
-    }
-  }
+    },
+  };
 };
 
 export const getStaticPaths = () => {
   return {
     paths: [],
-    fallback: 'blocking'
+    fallback: "blocking",
   };
-}
+};
 export default SingleReplyPage;

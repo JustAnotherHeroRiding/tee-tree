@@ -5,16 +5,16 @@ import { PostView } from "~/components/ReusableElements/postview";
 import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
-
-
-
-
+import { CreatePostWizard } from "~/components/ReusableElements/CreatePostWizard";
+import { useHomePage } from "~/components/Context/HomePageContext";
 
 const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
-
   const { data } = api.posts.getById.useQuery({ id });
 
-  if (!data) return <div>404</div>
+  const { homePage } = useHomePage();
+
+
+  if (!data) return <div>404</div>;
 
   return (
     <>
@@ -24,27 +24,38 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-      <div className="flex sticky top-0 z-50 h-16 items-center justify-between backdrop-blur-sm pb-2">
-      <BackButton />
-    </div>
+        <div className="sticky top-0 z-50 flex h-16 items-center justify-between pb-2 backdrop-blur-sm">
+          <h1 className="ml-16 mr-auto text-lg font-bold">Post</h1>
 
-        <PostView {...data} type='single_post' />
+          <BackButton />
+        </div>
+
+        <PostView {...data} type="single_post" />
+        <div className="px-6 mt-6">
+        <CreatePostWizard
+                  homePage={homePage}
+                  src="reply"
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                  parentType={data.post.dataType}
+                  parentPostId={data.post.id}
+                  showLineAbove={false}
+                  placeholder="Post your reply!"
+                />
         {data.replies.map((reply) => (
-          <PostView key={reply.post.id} {...reply} type='reply' />
+          <PostView key={reply.post.id} {...reply} type="reply" />
         ))}
+        </div>
       </PageLayout>
     </>
   );
 };
-
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const helpers = generateSsgHelper();
 
   const id = context.params?.id;
 
-  if (typeof id !== 'string') throw new Error('id must be a string');
-
+  if (typeof id !== "string") throw new Error("id must be a string");
 
   await helpers.posts.getById.prefetch({ id });
 
@@ -52,14 +63,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       trpcState: helpers.dehydrate(),
       id,
-    }
-  }
+    },
+  };
 };
 
 export const getStaticPaths = () => {
   return {
     paths: [],
-    fallback: 'blocking'
+    fallback: "blocking",
   };
-}
+};
 export default SinglePostPage;

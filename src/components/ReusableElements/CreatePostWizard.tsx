@@ -30,6 +30,8 @@ interface CreatePostWizardProps {
   parentPostId?: string;
   showCommentModal?: boolean;
   setShowCommentModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  showLineAbove? : boolean;
+  placeholder? : string;
 }
 
 export type User = {
@@ -47,6 +49,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   parentType = "post",
   setShowCommentModal,
   showCommentModal,
+  showLineAbove = true,
+  placeholder = "What's on your mind?"
 }) => {
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
@@ -665,7 +669,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
               })}
           </ul>
         )}
-        {src === "newPost" ? (
+        {src === "newPost" || !showLineAbove ? (
           <Image
             className="h-14 w-14 rounded-full"
             src={user.imageUrl}
@@ -699,7 +703,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             }}
           />
           <TextareaAutosize
-            placeholder="What's on your mind?"
+            placeholder={placeholder}
             className="w-full grow resize-none bg-transparent outline-none"
             value={input}
             maxLength={280}
@@ -817,13 +821,11 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 (src === "reply" || src === "reply_parent") &&
                 parentType === "reply"
               ) {
-                console.log("Reply triggered");
                 postReply({ content: input, replyId: parentPostId });
               } else if (
                 (src === "reply" || src === "reply_parent") &&
                 parentType === "post"
               ) {
-                console.log("Reply parent triggered");
                 postReply({ content: input, postId: parentPostId });
               } else {
                 mutate({ content: input });

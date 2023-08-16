@@ -113,18 +113,22 @@ Let's implement some features I have already implemented before in order to lear
 - The page for a separate post/reply should also show the replies #DONE Did it for posts let's do it for replies
 - Show replies to a reply #DONE 
 - If it is a reply then it should also include the parent above #DONE 
-- Sort replies by likes and number of comments if likes are the same and then by newest
 - Invalidate the fetch request so that the new reply shows up #DONE 
+- Create post wizard in the single post pages to reply to the post #DONE 
+- Different placeholder in the create post wizard depending on if it is a new post, reply or the wizard in the single post/reply page #DONE 
+- The feed should be all the replies that the user has posted #DONE 
+- Clicking on a reply should open it with the main post above it #DONE 
+- Sort replies by likes and number of comments if likes are the same and number of comments is the same and then by newest
 - Show number of replies below each reply and fetch them upon clicking on the show more banner without loading a new page
 ###### The relations for the replies are not being fetched as they are not included in post.replies
 - Lines between the profile pictures and no borders for replies
-- The feed should be all the replies that the user has posted
-- After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets
+- After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets 
 - Replies should also appear on the main feed, with the original post nested inside the reply
-- Clicking on a reply should open it with the main post above it
-- On the single post all replies should be shown with scrolling
 - If there are multiple replies to a single post then the parent should only be shown once
 - Replies should have a banner above them in the main feed
+- Infinite scroll for the replies of a post, perhaps create a brand new feed
+
+### User card on hover on post author
 
 
 

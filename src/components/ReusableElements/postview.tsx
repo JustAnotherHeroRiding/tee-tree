@@ -1513,6 +1513,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                   parentPostId={post.id}
                   showCommentModal={showCommentModal}
                   setShowCommentModal={setShowCommentModal}
+                  placeholder="Post your reply!"
                 />
                 <button
                   className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
