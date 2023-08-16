@@ -112,7 +112,7 @@ Let's implement some features I have already implemented before in order to lear
 - Click outside or esc to close the modal, perhaps use the hook #DONE 
 - The page for a separate post/reply should also show the replies #DONE Did it for posts let's do it for replies
 - Show replies to a reply #DONE 
-- If it is a reply then it should also include the parent above
+- If it is a reply then it should also include the parent above #DONE 
 - Sort replies by likes and number of comments if likes are the same and then by newest
 - Invalidate the fetch request so that the new reply shows up #DONE 
 - Show number of replies below each reply and fetch them upon clicking on the show more banner without loading a new page

@@ -329,7 +329,46 @@ export const postsRouter = createTRPCRouter({
         );
       }
 
-      return { ...postWithUserReplies, replies };
+      let parentArray: PostWithAuthor[] = [];
+
+      if (postWithUserReplies.post.postId) {
+        const parentPost = await ctx.prisma.post.findUnique({
+          where: { id: postWithUserReplies.post.postId },
+          include: {
+            likes: true,
+            retweets: true, // Include the likes relation in the result
+            replies: true,
+          },
+        });
+        if (!parentPost) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Post not found",
+          });
+        }
+        parentArray = await addUserDataToPosts([parentPost]);
+      } else if (postWithUserReplies.post.parentId) {
+        const parentReply = await ctx.prisma.reply.findUnique({
+          where: { id: postWithUserReplies.post.parentId },
+          include: {
+            likes: true,
+            retweets: true, // Include the likes relation in the result
+            replies: true,
+          },
+        });
+        if (!parentReply) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Post not found",
+          });
+        }
+        parentArray = await addUserDataToReplies([parentReply]);
+      }
+      let parent: PostWithAuthor | null = null;
+
+      parent = parentArray[0] as PostWithAuthor;
+
+      return { ...postWithUserReplies, replies, parent };
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -553,10 +592,12 @@ export const postsRouter = createTRPCRouter({
 
       let items = [...posts, ...replies];
 
-      if (input.selector ==='top') {
+      if (input.selector === "top") {
         items = items.sort((a, b) => b.likes.length - a.likes.length);
       } else {
-        items = items.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        items = items.sort(
+          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+        );
       }
 
       let nextCursor: typeof cursor | undefined = undefined;
@@ -748,7 +789,6 @@ export const postsRouter = createTRPCRouter({
       });
 
       const items = [...posts, ...replies];
-
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {

@@ -83,7 +83,7 @@ model Reply {
 
 
   // Fields for self-referential relationship
-   parentId String?
+  parentId String?
   parent   Reply?  @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies  Reply[] @relation("ReplyToReply")
 

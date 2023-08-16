@@ -12,7 +12,8 @@ import BackButton from "~/components/ReusableElements/BackButton";
 
 const SingleReplyPage: NextPage<{ id: string }> = ({ id }) => {
 
-  const { data } = api.posts.getReplyById.useQuery({ id });
+  const { data } = api.posts.getReplyById.useQuery({ id }, {retry: 1});
+
 
 
   if (!data) return <div>404</div>
@@ -29,7 +30,7 @@ const SingleReplyPage: NextPage<{ id: string }> = ({ id }) => {
       <div className="flex sticky top-0 z-50 h-16 items-center justify-between backdrop-blur-sm pb-2">
       <BackButton />
     </div>
-
+        <PostView {...data.parent}/>
         <PostView {...data} />
         {data.replies.map((reply) => (
           <PostView key={reply.post.id} {...reply} type='reply' />
