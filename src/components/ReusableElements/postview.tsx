@@ -387,6 +387,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   }, [post.likes, post.retweets.length, post.replies.length]);
 
   const ctx = api.useContext();
+  const params = new URLSearchParams(location.search);
 
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
@@ -406,6 +407,17 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         void ctx.posts.getById.invalidate();
       } else if (/^\/reply\/\w+/.test(location.pathname)) {
         void ctx.posts.getReplyById.invalidate();
+      } else if (
+        location.pathname.startsWith("/i/search") &&
+        params.get("selector") !== "photos" &&
+        params.get("selector") !== "gifs"
+      ) {
+        console.log("Invalidating likes");
+        void ctx.posts.infiniteScrollSearchResults.invalidate();
+      } else if (params.get("selector") === "photos") {
+        void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+      } else if (params.get("selector") === "gifs") {
+        void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
       } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollPostsByUserId.invalidate();
       }
@@ -440,6 +452,16 @@ const PostViewComponent = (props: PostViewComponentProps) => {
           void ctx.posts.getById.invalidate();
         } else if (/^\/reply\/\w+/.test(location.pathname)) {
           void ctx.posts.getReplyById.invalidate();
+        } else if (
+          location.pathname.startsWith("/i/search") &&
+          params.get("selector") !== "photos" &&
+          params.get("selector") !== "gifs"
+        ) {
+          void ctx.posts.infiniteScrollSearchResults.invalidate();
+        } else if (params.get("selector") === "photos") {
+          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+        } else if (params.get("selector") === "gifs") {
+          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
@@ -470,6 +492,16 @@ const PostViewComponent = (props: PostViewComponentProps) => {
           void ctx.posts.getById.invalidate();
         } else if (/^\/reply\/\w+/.test(location.pathname)) {
           void ctx.posts.getReplyById.invalidate();
+        } else if (
+          location.pathname.startsWith("/i/search") &&
+          params.get("selector") !== "photos" &&
+          params.get("selector") !== "gifs"
+        ) {
+          void ctx.posts.infiniteScrollSearchResults.invalidate();
+        } else if (params.get("selector") === "photos") {
+          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+        } else if (params.get("selector") === "gifs") {
+          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
@@ -502,6 +534,16 @@ const PostViewComponent = (props: PostViewComponentProps) => {
           void ctx.posts.getById.invalidate();
         } else if (/^\/reply\/\w+/.test(location.pathname)) {
           void ctx.posts.getReplyById.invalidate();
+        } else if (
+          location.pathname.startsWith("/i/search") &&
+          params.get("selector") !== "photos" &&
+          params.get("selector") !== "gifs"
+        ) {
+          void ctx.posts.infiniteScrollSearchResults.invalidate();
+        } else if (params.get("selector") === "photos") {
+          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+        } else if (params.get("selector") === "gifs") {
+          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         }
@@ -554,6 +596,16 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
           // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+        } else if (
+          location.pathname.startsWith("/i/search") &&
+          params.get("selector") !== "photos" &&
+          params.get("selector") !== "gifs"
+        ) {
+          void ctx.posts.infiniteScrollSearchResults.invalidate();
+        } else if (params.get("selector") === "photos") {
+          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+        } else if (params.get("selector") === "gifs") {
+          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }

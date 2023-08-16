@@ -392,8 +392,19 @@ export const postsRouter = createTRPCRouter({
         },
       });
 
+      const replies = await ctx.prisma.reply.findMany({
+        orderBy: [{ createdAt: "desc" }],
+        where: {
+          createdAt: {
+            gte: oneWeekAgo,
+          },
+        },
+      });
+
+      const items = [...posts, ...replies];
+
       // Count the hashtags
-      const hashtagCounts = countHashtags(posts);
+      const hashtagCounts = countHashtags(items);
       const sortedHashtagCounts = Object.entries(hashtagCounts).sort(
         (a, b) => b[1] - a[1]
       );
