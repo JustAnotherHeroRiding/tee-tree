@@ -150,7 +150,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { mutate: mutateAddImageToPost } = api.posts.addImageToPost.useMutation(
     {
       onSuccess: () => {
-        if (homePage || !imageFile) {
+        if (location.pathname === "/") {
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
+        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+        } else if (/^\/post\/\w+/.test(location.pathname)) {
+          void ctx.posts.getById.invalidate();
+        } else if (/^\/reply\/\w+/.test(location.pathname)) {
+          void ctx.posts.getReplyById.invalidate();
+        } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else {
           void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
@@ -172,9 +184,21 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { mutate: mutateAddImageToReply } =
     api.posts.addImageToReply.useMutation({
       onSuccess: () => {
-        if (homePage || !imageFile) {
+        if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
-        } else {
+        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+        } else if (/^\/post\/\w+/.test(location.pathname)) {
+          void ctx.posts.getById.invalidate();
+        } else if (/^\/reply\/\w+/.test(location.pathname)) {
+          void ctx.posts.getReplyById.invalidate();
+        } else if (location.pathname.startsWith("/@")) {
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
+        }else {
           void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
         }
         setImageFile(undefined);
@@ -192,7 +216,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const { mutate: mutateAddGifToPost } = api.posts.addGifToPost.useMutation({
     onSuccess: () => {
-      if (homePage || !gifFile) {
+      if (location.pathname === "/") {
+        void ctx.posts.infiniteScrollAllPosts.invalidate();
+      } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+        // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+        void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+      } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+        // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+        void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+      } else if (/^\/post\/\w+/.test(location.pathname)) {
+        void ctx.posts.getById.invalidate();
+      } else if (/^\/reply\/\w+/.test(location.pathname)) {
+        void ctx.posts.getReplyById.invalidate();
+      } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
       } else {
         void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
@@ -212,7 +248,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const { mutate: mutateAddGifToReply } = api.posts.addGifToReply.useMutation({
     onSuccess: () => {
-      if (homePage || !gifFile) {
+      if (location.pathname === "/") {
+        void ctx.posts.infiniteScrollAllPosts.invalidate();
+      } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+        // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+        void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+      } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+        // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
+        void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+      } else if (/^\/post\/\w+/.test(location.pathname)) {
+        void ctx.posts.getById.invalidate();
+      } else if (/^\/reply\/\w+/.test(location.pathname)) {
+        void ctx.posts.getReplyById.invalidate();
+      } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
       } else {
         void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
@@ -301,10 +349,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           setShowCommentModal(false);
         }
 
-         if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
+        if (location.pathname === "/") {
+          void ctx.posts.infiniteScrollAllPosts.invalidate();
+        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
+          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
+          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
           // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (homePage || !imageFile) {
+        } else if (/^\/post\/\w+/.test(location.pathname)) {
+          void ctx.posts.getById.invalidate();
+        } else if (/^\/reply\/\w+/.test(location.pathname)) {
+          void ctx.posts.getReplyById.invalidate();
+        } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else {
           void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
@@ -704,11 +761,17 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             className="mb-auto ml-auto mt-4 flex items-center rounded-3xl border border-slate-400 
       px-4 py-1 hover:bg-slate-700"
             onClick={() => {
-              if ((src === "reply" || src === "reply_parent") && parentType === "reply") {
-                console.log("Reply triggered")
+              if (
+                (src === "reply" || src === "reply_parent") &&
+                parentType === "reply"
+              ) {
+                console.log("Reply triggered");
                 postReply({ content: input, replyId: parentPostId });
-              } else if ((src === "reply" || src === "reply_parent") && parentType === "post") {
-                console.log("Reply parent triggered")
+              } else if (
+                (src === "reply" || src === "reply_parent") &&
+                parentType === "post"
+              ) {
+                console.log("Reply parent triggered");
                 postReply({ content: input, postId: parentPostId });
               } else {
                 mutate({ content: input });

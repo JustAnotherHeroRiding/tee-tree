@@ -4,6 +4,8 @@
  */
 await import("./src/env.mjs");
 
+
+
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -32,4 +34,10 @@ const config = {
   },
   swcMinify: true,
 };
-export default config;
+
+const withBundleAnalyzerModule = await import("@next/bundle-analyzer");
+const withBundleAnalyzer = withBundleAnalyzerModule.default({
+  enabled: process.env.ANALYZE === "true",
+  openAnalyzer: false
+});
+export default withBundleAnalyzer(config);

@@ -124,6 +124,24 @@ Let's implement some features I have already implemented before in order to lear
 - If there are multiple replies to a single post then the parent should only be shown once
 - Replies should have a banner above them in the main feed
 
+
+
+## Analytics 
+- Lets try and implement analytics to see what the data looks like from my own use of the site from my phone or pc
+- Recommendations for the t3 stack are:
+
+### [Plausible](https://create.t3.gg/en/other-recs#plausible)
+
+Need analytics? Plausible is one of the quickest ways to get them. Super minimal. It even has a [simple plugin for Next.js↗](https://plausible.io/docs/proxy/guides/nextjs)
+- [Plausible Homepage↗](https://plausible.io/)
+### [Umami](https://create.t3.gg/en/other-recs#umami)
+
+Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternative to Google Analytics. You can deploy it really easily to Vercel, Railway, etc. with PlanetScale as your database or you can also use its cloud version.
+
+- [Umami Homepage↗](https://umami.is/)
+- [Umami GitHub↗](https://github.com/umami-software/umami)
+- [Umami Cloud↗](https://cloud.umami.is/)
+
 ## Post View
 - Add a sticky div #DONE 
 

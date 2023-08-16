@@ -294,10 +294,9 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const [showShareModal, setShowShareModal] = useState(false);
 
-
   useOutsideClick(modalCommentPostRef, () => {
     if (showCommentModal) {
-      setShowCommentModal(false)
+      setShowCommentModal(false);
     }
   });
   useEffect(() => {
@@ -403,8 +402,10 @@ const PostViewComponent = (props: PostViewComponentProps) => {
       } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
         // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
         void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-      } else if (location.pathname.startsWith("/post/")) {
+      } else if (/^\/post\/\w+/.test(location.pathname)) {
         void ctx.posts.getById.invalidate();
+      } else if (/^\/reply\/\w+/.test(location.pathname)) {
+        void ctx.posts.getReplyById.invalidate();
       } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollPostsByUserId.invalidate();
       }
@@ -435,8 +436,10 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
           // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (location.pathname.startsWith("/post/")) {
+        } else if (/^\/post\/\w+/.test(location.pathname)) {
           void ctx.posts.getById.invalidate();
+        } else if (/^\/reply\/\w+/.test(location.pathname)) {
+          void ctx.posts.getReplyById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
@@ -463,8 +466,10 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
           // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (location.pathname.startsWith("/post/")) {
+        } else if (/^\/post\/\w+/.test(location.pathname)) {
           void ctx.posts.getById.invalidate();
+        } else if (/^\/reply\/\w+/.test(location.pathname)) {
+          void ctx.posts.getReplyById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollPostsByUserId.invalidate();
         }
@@ -493,8 +498,10 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
           // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (location.pathname.startsWith("/post/")) {
+        } else if (/^\/post\/\w+/.test(location.pathname)) {
           void ctx.posts.getById.invalidate();
+        } else if (/^\/reply\/\w+/.test(location.pathname)) {
+          void ctx.posts.getReplyById.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         }
@@ -537,8 +544,10 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         }
         if (location.pathname === "/") {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
-        } else if (location.pathname.startsWith("/post/")) {
+        } else if (/^\/post\/\w+/.test(location.pathname)) {
           void ctx.posts.getById.invalidate();
+        } else if (/^\/reply\/\w+/.test(location.pathname)) {
+          void ctx.posts.getReplyById.invalidate();
         } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
           // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
           void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
@@ -832,7 +841,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
             event.stopPropagation();
             const selectedText = window.getSelection()?.toString();
             if (!isEditing && !selectedText) {
-              if (post.dataType === 'reply') {
+              if (post.dataType === "reply") {
                 void router.push(`/reply/${post.id}`);
               } else {
                 void router.push(`/post/${post.id}`);
@@ -1385,7 +1394,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
             </div>
           )}
           {showCommentModal && (
-            <div 
+            <div
               className={`modalparent transform transition-transform duration-300 ease-in-out ${
                 showCommentModal
                   ? "visible scale-100 opacity-100"
@@ -1446,7 +1455,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                 </div>
                 <CreatePostWizard
                   homePage={homePage}
-                  src='reply'
+                  src="reply"
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   parentType={post.dataType}
                   parentPostId={post.id}
@@ -1538,10 +1547,10 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                         <button
                           className="my-4 rounded-3xl bg-red-700 px-2 py-2 hover:bg-red-800"
                           onClick={() => {
-                            if (post.dataType === 'reply'){
-                              deletePost({ replyId: post.id })
-                            } else
-                            deletePost({ postId: post.id })}}
+                            if (post.dataType === "reply") {
+                              deletePost({ replyId: post.id });
+                            } else deletePost({ postId: post.id });
+                          }}
                         >
                           Delete
                         </button>

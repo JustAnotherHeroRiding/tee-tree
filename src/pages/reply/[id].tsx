@@ -17,7 +17,6 @@ const SingleReplyPage: NextPage<{ id: string }> = ({ id }) => {
 
   if (!data) return <div>404</div>
 
-  console.log(data)
 
   return (
     <>
