@@ -147,6 +147,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const [input, setInput] = useState("");
 
   const ctx = api.useContext();
+  const params = new URLSearchParams(location.search);
+
   const { mutate: mutateAddImageToPost } = api.posts.addImageToPost.useMutation(
     {
       onSuccess: () => {
@@ -162,6 +164,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           void ctx.posts.getById.invalidate();
         } else if (/^\/reply\/\w+/.test(location.pathname)) {
           void ctx.posts.getReplyById.invalidate();
+        } else if (
+          location.pathname.startsWith("/i/search") &&
+          params.get("selector") !== "photos" &&
+          params.get("selector") !== "gifs"
+        ) {
+          void ctx.posts.infiniteScrollSearchResults.invalidate();
+        } else if (params.get("selector") === "photos") {
+          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+        } else if (params.get("selector") === "gifs") {
+          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else {
@@ -196,9 +208,19 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           void ctx.posts.getById.invalidate();
         } else if (/^\/reply\/\w+/.test(location.pathname)) {
           void ctx.posts.getReplyById.invalidate();
+        } else if (
+          location.pathname.startsWith("/i/search") &&
+          params.get("selector") !== "photos" &&
+          params.get("selector") !== "gifs"
+        ) {
+          void ctx.posts.infiniteScrollSearchResults.invalidate();
+        } else if (params.get("selector") === "photos") {
+          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+        } else if (params.get("selector") === "gifs") {
+          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
-        }else {
+        } else {
           void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
         }
         setImageFile(undefined);
@@ -228,6 +250,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         void ctx.posts.getById.invalidate();
       } else if (/^\/reply\/\w+/.test(location.pathname)) {
         void ctx.posts.getReplyById.invalidate();
+      } else if (
+        location.pathname.startsWith("/i/search") &&
+        params.get("selector") !== "photos" &&
+        params.get("selector") !== "gifs"
+      ) {
+        void ctx.posts.infiniteScrollSearchResults.invalidate();
+      } else if (params.get("selector") === "photos") {
+        void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+      } else if (params.get("selector") === "gifs") {
+        void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
       } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
       } else {
@@ -260,6 +292,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         void ctx.posts.getById.invalidate();
       } else if (/^\/reply\/\w+/.test(location.pathname)) {
         void ctx.posts.getReplyById.invalidate();
+      } else if (
+        location.pathname.startsWith("/i/search") &&
+        params.get("selector") !== "photos" &&
+        params.get("selector") !== "gifs"
+      ) {
+        void ctx.posts.infiniteScrollSearchResults.invalidate();
+      } else if (params.get("selector") === "photos") {
+        void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+      } else if (params.get("selector") === "gifs") {
+        void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
       } else if (location.pathname.startsWith("/@")) {
         void ctx.posts.infiniteScrollAllPosts.invalidate();
       } else {
@@ -361,6 +403,16 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           void ctx.posts.getById.invalidate();
         } else if (/^\/reply\/\w+/.test(location.pathname)) {
           void ctx.posts.getReplyById.invalidate();
+        } else if (
+          location.pathname.startsWith("/i/search") &&
+          params.get("selector") !== "photos" &&
+          params.get("selector") !== "gifs"
+        ) {
+          void ctx.posts.infiniteScrollSearchResults.invalidate();
+        } else if (params.get("selector") === "photos") {
+          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+        } else if (params.get("selector") === "gifs") {
+          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
         } else if (location.pathname.startsWith("/@")) {
           void ctx.posts.infiniteScrollAllPosts.invalidate();
         } else {
