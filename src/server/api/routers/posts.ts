@@ -495,7 +495,7 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
 
-      const items = await ctx.prisma.post.findMany({
+      const posts = await ctx.prisma.post.findMany({
         where: {
           content: {
             contains: input.query,
@@ -520,6 +520,33 @@ export const postsRouter = createTRPCRouter({
           replies: true,
         },
       });
+
+      const replies = await ctx.prisma.reply.findMany({
+        where: {
+          content: {
+            contains: input.query,
+          },
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          likes: true,
+          retweets: true,
+          replies: true,
+        },
+      });
+
+      let items = [...posts, ...replies];
+
+      if (input.selector ==='top') {
+        items = items.sort((a, b) => b.likes.length - a.likes.length);
+      } else {
+        items = items.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      }
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
@@ -546,7 +573,7 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
 
-      const items = await ctx.prisma.post.findMany({
+      const posts = await ctx.prisma.post.findMany({
         where: {
           content: {
             contains: input.query,
@@ -580,6 +607,42 @@ export const postsRouter = createTRPCRouter({
         },
       });
 
+      const replies = await ctx.prisma.reply.findMany({
+        where: {
+          content: {
+            contains: input.query,
+          },
+          imageUrl: {
+            not: null,
+          },
+          AND: {
+            imageUrl: {
+              not: "",
+            },
+          },
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy:
+          input.selector === "top"
+            ? {
+                likes: {
+                  _count: "desc",
+                },
+              }
+            : {
+                createdAt: "desc",
+              },
+        include: {
+          likes: true,
+          retweets: true,
+          replies: true,
+        },
+      });
+
+      const items = [...posts, ...replies];
+
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         const nextItem = items.pop(); // return the last item from the array
@@ -605,7 +668,7 @@ export const postsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
 
-      const items = await ctx.prisma.post.findMany({
+      const posts = await ctx.prisma.post.findMany({
         where: {
           content: {
             contains: input.query,
@@ -638,6 +701,43 @@ export const postsRouter = createTRPCRouter({
           replies: true,
         },
       });
+
+      const replies = await ctx.prisma.reply.findMany({
+        where: {
+          content: {
+            contains: input.query,
+          },
+          gifUrl: {
+            not: null,
+          },
+          AND: {
+            gifUrl: {
+              not: "",
+            },
+          },
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy:
+          input.selector === "top"
+            ? {
+                likes: {
+                  _count: "desc",
+                },
+              }
+            : {
+                createdAt: "desc",
+              },
+        include: {
+          likes: true,
+          retweets: true,
+          replies: true,
+        },
+      });
+
+      const items = [...posts, ...replies];
+
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {

@@ -188,6 +188,12 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - The suggested results div is too small on phones #DONE 
 - Add the feeds for photos and gif feeds #DONE 
 
+
+### Search results should also include replies
+- Currently it only queries for posts and not replies
+
+### Trends should also include replies
+- Include replies in the trend fetching endpoint
 ## Image upload icon
 - The icon is not in line with the other icons #DONE 
 
