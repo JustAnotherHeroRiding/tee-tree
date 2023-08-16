@@ -31,6 +31,9 @@ const SingleReplyPage: NextPage<{ id: string }> = ({ id }) => {
     </div>
 
         <PostView {...data} />
+        {data.replies.map((reply) => (
+          <PostView key={reply.post.id} {...reply} type='reply' />
+        ))}
       </PageLayout>
     </>
   );

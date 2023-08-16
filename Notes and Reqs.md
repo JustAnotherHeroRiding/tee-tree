@@ -111,8 +111,10 @@ Let's implement some features I have already implemented before in order to lear
 - We need to somehow pass the information if the parent is a reply or a post so that it does not post a new post when trying to reply to a parent in the replies page #DONE Added the data type in the model itself with a default value like I did in the serialize methods for the capstone projects, helps to identify the data #FIXED 
 - Click outside or esc to close the modal, perhaps use the hook #DONE 
 - The page for a separate post/reply should also show the replies #DONE Did it for posts let's do it for replies
-- Show replies to a reply
-- Invalidate the fetch request so that the new reply shows up
+- Show replies to a reply #DONE 
+- If it is a reply then it should also include the parent above
+- Sort replies by likes and number of comments if likes are the same and then by newest
+- Invalidate the fetch request so that the new reply shows up #DONE 
 - Show number of replies below each reply and fetch them upon clicking on the show more banner
 ###### The relations for the replies are not being fetched as they are not included in post.replies
 - Lines between the profile pictures and no borders for replies
@@ -188,6 +190,9 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 ## Image upload icon
 - The icon is not in line with the other icons #DONE 
+
+## Web bundle
+- Added the web bundle analyzer #DONE 
 
 ## Messaging
 - Separate page where users can message each other

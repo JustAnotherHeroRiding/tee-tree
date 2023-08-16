@@ -248,13 +248,13 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
-          replies:{
+          replies: {
             include: {
               likes: true,
               retweets: true,
               replies: true,
-            }
-          }
+            },
+          },
         },
       });
 
@@ -278,7 +278,9 @@ export const postsRouter = createTRPCRouter({
       let replies: ReplyWithParent[] = [];
 
       if (postWithUserReplies.post.replies.length > 0) {
-        replies = await addUserDataToReplies(postWithUserReplies.post.replies as ExtendedPost[]);
+        replies = await addUserDataToReplies(
+          postWithUserReplies.post.replies as ExtendedPost[]
+        );
       }
 
       return { ...postWithUserReplies, replies };
@@ -292,7 +294,13 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           retweets: true, // Include the likes relation in the result
-          replies: true,
+          replies: {
+            include: {
+              likes: true,
+              retweets: true,
+              replies: true,
+            },
+          },
         },
       });
 
@@ -304,7 +312,24 @@ export const postsRouter = createTRPCRouter({
       }
 
       const postsWithUserData = await addUserDataToPosts([post]);
-      return postsWithUserData[0];
+      const postWithUserReplies = postsWithUserData[0];
+
+      if (!postWithUserReplies) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      let replies: ReplyWithParent[] = [];
+
+      if (postWithUserReplies.post.replies.length > 0) {
+        replies = await addUserDataToReplies(
+          postWithUserReplies.post.replies as ExtendedPost[]
+        );
+      }
+
+      return { ...postWithUserReplies, replies };
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
