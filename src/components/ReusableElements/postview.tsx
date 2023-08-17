@@ -54,6 +54,7 @@ import {
 } from "~/server/api/routers/posts";
 import useOutsideClick from "../customHooks/outsideClick";
 
+
 dayjs.extend(relativeTime);
 
 export type PostWithUser = PostWithAuthor;
@@ -61,6 +62,7 @@ export type PostWithUser = PostWithAuthor;
 type PostContentProps = {
   content: string;
 };
+
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
@@ -294,6 +296,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const [showShareModal, setShowShareModal] = useState(false);
 
+
+
   useOutsideClick(modalCommentPostRef, () => {
     if (showCommentModal) {
       setShowCommentModal(false);
@@ -389,38 +393,45 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const ctx = api.useContext();
   const params = new URLSearchParams(location.search);
 
+  function invalidateResources(location : Location, homePage : boolean, params : URLSearchParams) {
+
+    const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
+    const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
+    const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
+    const isInvalidateReplyById = /^\/reply\/\w+/.test(location.pathname);
+    const isInvalidateSearchResults = location.pathname.startsWith("/i/search") && params.get("selector") !== "photos" && params.get("selector") !== "gifs";
+    const isInvalidateSearchResultsImages = params.get("selector") === "photos";
+    const isInvalidateSearchResultsGifs = params.get("selector") === "gifs";
+    const isInvalidateUserPosts = location.pathname.startsWith("/@");
+  
+    if (location.pathname === "/") {
+      if (homePage) {
+        void ctx.posts.infiniteScrollAllPosts?.invalidate();
+      } else {
+        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+      }
+    } else if (isInvalidateUserLikes) {
+      void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+    } else if (isInvalidateReplies) {
+      void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+    } else if (isInvalidateById) {
+      void ctx.posts.getById.invalidate();
+    } else if (isInvalidateReplyById) {
+      void ctx.posts.getReplyById.invalidate();
+    } else if (isInvalidateSearchResults) {
+      void ctx.posts.infiniteScrollSearchResults.invalidate();
+    } else if (isInvalidateSearchResultsImages) {
+      void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+    } else if (isInvalidateSearchResultsGifs) {
+      void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
+    } else if (isInvalidateUserPosts) {
+      void ctx.posts.infiniteScrollPostsByUserId.invalidate();
+    }
+  }
+
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
-      if (location.pathname === "/") {
-        if (homePage) {
-          void ctx.posts.infiniteScrollAllPosts?.invalidate();
-        } else {
-          void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
-        }
-      } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
-        // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
-        void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-      } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
-        // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
-        void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-      } else if (/^\/post\/\w+/.test(location.pathname)) {
-        void ctx.posts.getById.invalidate();
-      } else if (/^\/reply\/\w+/.test(location.pathname)) {
-        void ctx.posts.getReplyById.invalidate();
-      } else if (
-        location.pathname.startsWith("/i/search") &&
-        params.get("selector") !== "photos" &&
-        params.get("selector") !== "gifs"
-      ) {
-        console.log("Invalidating likes");
-        void ctx.posts.infiniteScrollSearchResults.invalidate();
-      } else if (params.get("selector") === "photos") {
-        void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-      } else if (params.get("selector") === "gifs") {
-        void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-      } else if (location.pathname.startsWith("/@")) {
-        void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-      }
+      invalidateResources(location, homePage, params)
       console.log("Post Liked");
     },
     onError: (e) => {
@@ -436,35 +447,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { mutate: retweetPost, isLoading: isRetweeting } =
     api.posts.retweetPost.useMutation({
       onSuccess: () => {
-        if (location.pathname === "/") {
-          if (homePage) {
-            void ctx.posts.infiniteScrollAllPosts?.invalidate();
-          } else {
-            void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
-          }
-        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
-          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
-          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (/^\/post\/\w+/.test(location.pathname)) {
-          void ctx.posts.getById.invalidate();
-        } else if (/^\/reply\/\w+/.test(location.pathname)) {
-          void ctx.posts.getReplyById.invalidate();
-        } else if (
-          location.pathname.startsWith("/i/search") &&
-          params.get("selector") !== "photos" &&
-          params.get("selector") !== "gifs"
-        ) {
-          void ctx.posts.infiniteScrollSearchResults.invalidate();
-        } else if (params.get("selector") === "photos") {
-          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-        } else if (params.get("selector") === "gifs") {
-          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-        } else if (location.pathname.startsWith("/@")) {
-          void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-        }
+        invalidateResources(location, homePage, params)
+
         console.log("Retweeted post");
       },
       onError: (e) => {
@@ -480,31 +464,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { mutate: editPost, isLoading: isEditingPostUpdating } =
     api.posts.editPost.useMutation({
       onSuccess: () => {
-        if (location.pathname === "/") {
-          void ctx.posts.infiniteScrollAllPosts.invalidate();
-        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
-          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
-          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (/^\/post\/\w+/.test(location.pathname)) {
-          void ctx.posts.getById.invalidate();
-        } else if (/^\/reply\/\w+/.test(location.pathname)) {
-          void ctx.posts.getReplyById.invalidate();
-        } else if (
-          location.pathname.startsWith("/i/search") &&
-          params.get("selector") !== "photos" &&
-          params.get("selector") !== "gifs"
-        ) {
-          void ctx.posts.infiniteScrollSearchResults.invalidate();
-        } else if (params.get("selector") === "photos") {
-          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-        } else if (params.get("selector") === "gifs") {
-          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-        } else if (location.pathname.startsWith("/@")) {
-          void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-        }
+        invalidateResources(location, homePage, params)
+
 
         console.log("Post Edited");
       },
@@ -522,31 +483,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
     api.posts.deletePost.useMutation({
       onSuccess: () => {
         setShowDeleteModal(false);
-        if (location.pathname === "/") {
-          void ctx.posts.infiniteScrollAllPosts.invalidate();
-        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
-          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
-          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (/^\/post\/\w+/.test(location.pathname)) {
-          void ctx.posts.getById.invalidate();
-        } else if (/^\/reply\/\w+/.test(location.pathname)) {
-          void ctx.posts.getReplyById.invalidate();
-        } else if (
-          location.pathname.startsWith("/i/search") &&
-          params.get("selector") !== "photos" &&
-          params.get("selector") !== "gifs"
-        ) {
-          void ctx.posts.infiniteScrollSearchResults.invalidate();
-        } else if (params.get("selector") === "photos") {
-          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-        } else if (params.get("selector") === "gifs") {
-          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-        } else if (location.pathname.startsWith("/@")) {
-          void ctx.posts.infiniteScrollAllPosts.invalidate();
-        }
+        invalidateResources(location, homePage, params)
+
 
         console.log("Post Deleted");
       },
@@ -584,31 +522,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         if (publicId) {
           deleteMediaCloudinary({ publicId: publicId });
         }
-        if (location.pathname === "/") {
-          void ctx.posts.infiniteScrollAllPosts.invalidate();
-        } else if (/^\/post\/\w+/.test(location.pathname)) {
-          void ctx.posts.getById.invalidate();
-        } else if (/^\/reply\/\w+/.test(location.pathname)) {
-          void ctx.posts.getReplyById.invalidate();
-        } else if (/^\/[^\/]+\/likes/.test(location.pathname)) {
-          // If the pathname starts with "/<string>/likes", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-        } else if (/^\/@[^\/]+\/replies/.test(location.pathname)) {
-          // If the pathname starts with "/@[username]/replies", invalidate `infiniteScrollPostsByUserIdLiked`
-          void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-        } else if (
-          location.pathname.startsWith("/i/search") &&
-          params.get("selector") !== "photos" &&
-          params.get("selector") !== "gifs"
-        ) {
-          void ctx.posts.infiniteScrollSearchResults.invalidate();
-        } else if (params.get("selector") === "photos") {
-          void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-        } else if (params.get("selector") === "gifs") {
-          void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-        } else if (location.pathname.startsWith("/@")) {
-          void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-        }
+        invalidateResources(location, homePage, params)
+
 
         console.log("Post Image Deleted");
       },
@@ -1626,7 +1541,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         {(/^\/post\/\w+/.test(router.asPath) ||
           /^\/reply\/\w+/.test(router.asPath)) &&
           post.replies.length > 0 &&
-          type === "reply" && <button className="text-Intone-300">Show Replies</button>}
+          type === "reply" && <button className="text-Intone-300 mr-auto mt-2">Show Replies</button>}
       </div>
     </div>
   );
