@@ -264,6 +264,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const { post, author, type } = props;
 
+  const [showLineBelow, setShowLineBelow] = useState(false);
+
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
 
@@ -300,6 +302,13 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const [showMediaFullScreen, setShowMediaFullScreen] = useState(false);
 
   const [showShareModal, setShowShareModal] = useState(false);
+
+
+  useEffect(() => {
+    if (repliesOfReply) {
+      setShowLineBelow(true)
+    }
+  },[repliesOfReply])
 
   useOutsideClick(modalCommentPostRef, () => {
     if (showCommentModal) {
@@ -764,820 +773,845 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   }
 
   return (
-    <div  key={post.id} className="flex-col flex">
-    <div
-     
-      className="flex gap-3 border-b border-slate-400 p-4 phone:relative"
-    >
-      <Image
-        className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
-        src={author?.profileImageUrl}
-        alt={`@${author.username ?? ""}profile picture`}
-        width={56}
-        height={56}
-      />
-      <div className="relative flex w-full flex-col">
-        <div className="flex gap-1 text-slate-300">
-          <Link href={`/@${author.username ?? ""}`}>
-            @
-            <span className="hover:text-white hover:underline">{`${
-              author.username ?? ""
-            }`}</span>
-          </Link>
-          <span className="font-thin">{` · ${dayjs(
-            post.createdAt
-          ).fromNow()}`}</span>
-          {post.isEdited && (
-            <>
-              <p
-                className="text-3xl text-slate-100"
-                data-tooltip-id="edited-tooltip"
-                data-tooltip-content="This post was edited."
-              >
-                *
-              </p>
-              <Tooltip
-                id="edited-tooltip"
-                place="bottom"
-                style={{
-                  borderRadius: "24px",
-                  backgroundColor: "rgb(51 65 85)",
-                }}
-              />
-            </>
-          )}
-        </div>
-        <span
-          className={`${
-            !isEditing ? "hover:bg-slate-900" : ""
-          } rounded-2xl px-2 py-1`}
-          onMouseUp={(event) => {
-            event.stopPropagation();
-            const selectedText = window.getSelection()?.toString();
-            if (!isEditing && !selectedText) {
-              if (post.dataType === "reply") {
-                void router.push(`/reply/${post.id}`);
-              } else {
-                void router.push(`/post/${post.id}`);
+    <div key={post.id} className="flex flex-col">
+      <div className="flex gap-3 border-b border-slate-400 p-4 phone:relative">
+        {showLineBelow ? (
+          <div className="flex flex-shrink-0  flex-col">
+            <Image
+              className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
+              src={author?.profileImageUrl}
+              alt={`@${author.username ?? ""}profile picture`}
+              width={56}
+              height={56}
+            />
+            <div className="z-0 mx-auto -mb-12 h-full border"></div>
+          </div>
+        ) : (
+          <Image
+            className="z-[1] h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
+            src={author?.profileImageUrl}
+            alt={`@${author.username ?? ""}profile picture`}
+            width={56}
+            height={56}
+          />
+        )}
+
+        <div className="relative flex w-full flex-col">
+          <div className="flex gap-1 text-slate-300">
+            <Link href={`/@${author.username ?? ""}`}>
+              @
+              <span className="hover:text-white hover:underline">{`${
+                author.username ?? ""
+              }`}</span>
+            </Link>
+            <span className="font-thin">{` · ${dayjs(
+              post.createdAt
+            ).fromNow()}`}</span>
+            {post.isEdited && (
+              <>
+                <p
+                  className="text-3xl text-slate-100"
+                  data-tooltip-id="edited-tooltip"
+                  data-tooltip-content="This post was edited."
+                >
+                  *
+                </p>
+                <Tooltip
+                  id="edited-tooltip"
+                  place="bottom"
+                  style={{
+                    borderRadius: "24px",
+                    backgroundColor: "rgb(51 65 85)",
+                  }}
+                />
+              </>
+            )}
+          </div>
+          <span
+            className={`${
+              !isEditing ? "hover:bg-slate-900" : ""
+            } rounded-2xl px-2 py-1`}
+            onMouseUp={(event) => {
+              event.stopPropagation();
+              const selectedText = window.getSelection()?.toString();
+              if (!isEditing && !selectedText) {
+                if (post.dataType === "reply") {
+                  void router.push(`/reply/${post.id}`);
+                } else {
+                  void router.push(`/post/${post.id}`);
+                }
               }
-            }
-          }}
-        >
-          {isTypingUsername && (
-            <ul
-              className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+            }}
+          >
+            {isTypingUsername && (
+              <ul
+                className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
             max-h-[250px] w-fit max-w-[350px]
             flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
-            >
-              {possibleUsernames.map((user, index) => {
-                if (!userRefs.current[index]) {
-                  userRefs.current[index] = React.createRef<HTMLDivElement>();
-                }
-
-                return (
-                  <UserCard
-                    key={index}
-                    user={user}
-                    index={index}
-                    setInput={setInput}
-                    input={input}
-                    setIsTypingUsername={setIsTypingUsername}
-                    setTextLength={setTextLength}
-                    highlightedUser={highlightedUser}
-                    scrollRef={
-                      userRefs.current?.[index] ||
-                      React.createRef<HTMLDivElement>()
-                    }
-                  />
-                );
-              })}
-            </ul>
-          )}
-          {isTypingTrend && possibleTrends.length > 0 && (
-            <ul
-              className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
-            max-h-[250px] w-fit min-w-[200px]
-            max-w-[350px] flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
-            >
-              {!trends && <LoadingSpinner />}
-              {possibleTrends &&
-                possibleTrends.map((trend, index) => {
-                  if (!trendRefs.current[index]) {
-                    trendRefs.current[index] = React.createRef<HTMLLIElement>();
+              >
+                {possibleUsernames.map((user, index) => {
+                  if (!userRefs.current[index]) {
+                    userRefs.current[index] = React.createRef<HTMLDivElement>();
                   }
+
                   return (
-                    <li
-                      ref={
-                        trendRefs.current?.[index] ||
-                        React.createRef<HTMLLIElement>()
+                    <UserCard
+                      key={index}
+                      user={user}
+                      index={index}
+                      setInput={setInput}
+                      input={input}
+                      setIsTypingUsername={setIsTypingUsername}
+                      setTextLength={setTextLength}
+                      highlightedUser={highlightedUser}
+                      scrollRef={
+                        userRefs.current?.[index] ||
+                        React.createRef<HTMLDivElement>()
                       }
-                      className={`${
-                        index == highlightedTrend ? "bg-Intone-200" : ""
-                      } px-4 py-2   hover:bg-Intone-200`}
-                      onClick={() => selectTrend(trend[0])}
-                      key={`${trend[0]}+${trend[1]}`}
-                    >
-                      {trend[0]}
-                    </li>
+                    />
                   );
                 })}
-            </ul>
-          )}
-          {isEditing ? (
-            <div className="relative">
-              <button
-                className="absolute right-0 top-4 z-10
+              </ul>
+            )}
+            {isTypingTrend && possibleTrends.length > 0 && (
+              <ul
+                className="gray-thin-scrollbar absolute right-8 top-20 z-10 flex 
+            max-h-[250px] w-fit min-w-[200px]
+            max-w-[350px] flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl"
+              >
+                {!trends && <LoadingSpinner />}
+                {possibleTrends &&
+                  possibleTrends.map((trend, index) => {
+                    if (!trendRefs.current[index]) {
+                      trendRefs.current[index] =
+                        React.createRef<HTMLLIElement>();
+                    }
+                    return (
+                      <li
+                        ref={
+                          trendRefs.current?.[index] ||
+                          React.createRef<HTMLLIElement>()
+                        }
+                        className={`${
+                          index == highlightedTrend ? "bg-Intone-200" : ""
+                        } px-4 py-2   hover:bg-Intone-200`}
+                        onClick={() => selectTrend(trend[0])}
+                        key={`${trend[0]}+${trend[1]}`}
+                      >
+                        {trend[0]}
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
+            {isEditing ? (
+              <div className="relative">
+                <button
+                  className="absolute right-0 top-4 z-10
           rounded-3xl px-1 py-1 hover:bg-slate-700 hover:text-white
           "
-                onClick={() => {
-                  setIsEditing(false);
-                  setInput(post.content);
-                  setIsTypingTrend(false);
-                  setIsTypingUsername(false);
-                }}
-              >
-                <FontAwesomeIcon
-                  className="h-6 w-6 rounded-3xl"
-                  icon={faXmark}
-                />
-              </button>
-              <h1 className="absolute right-8 top-0 rounded-3xl">
-                {textLength}/280
-              </h1>
-              <div className="gray-thin-scrollbar relative max-h-[45vh] w-full overflow-auto">
-                <div
-                  className="pointer-events-none absolute whitespace-pre-wrap pb-2 pl-4 pr-8 pt-4 text-transparent"
-                  dangerouslySetInnerHTML={{
-                    __html: highlightedInput.replace(/\n/g, "<br/>"),
+                  onClick={() => {
+                    setIsEditing(false);
+                    setInput(post.content);
+                    setIsTypingTrend(false);
+                    setIsTypingUsername(false);
                   }}
-                />
-                <TextareaAutosize
-                  maxLength={280}
-                  ref={textareaRef}
-                  className="min-h-[80px] w-full resize-none
-                rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
-                  //defaultValue={post.content}
-                  value={input}
-                  onChange={(e) => handleTextareaChange(e)}
-                  onKeyDown={(e) => {
-                    if (
-                      e.key === "ArrowDown" &&
-                      (isTypingTrend || isTypingUsername)
-                    ) {
-                      // Down arrow key pressed
-                      e.preventDefault();
-                      if (
-                        isTypingUsername &&
-                        highlightedUser < possibleUsernames.length - 1
-                      ) {
-                        setPrevHighlightedUser(highlightedUser);
-                        setHighlightedUser((prevHighlightedUser) => {
-                          const nextHighlightedUser = prevHighlightedUser + 1;
-                          const nextRef = userRefs.current[nextHighlightedUser];
-                          if (nextRef && nextRef.current) {
-                            nextRef.current.scrollIntoView({
-                              behavior: "smooth",
-                              block: "nearest",
-                            });
-                          }
-                          return nextHighlightedUser;
-                        });
-                      } else if (
-                        isTypingTrend &&
-                        trends &&
-                        highlightedTrend < possibleTrends?.length - 1
-                      ) {
-                        setPrevHighlightedTrend(highlightedTrend);
-                        setHighlightedTrend((prevhighlightedTrend) => {
-                          const nextHighlightedTrend = prevhighlightedTrend + 1;
-                          const nextRef =
-                            trendRefs.current[nextHighlightedTrend];
-                          if (nextRef && nextRef.current) {
-                            nextRef.current.scrollIntoView({
-                              behavior: "smooth",
-                              block: "nearest",
-                            });
-                          }
-                          return nextHighlightedTrend;
-                        });
-                      }
-                    } else if (
-                      e.key === "ArrowUp" &&
-                      (isTypingTrend || isTypingUsername)
-                    ) {
-                      // Up arrow key pressed
-                      e.preventDefault();
-                      if (highlightedUser > 0 && isTypingUsername) {
-                        setPrevHighlightedUser(highlightedUser);
-                        setHighlightedUser((prevHighlightedUser) => {
-                          const nextHighlightedUser = prevHighlightedUser - 1;
-                          const nextRef = userRefs.current[nextHighlightedUser];
-                          if (nextRef && nextRef.current) {
-                            nextRef.current.scrollIntoView({
-                              behavior: "smooth",
-                              block: "nearest",
-                            });
-                          }
-                          return nextHighlightedUser;
-                        });
-                      } else if (
-                        isTypingTrend &&
-                        trends &&
-                        highlightedTrend > 0
-                      ) {
-                        setPrevHighlightedTrend(highlightedTrend);
-                        setHighlightedTrend((prevhighlightedTrend) => {
-                          const nextHighlightedTrend = prevhighlightedTrend - 1;
-                          const nextRef =
-                            trendRefs.current[nextHighlightedTrend];
-                          if (nextRef && nextRef.current) {
-                            nextRef.current.scrollIntoView({
-                              behavior: "smooth",
-                              block: "nearest",
-                            });
-                          }
-                          return nextHighlightedTrend;
-                        });
-                      }
-                    } else if (e.key === "Tab") {
-                      // Split input into an array of words
-                      const words = input.split(" ");
-                      // Get the last word
-                      const lastWord = words.slice(-1)[0];
-                      // Check if the last word isn't just an @ or a #
-                      if (
-                        (lastWord && lastWord.length > 1 && isTypingTrend) ||
-                        isTypingUsername
-                      ) {
-                        e.preventDefault();
-                        if (isTypingUsername) {
-                          selectUser(highlightedUser);
-                        } else if (isTypingTrend) {
-                          // This is a placeholder
-                          selectTrend(
-                            possibleTrends[highlightedTrend]?.[0] ?? ""
-                          );
-                        }
-                        // Tab key pressed
-                        // Select the currently highlighted user
-                      }
-                    }
-                  }}
-                />
-              </div>
-            </div>
-          ) : isEditingPostUpdating ? (
-            <div className="mx-auto flex justify-center">
-              <LoadingSpinner size={32} />
-            </div>
-          ) : (
-            <span className="select-text text-2xl sm:whitespace-pre-wrap">
-              <PostContent content={post.content} />
-            </span>
-          )}
-          <br />
-        </span>
-        {post.imageUrl && (
-          <div className="mx-auto my-4 w-full">
-            {isDeletingMediaPost ? (
-              <LoadingSpinner />
-            ) : (
-              <div
-                className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
-                onClick={() => {
-                  if (!isEditing) {
-                    setShowMediaFullScreen(true);
-                  }
-                }}
-              >
-                <AdvancedImage
-                  style={{
-                    width: "auto",
-                    height: "auto",
-                    maxHeight: "400px",
-                    borderWidth: "1px",
-                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                    borderRadius: "0.375rem",
-                    borderStyle: "solid",
-                    overflow: "clip",
-                    twBorderOpacity: "1",
-                  }}
-                  cldImg={cld.image(post.imageUrl)}
-                  /* plugins={[
-                  lazyload({
-                    rootMargin: "10px 20px 10px 30px",
-                    threshold: 0.25,
-                  }),
-                ]} */
-                />
-                {isEditing && (
-                  <button
-                    onClick={() =>
-                      deleteMediaPost({ postId: post.id, mediaType: "image" })
-                    }
-                    className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
-             border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
-                  >
-                    Delete Image
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-        {post.gifUrl && (
-          <div className="mx-auto my-4 w-full">
-            {isDeletingMediaPost || isDeletingMediaCloudinary ? (
-              <LoadingSpinner />
-            ) : (
-              <div
-                className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
-                onClick={() => {
-                  if (!isEditing) {
-                    setShowMediaFullScreen(true);
-                  }
-                }}
-              >
-                <AdvancedImage
-                  style={{
-                    width: "auto",
-                    height: "auto",
-                    maxHeight: "400px",
-                    borderWidth: "1px",
-                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                    borderRadius: "0.375rem",
-                    borderStyle: "solid",
-                    overflow: "clip",
-                    twBorderOpacity: "1",
-                  }}
-                  cldImg={cld.image(post.gifUrl)}
-                />
-                {isEditing && (
-                  <button
-                    onClick={() =>
-                      deleteMediaPost({ postId: post.id, mediaType: "gif" })
-                    }
-                    className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
-             border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
-                  >
-                    Delete Gif
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {showMediaFullScreen && (
-          <div className="modalparent">
-            <div
-              ref={modalMediaFullRef}
-              className="modal relative flex h-[85vh] w-fit items-center 
-            justify-center rounded-xl border border-slate-400 bg-black p-4"
-            >
-              <FontAwesomeIcon
-                icon={faXmark}
-                className="absolute right-12 top-6 h-7 w-7 cursor-pointer rounded-3xl bg-black px-1"
-                onClick={() => setShowMediaFullScreen(false)}
-              />
-              {post.gifUrl && (
-                <AdvancedImage
-                  style={{
-                    objectFit: "fill",
-                    maxWidth: "85vw",
-                    maxHeight: "80vh",
-                    width: "auto",
-                    heigth: "auto",
-                    borderWidth: "1px",
-                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                    borderRadius: "0.375rem",
-                    borderStyle: "solid",
-                    overflow: "clip",
-                    twBorderOpacity: "1",
-                  }}
-                  cldImg={cld.image(post.gifUrl)}
-                />
-              )}
-              {post.imageUrl && (
-                <AdvancedImage
-                  style={{
-                    objectFit: "fill",
-                    maxWidth: "85vw",
-                    maxHeight: "80vh",
-                    width: "auto",
-                    heigth: "auto",
-                    borderWidth: "1px",
-                    borderColor: "rgb(226 232 240 / var(--tw-border-opacity))",
-                    borderRadius: "0.375rem",
-                    borderStyle: "solid",
-                    overflow: "clip",
-                    twBorderOpacity: "1",
-                  }}
-                  cldImg={cld.image(post.imageUrl)}
-                />
-              )}
-            </div>
-          </div>
-        )}
-
-        <div className={`flex flex-row gap-2 sm:gap-4 md:gap-8 lg:gap-12 `}>
-          <button
-            data-tooltip-id="like-tooltip"
-            data-tooltip-content="Like"
-            disabled={isLiking}
-            onClick={() => {
-              if (post.dataType === "reply") {
-                mutate({ replyId: post.id });
-              } else {
-                mutate({ postId: post.id });
-              }
-            }}
-            className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
-          ${liked ? "text-red-600" : "hover:text-red-300"} whitespace-normal ${
-              isLiking
-                ? "scale-125 animate-pulse text-red-900"
-                : "hover:scale-110"
-            }`}
-          >
-            <FontAwesomeIcon icon={faHeart} className="mr-2 h-6 w-6" />{" "}
-            <p>{likes}</p>
-          </button>
-          <Tooltip
-            place="bottom"
-            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
-            id="like-tooltip"
-          />
-
-          <button
-            data-tooltip-id="comment-tooltip"
-            data-tooltip-content="Comment"
-            onClick={() => setShowCommentModal(true)}
-            className="group flex w-fit cursor-pointer flex-row items-center text-3xl "
-          >
-            {" "}
-            <FontAwesomeIcon
-              icon={faComment}
-              className="mr-2 h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:text-Intone-300 "
-            />{" "}
-            <p className="transition-all duration-300 group-hover:scale-110 group-hover:text-Intone-300">
-              {replies}
-            </p>
-          </button>
-
-          <button
-            onClick={() => {
-              if (post.dataType === "reply") {
-                retweetPost({ replyId: post.id });
-              } else {
-                retweetPost({ postId: post.id });
-              }
-            }}
-            className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
-        ${
-          retweeted ? "text-green-600" : "hover:text-green-300"
-        } whitespace-normal ${
-              isRetweeting
-                ? "text-green-900-900 scale-125 animate-pulse"
-                : "hover:scale-110"
-            }`}
-            data-tooltip-id="retweet-tooltip"
-            data-tooltip-content="Retweet"
-          >
-            {" "}
-            <FontAwesomeIcon icon={faRetweet} className="h-6 w-6 rounded-3xl" />
-            <p className="ml-1">{retweets}</p>{" "}
-          </button>
-          <Tooltip
-            place="bottom"
-            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
-            id="retweet-tooltip"
-          />
-          {showShareModal && (
-            <div className="modalparent">
-              <div
-                className="modal grid w-[80vw] grid-flow-row grid-cols-1 rounded-lg border
-               border-slate-400 bg-black p-4 md:w-[35vw]"
-              >
-                <button
-                  className="absolute right-2 top-4 rounded-3xl
-          px-1 py-1 hover:bg-slate-700 hover:text-white
-          "
-                  onClick={() => setShowShareModal(false)}
                 >
                   <FontAwesomeIcon
                     className="h-6 w-6 rounded-3xl"
                     icon={faXmark}
                   />
                 </button>
-                <h2 className="mx-auto font-semibold">Share with:</h2>
-                <div className="grid grid-flow-row-dense grid-cols-3 rounded-3xl border p-6 md:grid-cols-3">
-                  <button
-                    data-tooltip-id="copyLink-tooltip"
-                    data-tooltip-content="Copy to Clipboard"
-                    className="my-2 flex flex-col items-center  justify-center rounded-xl hover:bg-gray-700"
-                    onClick={() => {
-                      void copyToClipboard();
+                <h1 className="absolute right-8 top-0 rounded-3xl">
+                  {textLength}/280
+                </h1>
+                <div className="gray-thin-scrollbar relative max-h-[45vh] w-full overflow-auto">
+                  <div
+                    className="pointer-events-none absolute whitespace-pre-wrap pb-2 pl-4 pr-8 pt-4 text-transparent"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightedInput.replace(/\n/g, "<br/>"),
                     }}
-                  >
-                    <FontAwesomeIcon icon={faCopy} className="h-8 w-8" />
-                    Copy Link
-                  </button>
-                  <Tooltip
-                    place="left"
-                    style={{
-                      borderRadius: "24px",
-                      backgroundColor: "rgb(51 65 85)",
-                    }}
-                    id="copyLink-tooltip"
                   />
-                  <TwitterShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      <TwitterIcon size={32} round={true} />
-
-                      <p className="phone:hidden">Twitter</p>
-                    </span>
-                  </TwitterShareButton>
-                  <WhatsappShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      {" "}
-                      <WhatsappIcon size={32} round={true} />
-                      <p className="phone:hidden">Whatsapp</p>
-                    </span>
-                  </WhatsappShareButton>
-                  <TelegramShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      {" "}
-                      <TelegramIcon size={32} round={true} />
-                      <p className="phone:hidden">Telegram</p>
-                    </span>
-                  </TelegramShareButton>
-                  <LinkedinShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      {" "}
-                      <LinkedinIcon size={32} round={true} />
-                      <p className="phone:hidden">Linkedin</p>
-                    </span>
-                  </LinkedinShareButton>
-                  <EmailShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      {" "}
-                      <EmailIcon size={32} round={true} />
-                      <p className="phone:hidden">Email</p>
-                    </span>
-                  </EmailShareButton>
-                  <VKShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    {" "}
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      <VKIcon size={32} round={true} />
-
-                      <p className="phone:hidden">Vk</p>
-                    </span>
-                  </VKShareButton>
-                  <RedditShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    {" "}
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      <RedditIcon size={32} round={true} />
-                      <p className="phone:hidden">Reddit</p>
-                    </span>
-                  </RedditShareButton>
-                  <ViberShareButton
-                    url={window.location.hostname + "/post" + `/${post.id}`}
-                  >
-                    {" "}
-                    <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
-                      <ViberIcon size={32} round={true} />
-                      <p className="phone:hidden">Viber</p>
-                    </span>
-                  </ViberShareButton>
+                  <TextareaAutosize
+                    maxLength={280}
+                    ref={textareaRef}
+                    className="min-h-[80px] w-full resize-none
+                rounded-3xl border-slate-400 bg-slate-900 pb-2 pl-4 pr-8 pt-4 outline-none"
+                    //defaultValue={post.content}
+                    value={input}
+                    onChange={(e) => handleTextareaChange(e)}
+                    onKeyDown={(e) => {
+                      if (
+                        e.key === "ArrowDown" &&
+                        (isTypingTrend || isTypingUsername)
+                      ) {
+                        // Down arrow key pressed
+                        e.preventDefault();
+                        if (
+                          isTypingUsername &&
+                          highlightedUser < possibleUsernames.length - 1
+                        ) {
+                          setPrevHighlightedUser(highlightedUser);
+                          setHighlightedUser((prevHighlightedUser) => {
+                            const nextHighlightedUser = prevHighlightedUser + 1;
+                            const nextRef =
+                              userRefs.current[nextHighlightedUser];
+                            if (nextRef && nextRef.current) {
+                              nextRef.current.scrollIntoView({
+                                behavior: "smooth",
+                                block: "nearest",
+                              });
+                            }
+                            return nextHighlightedUser;
+                          });
+                        } else if (
+                          isTypingTrend &&
+                          trends &&
+                          highlightedTrend < possibleTrends?.length - 1
+                        ) {
+                          setPrevHighlightedTrend(highlightedTrend);
+                          setHighlightedTrend((prevhighlightedTrend) => {
+                            const nextHighlightedTrend =
+                              prevhighlightedTrend + 1;
+                            const nextRef =
+                              trendRefs.current[nextHighlightedTrend];
+                            if (nextRef && nextRef.current) {
+                              nextRef.current.scrollIntoView({
+                                behavior: "smooth",
+                                block: "nearest",
+                              });
+                            }
+                            return nextHighlightedTrend;
+                          });
+                        }
+                      } else if (
+                        e.key === "ArrowUp" &&
+                        (isTypingTrend || isTypingUsername)
+                      ) {
+                        // Up arrow key pressed
+                        e.preventDefault();
+                        if (highlightedUser > 0 && isTypingUsername) {
+                          setPrevHighlightedUser(highlightedUser);
+                          setHighlightedUser((prevHighlightedUser) => {
+                            const nextHighlightedUser = prevHighlightedUser - 1;
+                            const nextRef =
+                              userRefs.current[nextHighlightedUser];
+                            if (nextRef && nextRef.current) {
+                              nextRef.current.scrollIntoView({
+                                behavior: "smooth",
+                                block: "nearest",
+                              });
+                            }
+                            return nextHighlightedUser;
+                          });
+                        } else if (
+                          isTypingTrend &&
+                          trends &&
+                          highlightedTrend > 0
+                        ) {
+                          setPrevHighlightedTrend(highlightedTrend);
+                          setHighlightedTrend((prevhighlightedTrend) => {
+                            const nextHighlightedTrend =
+                              prevhighlightedTrend - 1;
+                            const nextRef =
+                              trendRefs.current[nextHighlightedTrend];
+                            if (nextRef && nextRef.current) {
+                              nextRef.current.scrollIntoView({
+                                behavior: "smooth",
+                                block: "nearest",
+                              });
+                            }
+                            return nextHighlightedTrend;
+                          });
+                        }
+                      } else if (e.key === "Tab") {
+                        // Split input into an array of words
+                        const words = input.split(" ");
+                        // Get the last word
+                        const lastWord = words.slice(-1)[0];
+                        // Check if the last word isn't just an @ or a #
+                        if (
+                          (lastWord && lastWord.length > 1 && isTypingTrend) ||
+                          isTypingUsername
+                        ) {
+                          e.preventDefault();
+                          if (isTypingUsername) {
+                            selectUser(highlightedUser);
+                          } else if (isTypingTrend) {
+                            // This is a placeholder
+                            selectTrend(
+                              possibleTrends[highlightedTrend]?.[0] ?? ""
+                            );
+                          }
+                          // Tab key pressed
+                          // Select the currently highlighted user
+                        }
+                      }
+                    }}
+                  />
                 </div>
+              </div>
+            ) : isEditingPostUpdating ? (
+              <div className="mx-auto flex justify-center">
+                <LoadingSpinner size={32} />
+              </div>
+            ) : (
+              <span className="select-text text-2xl sm:whitespace-pre-wrap">
+                <PostContent content={post.content} />
+              </span>
+            )}
+            <br />
+          </span>
+          {post.imageUrl && (
+            <div className="mx-auto my-4 w-full">
+              {isDeletingMediaPost ? (
+                <LoadingSpinner />
+              ) : (
+                <div
+                  className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
+                  onClick={() => {
+                    if (!isEditing) {
+                      setShowMediaFullScreen(true);
+                    }
+                  }}
+                >
+                  <AdvancedImage
+                    style={{
+                      width: "auto",
+                      height: "auto",
+                      maxHeight: "400px",
+                      borderWidth: "1px",
+                      borderColor:
+                        "rgb(226 232 240 / var(--tw-border-opacity))",
+                      borderRadius: "0.375rem",
+                      borderStyle: "solid",
+                      overflow: "clip",
+                      twBorderOpacity: "1",
+                    }}
+                    cldImg={cld.image(post.imageUrl)}
+                    /* plugins={[
+                  lazyload({
+                    rootMargin: "10px 20px 10px 30px",
+                    threshold: 0.25,
+                  }),
+                ]} */
+                  />
+                  {isEditing && (
+                    <button
+                      onClick={() =>
+                        deleteMediaPost({ postId: post.id, mediaType: "image" })
+                      }
+                      className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
+             border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
+                    >
+                      Delete Image
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {post.gifUrl && (
+            <div className="mx-auto my-4 w-full">
+              {isDeletingMediaPost || isDeletingMediaCloudinary ? (
+                <LoadingSpinner />
+              ) : (
+                <div
+                  className="relative flex h-[400px] w-auto cursor-pointer justify-center border-slate-200"
+                  onClick={() => {
+                    if (!isEditing) {
+                      setShowMediaFullScreen(true);
+                    }
+                  }}
+                >
+                  <AdvancedImage
+                    style={{
+                      width: "auto",
+                      height: "auto",
+                      maxHeight: "400px",
+                      borderWidth: "1px",
+                      borderColor:
+                        "rgb(226 232 240 / var(--tw-border-opacity))",
+                      borderRadius: "0.375rem",
+                      borderStyle: "solid",
+                      overflow: "clip",
+                      twBorderOpacity: "1",
+                    }}
+                    cldImg={cld.image(post.gifUrl)}
+                  />
+                  {isEditing && (
+                    <button
+                      onClick={() =>
+                        deleteMediaPost({ postId: post.id, mediaType: "gif" })
+                      }
+                      className="absolute right-0 top-0 z-10 mt-2 rounded-3xl border
+             border-slate-400 bg-Intone-200 px-4 py-1 hover:bg-slate-700"
+                    >
+                      Delete Gif
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {showMediaFullScreen && (
+            <div className="modalparent">
+              <div
+                ref={modalMediaFullRef}
+                className="modal relative flex h-[85vh] w-fit items-center 
+            justify-center rounded-xl border border-slate-400 bg-black p-4"
+              >
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  className="absolute right-12 top-6 h-7 w-7 cursor-pointer rounded-3xl bg-black px-1"
+                  onClick={() => setShowMediaFullScreen(false)}
+                />
+                {post.gifUrl && (
+                  <AdvancedImage
+                    style={{
+                      objectFit: "fill",
+                      maxWidth: "85vw",
+                      maxHeight: "80vh",
+                      width: "auto",
+                      heigth: "auto",
+                      borderWidth: "1px",
+                      borderColor:
+                        "rgb(226 232 240 / var(--tw-border-opacity))",
+                      borderRadius: "0.375rem",
+                      borderStyle: "solid",
+                      overflow: "clip",
+                      twBorderOpacity: "1",
+                    }}
+                    cldImg={cld.image(post.gifUrl)}
+                  />
+                )}
+                {post.imageUrl && (
+                  <AdvancedImage
+                    style={{
+                      objectFit: "fill",
+                      maxWidth: "85vw",
+                      maxHeight: "80vh",
+                      width: "auto",
+                      heigth: "auto",
+                      borderWidth: "1px",
+                      borderColor:
+                        "rgb(226 232 240 / var(--tw-border-opacity))",
+                      borderRadius: "0.375rem",
+                      borderStyle: "solid",
+                      overflow: "clip",
+                      twBorderOpacity: "1",
+                    }}
+                    cldImg={cld.image(post.imageUrl)}
+                  />
+                )}
               </div>
             </div>
           )}
-          {showCommentModal && (
-            <div
-              className={`modalparent transform transition-transform duration-300 ease-in-out ${
-                showCommentModal
-                  ? "visible scale-100 opacity-100"
-                  : "invisible scale-0 opacity-0"
+
+          <div className={`flex flex-row gap-2 sm:gap-4 md:gap-8 lg:gap-12 `}>
+            <button
+              data-tooltip-id="like-tooltip"
+              data-tooltip-content="Like"
+              disabled={isLiking}
+              onClick={() => {
+                if (post.dataType === "reply") {
+                  mutate({ replyId: post.id });
+                } else {
+                  mutate({ postId: post.id });
+                }
+              }}
+              className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
+          ${liked ? "text-red-600" : "hover:text-red-300"} whitespace-normal ${
+                isLiking
+                  ? "scale-125 animate-pulse text-red-900"
+                  : "hover:scale-110"
               }`}
             >
-              <div
-                ref={modalCommentPostRef}
-                className="modalComment mx-auto flex h-fit w-[95vw] flex-col rounded-3xl border
-        border-indigo-200 bg-black px-8 pb-4 pt-8 sm:w-[55vw] lg:w-[35vw]"
-              >
-                <div className="mb-4 flex gap-3 border-slate-400 phone:relative">
-                  <div className="flex flex-shrink-0 flex-col">
-                    <Image
-                      className="z-[1] h-14 w-14 rounded-full"
-                      src={author?.profileImageUrl}
-                      alt={`@${author.username ?? ""}profile picture`}
-                      width={56}
-                      height={56}
+              <FontAwesomeIcon icon={faHeart} className="mr-2 h-6 w-6" />{" "}
+              <p>{likes}</p>
+            </button>
+            <Tooltip
+              place="bottom"
+              style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+              id="like-tooltip"
+            />
+
+            <button
+              data-tooltip-id="comment-tooltip"
+              data-tooltip-content="Comment"
+              onClick={() => setShowCommentModal(true)}
+              className="group flex w-fit cursor-pointer flex-row items-center text-3xl "
+            >
+              {" "}
+              <FontAwesomeIcon
+                icon={faComment}
+                className="mr-2 h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:text-Intone-300 "
+              />{" "}
+              <p className="transition-all duration-300 group-hover:scale-110 group-hover:text-Intone-300">
+                {replies}
+              </p>
+            </button>
+
+            <button
+              onClick={() => {
+                if (post.dataType === "reply") {
+                  retweetPost({ replyId: post.id });
+                } else {
+                  retweetPost({ postId: post.id });
+                }
+              }}
+              className={`flex w-fit origin-center transform cursor-pointer flex-row items-center text-3xl transition-all duration-300 
+        ${
+          retweeted ? "text-green-600" : "hover:text-green-300"
+        } whitespace-normal ${
+                isRetweeting
+                  ? "text-green-900-900 scale-125 animate-pulse"
+                  : "hover:scale-110"
+              }`}
+              data-tooltip-id="retweet-tooltip"
+              data-tooltip-content="Retweet"
+            >
+              {" "}
+              <FontAwesomeIcon
+                icon={faRetweet}
+                className="h-6 w-6 rounded-3xl"
+              />
+              <p className="ml-1">{retweets}</p>{" "}
+            </button>
+            <Tooltip
+              place="bottom"
+              style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+              id="retweet-tooltip"
+            />
+            {showShareModal && (
+              <div className="modalparent">
+                <div
+                  className="modal grid w-[80vw] grid-flow-row grid-cols-1 rounded-lg border
+               border-slate-400 bg-black p-4 md:w-[35vw]"
+                >
+                  <button
+                    className="absolute right-2 top-4 rounded-3xl
+          px-1 py-1 hover:bg-slate-700 hover:text-white
+          "
+                    onClick={() => setShowShareModal(false)}
+                  >
+                    <FontAwesomeIcon
+                      className="h-6 w-6 rounded-3xl"
+                      icon={faXmark}
                     />
-                    <div className="z-0 mx-auto -mb-12 h-full border"></div>
-                  </div>
-                  <div className="relative flex w-full flex-col">
-                    <div className="flex gap-1 text-slate-300">
-                      <Link href={`/@${author.username ?? ""}`}>
-                        @
-                        <span className="hover:text-white hover:underline">{`${
-                          author.username ?? ""
-                        }`}</span>
-                      </Link>
-                      <span className="font-thin">{` · ${dayjs(
-                        post.createdAt
-                      ).fromNow()}`}</span>
-                      {post.isEdited && (
-                        <>
-                          <p
-                            className="text-3xl text-slate-100"
-                            data-tooltip-id="edited-tooltip"
-                            data-tooltip-content="This post was edited."
-                          >
-                            *
-                          </p>
-                          <Tooltip
-                            id="edited-tooltip"
-                            place="bottom"
-                            style={{
-                              borderRadius: "24px",
-                              backgroundColor: "rgb(51 65 85)",
-                            }}
-                          />
-                        </>
-                      )}
-                    </div>
-                    <span className="select-text text-2xl sm:whitespace-pre-wrap">
-                      <PostContent content={post.content} />
-                    </span>
+                  </button>
+                  <h2 className="mx-auto font-semibold">Share with:</h2>
+                  <div className="grid grid-flow-row-dense grid-cols-3 rounded-3xl border p-6 md:grid-cols-3">
+                    <button
+                      data-tooltip-id="copyLink-tooltip"
+                      data-tooltip-content="Copy to Clipboard"
+                      className="my-2 flex flex-col items-center  justify-center rounded-xl hover:bg-gray-700"
+                      onClick={() => {
+                        void copyToClipboard();
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faCopy} className="h-8 w-8" />
+                      Copy Link
+                    </button>
+                    <Tooltip
+                      place="left"
+                      style={{
+                        borderRadius: "24px",
+                        backgroundColor: "rgb(51 65 85)",
+                      }}
+                      id="copyLink-tooltip"
+                    />
+                    <TwitterShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        <TwitterIcon size={32} round={true} />
+
+                        <p className="phone:hidden">Twitter</p>
+                      </span>
+                    </TwitterShareButton>
+                    <WhatsappShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        {" "}
+                        <WhatsappIcon size={32} round={true} />
+                        <p className="phone:hidden">Whatsapp</p>
+                      </span>
+                    </WhatsappShareButton>
+                    <TelegramShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        {" "}
+                        <TelegramIcon size={32} round={true} />
+                        <p className="phone:hidden">Telegram</p>
+                      </span>
+                    </TelegramShareButton>
+                    <LinkedinShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        {" "}
+                        <LinkedinIcon size={32} round={true} />
+                        <p className="phone:hidden">Linkedin</p>
+                      </span>
+                    </LinkedinShareButton>
+                    <EmailShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        {" "}
+                        <EmailIcon size={32} round={true} />
+                        <p className="phone:hidden">Email</p>
+                      </span>
+                    </EmailShareButton>
+                    <VKShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        <VKIcon size={32} round={true} />
+
+                        <p className="phone:hidden">Vk</p>
+                      </span>
+                    </VKShareButton>
+                    <RedditShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        <RedditIcon size={32} round={true} />
+                        <p className="phone:hidden">Reddit</p>
+                      </span>
+                    </RedditShareButton>
+                    <ViberShareButton
+                      url={window.location.hostname + "/post" + `/${post.id}`}
+                    >
+                      {" "}
+                      <span className="flex flex-col items-center justify-center rounded-xl py-2 hover:bg-gray-700">
+                        <ViberIcon size={32} round={true} />
+                        <p className="phone:hidden">Viber</p>
+                      </span>
+                    </ViberShareButton>
                   </div>
                 </div>
-                <CreatePostWizard
-                  homePage={homePage}
-                  src="reply"
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                  parentType={post.dataType}
-                  parentPostId={post.id}
-                  showCommentModal={showCommentModal}
-                  setShowCommentModal={setShowCommentModal}
-                  placeholder="Post your reply!"
-                />
-                <button
-                  className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
-                  onClick={() => setShowCommentModal(false)}
-                >
-                  Cancel
-                </button>
               </div>
-            </div>
-          )}
-
-          <button
-            onClick={() => setShowShareModal(true)}
-            data-tooltip-id="share-tooltip"
-            data-tooltip-content="Share"
-          >
-            {" "}
-            <FontAwesomeIcon
-              icon={faShare}
-              className="post-button-fontAwesome"
-            />{" "}
-          </button>
-          <Tooltip
-            place="bottom"
-            style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
-            id="share-tooltip"
-          />
-          {user?.id === author.id && (
-            <>
-              <button
-                data-tooltip-id="editPost-tooltip"
-                data-tooltip-content="Edit Post"
-                onClick={handleEditClick}
-                className="rounded-3xl border border-slate-400 px-4 py-1 hover:bg-slate-700"
+            )}
+            {showCommentModal && (
+              <div
+                className={`modalparent transform transition-transform duration-300 ease-in-out ${
+                  showCommentModal
+                    ? "visible scale-100 opacity-100"
+                    : "invisible scale-0 opacity-0"
+                }`}
               >
-                {isEditing ? "Save" : "Edit"}
-              </button>
-              <Tooltip
-                place="bottom"
-                style={{
-                  borderRadius: "24px",
-                  backgroundColor: "rgb(51 65 85)",
-                }}
-                id="editPost-tooltip"
-              />
-              {!isDeletingPost ? (
-                <>
-                  <button
-                    onClick={() => setShowDeleteModal(true)}
-                    data-tooltip-id="delete-tooltip"
-                    data-tooltip-content="Delete"
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FontAwesomeIcon className="h-6 w-6" icon={faXmark} />
-                  </button>
-                  <Tooltip
-                    place="bottom"
-                    style={{
-                      borderRadius: "24px",
-                      backgroundColor: "rgb(51 65 85)",
-                    }}
-                    id="delete-tooltip"
-                  />
-                  {showDeleteModal && (
-                    <div
-                      className={`modalparent transform transition-transform duration-300 ease-in-out ${
-                        showDeleteModal
-                          ? "visible scale-100 opacity-100"
-                          : "invisible scale-0 opacity-0"
-                      }`}
-                    >
-                      <div
-                        ref={modalDeletePostRef}
-                        className="modalDeletePost mx-auto flex h-fit w-96 flex-col
-        rounded-3xl border border-indigo-200 bg-black p-8"
-                      >
-                        <h2 className="text-2xl font-semibold">Delete Post?</h2>
-
-                        <p className="text-gray-500">
-                          This can{`'`}t be undone and it will be removed from
-                          your profile, the timeline of any accounts that follow
-                          you, and from search results.
-                        </p>
-                        <button
-                          className="my-4 rounded-3xl bg-red-700 px-2 py-2 hover:bg-red-800"
-                          onClick={() => {
-                            if (post.dataType === "reply") {
-                              deletePost({ replyId: post.id });
-                            } else deletePost({ postId: post.id });
-                          }}
-                        >
-                          Delete
-                        </button>
-                        <button
-                          className="rounded-3xl border px-2 py-2"
-                          onClick={() => setShowDeleteModal(false)}
-                        >
-                          Cancel
-                        </button>
-                      </div>
+                <div
+                  ref={modalCommentPostRef}
+                  className="modalComment mx-auto flex h-fit w-[95vw] flex-col rounded-3xl border
+        border-indigo-200 bg-black px-8 pb-4 pt-8 sm:w-[55vw] lg:w-[35vw]"
+                >
+                  <div className="mb-4 flex gap-3 border-slate-400 phone:relative">
+                    <div className="flex flex-shrink-0  flex-col">
+                      <Image
+                        className="z-[1] h-14 w-14 rounded-full"
+                        src={author?.profileImageUrl}
+                        alt={`@${author.username ?? ""}profile picture`}
+                        width={56}
+                        height={56}
+                      />
+                      <div className="z-0 mx-auto -mb-12 h-full border"></div>
                     </div>
-                  )}
-                </>
-              ) : (
-                <LoadingSpinner />
-              )}
-            </>
-          )}
-        </div>
-        {(/^\/post\/\w+/.test(router.asPath) ||
-          /^\/reply\/\w+/.test(router.asPath)) &&
-          post.replies.length > 0 &&
-          type === "reply" && (
+                    <div className="relative flex w-full flex-col">
+                      <div className="flex gap-1 text-slate-300">
+                        <Link href={`/@${author.username ?? ""}`}>
+                          @
+                          <span className="hover:text-white hover:underline">{`${
+                            author.username ?? ""
+                          }`}</span>
+                        </Link>
+                        <span className="font-thin">{` · ${dayjs(
+                          post.createdAt
+                        ).fromNow()}`}</span>
+                        {post.isEdited && (
+                          <>
+                            <p
+                              className="text-3xl text-slate-100"
+                              data-tooltip-id="edited-tooltip"
+                              data-tooltip-content="This post was edited."
+                            >
+                              *
+                            </p>
+                            <Tooltip
+                              id="edited-tooltip"
+                              place="bottom"
+                              style={{
+                                borderRadius: "24px",
+                                backgroundColor: "rgb(51 65 85)",
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
+                      <span className="select-text text-2xl sm:whitespace-pre-wrap">
+                        <PostContent content={post.content} />
+                      </span>
+                    </div>
+                  </div>
+                  <CreatePostWizard
+                    homePage={homePage}
+                    src="reply"
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    parentType={post.dataType}
+                    parentPostId={post.id}
+                    showCommentModal={showCommentModal}
+                    setShowCommentModal={setShowCommentModal}
+                    placeholder="Post your reply!"
+                  />
+                  <button
+                    className="mt-2 w-fit rounded-3xl border px-2 py-2 hover:bg-Intone-700"
+                    onClick={() => setShowCommentModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
             <button
-              className="mr-auto mt-2 text-Intone-300"
-              onClick={() => setFetchRepliesOfReply(true)}
+              onClick={() => setShowShareModal(true)}
+              data-tooltip-id="share-tooltip"
+              data-tooltip-content="Share"
             >
-              Show Replies
+              {" "}
+              <FontAwesomeIcon
+                icon={faShare}
+                className="post-button-fontAwesome"
+              />{" "}
             </button>
-          )}
-        
-      </div>
-      
-    </div>
-    {isLoadingRepliesOfReply && fetchRepliesOfReply ? (
-          // Render the loading spinner when isLoadingRepliesOfReply is true
-          // Replace 'LoadingSpinner' with your loading spinner component
-          <div className="mx-auto">
-            <LoadingSpinner size={32} />
+            <Tooltip
+              place="bottom"
+              style={{ borderRadius: "24px", backgroundColor: "rgb(51 65 85)" }}
+              id="share-tooltip"
+            />
+            {user?.id === author.id && (
+              <>
+                <button
+                  data-tooltip-id="editPost-tooltip"
+                  data-tooltip-content="Edit Post"
+                  onClick={handleEditClick}
+                  className="rounded-3xl border border-slate-400 px-4 py-1 hover:bg-slate-700"
+                >
+                  {isEditing ? "Save" : "Edit"}
+                </button>
+                <Tooltip
+                  place="bottom"
+                  style={{
+                    borderRadius: "24px",
+                    backgroundColor: "rgb(51 65 85)",
+                  }}
+                  id="editPost-tooltip"
+                />
+                {!isDeletingPost ? (
+                  <>
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      data-tooltip-id="delete-tooltip"
+                      data-tooltip-content="Delete"
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <FontAwesomeIcon className="h-6 w-6" icon={faXmark} />
+                    </button>
+                    <Tooltip
+                      place="bottom"
+                      style={{
+                        borderRadius: "24px",
+                        backgroundColor: "rgb(51 65 85)",
+                      }}
+                      id="delete-tooltip"
+                    />
+                    {showDeleteModal && (
+                      <div
+                        className={`modalparent transform transition-transform duration-300 ease-in-out ${
+                          showDeleteModal
+                            ? "visible scale-100 opacity-100"
+                            : "invisible scale-0 opacity-0"
+                        }`}
+                      >
+                        <div
+                          ref={modalDeletePostRef}
+                          className="modalDeletePost mx-auto flex h-fit w-96 flex-col
+        rounded-3xl border border-indigo-200 bg-black p-8"
+                        >
+                          <h2 className="text-2xl font-semibold">
+                            Delete Post?
+                          </h2>
+
+                          <p className="text-gray-500">
+                            This can{`'`}t be undone and it will be removed from
+                            your profile, the timeline of any accounts that
+                            follow you, and from search results.
+                          </p>
+                          <button
+                            className="my-4 rounded-3xl bg-red-700 px-2 py-2 hover:bg-red-800"
+                            onClick={() => {
+                              if (post.dataType === "reply") {
+                                deletePost({ replyId: post.id });
+                              } else deletePost({ postId: post.id });
+                            }}
+                          >
+                            Delete
+                          </button>
+                          <button
+                            className="rounded-3xl border px-2 py-2"
+                            onClick={() => setShowDeleteModal(false)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <LoadingSpinner />
+                )}
+              </>
+            )}
           </div>
-        ) : (
-          // Render the map of PostView components when isLoadingRepliesOfReply is false
-          repliesOfReply &&
-          fetchRepliesOfReply &&
-          typeof repliesOfReply !== "boolean" &&
-          repliesOfReply.replies &&
-          repliesOfReply.replies.map((reply) => (
-            <div key={reply.post.id} className="">
-              <PostView  {...reply} type="reply" />
-            </div>
-          ))
-        )}
+          {(/^\/post\/\w+/.test(router.asPath) ||
+            /^\/reply\/\w+/.test(router.asPath)) &&
+            post.replies.length > 0 &&
+            type === "reply" && (
+              <button
+                className="mr-auto mt-2 text-Intone-300"
+                onClick={() => {
+                  setFetchRepliesOfReply(true);
+                }}
+              >
+                Show Replies
+              </button>
+            )}
+        </div>
+      </div>
+      {isLoadingRepliesOfReply && fetchRepliesOfReply ? (
+        // Render the loading spinner when isLoadingRepliesOfReply is true
+        // Replace 'LoadingSpinner' with your loading spinner component
+        <div className="mx-auto">
+          <LoadingSpinner size={32} />
+        </div>
+      ) : (
+        // Render the map of PostView components when isLoadingRepliesOfReply is false
+        repliesOfReply &&
+        fetchRepliesOfReply &&
+        typeof repliesOfReply !== "boolean" &&
+        repliesOfReply.replies &&
+        repliesOfReply.replies.map((reply) => (
+          <div key={reply.post.id} className="">
+            <PostView {...reply} type="reply" />
+          </div>
+        ))
+      )}
     </div>
   );
 };
