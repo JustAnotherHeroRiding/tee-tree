@@ -257,6 +257,7 @@ type PostViewComponentProps = {
   type?: string;
   post: ExtendedPost;
   author: PostAuthor;
+  showLineBelow: boolean;
 };
 
 const PostViewComponent = (props: PostViewComponentProps) => {
@@ -264,7 +265,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const { post, author, type } = props;
 
-  const [showLineBelow, setShowLineBelow] = useState(false);
+  const [showLineBelow, setShowLineBelow] = useState(props.showLineBelow);
 
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
@@ -778,7 +779,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         {showLineBelow ? (
           <div className="flex flex-shrink-0  flex-col">
             <Image
-              className="h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
+              className="z-[1] h-14 w-14 rounded-full phone:absolute phone:bottom-4 phone:right-1 phone:h-10 phone:w-10"
               src={author?.profileImageUrl}
               alt={`@${author.username ?? ""}profile picture`}
               width={56}
@@ -1606,9 +1607,9 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         fetchRepliesOfReply &&
         typeof repliesOfReply !== "boolean" &&
         repliesOfReply.replies &&
-        repliesOfReply.replies.map((reply) => (
+        repliesOfReply.replies.map((reply, index) => (
           <div key={reply.post.id} className="">
-            <PostView {...reply} type="reply" />
+            <PostView {...reply} type="reply" showLineBelow={index < repliesOfReply.replies.length - 1} />
           </div>
         ))
       )}

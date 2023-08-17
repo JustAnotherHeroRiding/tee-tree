@@ -125,6 +125,7 @@ Let's implement some features I have already implemented before in order to lear
 - Show number of replies below each reply and fetch them upon clicking on the show Replies banner without loading a new page #DONE 
 - I need to center them somehow, perhaps a brand new parent div #DONE 
 - Lines between the profile pictures #DONE 
+- Perhaps the replies should be a bit smaller and the line should be curved
 - No borders for replies
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - If the reply is shown without the parent there should be a banner like for retweets
