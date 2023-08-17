@@ -262,7 +262,7 @@ type PostViewComponentProps = {
 const PostViewComponent = (props: PostViewComponentProps) => {
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
-  const { post, author } = props;
+  const { post, author, type } = props;
 
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
@@ -1623,6 +1623,10 @@ const PostViewComponent = (props: PostViewComponentProps) => {
             </>
           )}
         </div>
+        {(/^\/post\/\w+/.test(router.asPath) ||
+          /^\/reply\/\w+/.test(router.asPath)) &&
+          post.replies.length > 0 &&
+          type === "reply" && <button className="text-Intone-300">Show Replies</button>}
       </div>
     </div>
   );

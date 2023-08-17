@@ -118,18 +118,20 @@ Let's implement some features I have already implemented before in order to lear
 - Different placeholder in the create post wizard depending on if it is a new post, reply or the wizard in the single post/reply page #DONE 
 - The feed should be all the replies that the user has posted #DONE 
 - Clicking on a reply should open it with the main post above it #DONE 
-- Sort replies by likes and number of comments if likes are the same and number of comments is the same and then by newest
-- Show number of replies below each reply and fetch them upon clicking on the show more banner without loading a new page
-###### The relations for the replies are not being fetched as they are not included in post.replies
+- Sort replies by likes and number of comments if likes are the same and number of comments is the same and then by newest #DONE 
+###### The relations for the replies are not being fetched as they are not included in post.replies #DONE 
+- Show more under replies that have replies #DONE 
+- Show number of replies below each reply and fetch them upon clicking on the show Replies banner without loading a new page
 - Lines between the profile pictures and no borders for replies
-- After a reply is posted, the modal should close and the reply will appear on the profile with a replying to {user} banner just like the retweets 
 - Replies should also appear on the main feed, with the original post nested inside the reply
-- If there are multiple replies to a single post then the parent should only be shown once
-- Replies should have a banner above them in the main feed
+- If the reply is shown without the parent there should be a banner like for retweets
 - Infinite scroll for the replies of a post, perhaps create a brand new feed
 
 ### User card on hover on post author
 - Let us implement the same feature inside the PostView component where the user card shows up upon hovering on the post Author
+
+### Invalidating data
+- Perhaps I should create an array with all the url patterns so that I can clean up the code, or create a function for the invalidation where I pass the current url
 
 
 
@@ -207,6 +209,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Added the web bundle analyzer #DONE 
 
 ## Messaging
+- Let's use git to create a separate version to work on and then merge it with the main branch once I am finished with it
 - Separate page where users can message each other
 - Let's create a new branch separate from the main branch where I will work on Messaging then then merge them
 
