@@ -129,6 +129,7 @@ Let's implement some features I have already implemented before in order to lear
 - Infinite scroll for the replies of a post, perhaps create a brand new feed
 
 ### User card on hover on post author
+- Let us implement the same feature inside the PostView component where the user card shows up upon hovering on the post Author
 
 
 

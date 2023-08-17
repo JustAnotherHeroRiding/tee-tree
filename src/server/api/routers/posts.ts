@@ -187,6 +187,35 @@ const addUserDataToReplies = async (
   return enrichedReplies;
 };
 
+
+const sortReplies = (replies: ReplyWithParent[]): ReplyWithParent[] => {
+  const weights = {
+    likes: 10000,
+    replies: 15000,
+    timestamp: 0.0001, // Decreased weight for timestamp
+  };
+
+  // Define a helper function to calculate the score for a reply
+  const calculateScore = (reply: ReplyWithParent): number => {
+    const { likes, replies, createdAt } = reply.post;
+    return (
+      likes.length * weights.likes +
+      replies.length * weights.replies +
+      createdAt.getTime() * weights.timestamp
+    );
+  };
+
+  // Sort the replies array based on the calculated scores
+  const sortedReplies = replies.sort((a, b) => {
+    const scoreA = calculateScore(a);
+    const scoreB = calculateScore(b);
+    return scoreB - scoreA; // Sort in descending order
+  });
+
+  return sortedReplies;
+};
+
+
 type ResponseData = {
   result: string;
 };
@@ -283,6 +312,8 @@ export const postsRouter = createTRPCRouter({
         );
       }
 
+      replies = sortReplies(replies);
+
       return { ...postWithUserReplies, replies };
     }),
 
@@ -367,6 +398,8 @@ export const postsRouter = createTRPCRouter({
       let parent: PostWithAuthor | null = null;
 
       parent = parentArray[0] as PostWithAuthor;
+
+      replies = sortReplies(replies);
 
       return { ...postWithUserReplies, replies, parent };
     }),
