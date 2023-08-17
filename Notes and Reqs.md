@@ -121,7 +121,9 @@ Let's implement some features I have already implemented before in order to lear
 - Sort replies by likes and number of comments if likes are the same and number of comments is the same and then by newest #DONE 
 ###### The relations for the replies are not being fetched as they are not included in post.replies #DONE 
 - Show more under replies that have replies #DONE 
-- Show number of replies below each reply and fetch them upon clicking on the show Replies banner without loading a new page
+- Once again it looks like i will either have to fetch the replies to get the relations from the start or fetch them after clicking on show more #DONE 
+- Show number of replies below each reply and fetch them upon clicking on the show Replies banner without loading a new page #DONE 
+- I need to center them somehow, perhaps a brand new parent div
 - Lines between the profile pictures and no borders for replies
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - If the reply is shown without the parent there should be a banner like for retweets
@@ -131,7 +133,7 @@ Let's implement some features I have already implemented before in order to lear
 - Let us implement the same feature inside the PostView component where the user card shows up upon hovering on the post Author
 
 ### Invalidating data
-- Perhaps I should create an array with all the url patterns so that I can clean up the code, or create a function for the invalidation where I pass the current url
+- Perhaps I should create an array with all the url patterns so that I can clean up the code, or create a function for the invalidation where I pass the current url #DONE 
 
 
 

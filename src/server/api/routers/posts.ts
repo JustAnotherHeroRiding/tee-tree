@@ -1,6 +1,6 @@
 import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { z, type ZodSchema } from "zod";
 import {
   createTRPCRouter,
   privateProcedure,
@@ -187,7 +187,6 @@ const addUserDataToReplies = async (
   return enrichedReplies;
 };
 
-
 const sortReplies = (replies: ReplyWithParent[]): ReplyWithParent[] => {
   const weights = {
     likes: 10000,
@@ -214,7 +213,6 @@ const sortReplies = (replies: ReplyWithParent[]): ReplyWithParent[] => {
 
   return sortedReplies;
 };
-
 
 type ResponseData = {
   result: string;
@@ -254,6 +252,24 @@ const EditPostInput = z
     }
     return true;
   });
+
+// Define the schema for each reply object
+const replySchema = z.object({
+  id: z.string(),
+  createdAt: z.date(),
+  content: z.string(),
+  imageUrl: z.string().nullable(),
+  gifUrl: z.string().nullable(),
+  videoUrl: z.string().nullable(),
+  isEdited: z.boolean(),
+  authorId: z.string(),
+  postId: z.string().nullable(),
+  dataType: z.string(),
+  parentId: z.string().nullable(),
+});
+
+// Define the schema for the array of reply objects
+const repliesSchema: ZodSchema<Reply[]> = z.array(replySchema);
 
 const FollowedWithAuthorSchema = z.object({
   followed: z.object({
@@ -402,6 +418,45 @@ export const postsRouter = createTRPCRouter({
       replies = sortReplies(replies);
 
       return { ...postWithUserReplies, replies, parent };
+    }),
+
+  enrichReplies: publicProcedure
+    .input(repliesSchema)
+    .query(async ({ ctx, input }) => {
+      const replyIds: string[] = [];
+
+      // Extract reply ids from input
+      input.forEach((post) => {
+        replyIds.push(post.id);
+      });
+
+       // Fetch child replies with their relations
+    const fetchedReplies = await ctx.prisma.reply.findMany({
+      where: {
+        id: {
+          in: replyIds,
+        },
+      },
+      include: {
+        likes: true,
+        retweets: true,
+        replies: {
+          include: {
+            likes: true,
+            retweets: true,
+            replies: true
+          },
+        },
+      },
+    });
+
+    const enrichedReplies = await addUserDataToReplies(fetchedReplies);
+
+    const sortedReplies = sortReplies(enrichedReplies);
+
+
+
+      return { replies: sortedReplies };
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {

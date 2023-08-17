@@ -54,7 +54,6 @@ import {
 } from "~/server/api/routers/posts";
 import useOutsideClick from "../customHooks/outsideClick";
 
-
 dayjs.extend(relativeTime);
 
 export type PostWithUser = PostWithAuthor;
@@ -62,7 +61,6 @@ export type PostWithUser = PostWithAuthor;
 type PostContentProps = {
   content: string;
 };
-
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
@@ -280,6 +278,13 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { data: trends, isLoading: loadingTrends } =
     api.posts.getTrends.useQuery({});
 
+  const [fetchRepliesOfReply, setFetchRepliesOfReply] = useState(false);
+
+  const { data: repliesOfReply, isLoading: isLoadingRepliesOfReply } =
+    api.posts.enrichReplies.useQuery(post.replies, {
+      enabled: fetchRepliesOfReply,
+    });
+
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -295,8 +300,6 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const [showMediaFullScreen, setShowMediaFullScreen] = useState(false);
 
   const [showShareModal, setShowShareModal] = useState(false);
-
-
 
   useOutsideClick(modalCommentPostRef, () => {
     if (showCommentModal) {
@@ -393,17 +396,23 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const ctx = api.useContext();
   const params = new URLSearchParams(location.search);
 
-  function invalidateResources(location : Location, homePage : boolean, params : URLSearchParams) {
-
+  function invalidateResources(
+    location: Location,
+    homePage: boolean,
+    params: URLSearchParams
+  ) {
     const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
     const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
     const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
     const isInvalidateReplyById = /^\/reply\/\w+/.test(location.pathname);
-    const isInvalidateSearchResults = location.pathname.startsWith("/i/search") && params.get("selector") !== "photos" && params.get("selector") !== "gifs";
+    const isInvalidateSearchResults =
+      location.pathname.startsWith("/i/search") &&
+      params.get("selector") !== "photos" &&
+      params.get("selector") !== "gifs";
     const isInvalidateSearchResultsImages = params.get("selector") === "photos";
     const isInvalidateSearchResultsGifs = params.get("selector") === "gifs";
     const isInvalidateUserPosts = location.pathname.startsWith("/@");
-  
+
     if (location.pathname === "/") {
       if (homePage) {
         void ctx.posts.infiniteScrollAllPosts?.invalidate();
@@ -431,7 +440,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
-      invalidateResources(location, homePage, params)
+      invalidateResources(location, homePage, params);
       console.log("Post Liked");
     },
     onError: (e) => {
@@ -447,7 +456,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { mutate: retweetPost, isLoading: isRetweeting } =
     api.posts.retweetPost.useMutation({
       onSuccess: () => {
-        invalidateResources(location, homePage, params)
+        invalidateResources(location, homePage, params);
 
         console.log("Retweeted post");
       },
@@ -464,8 +473,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { mutate: editPost, isLoading: isEditingPostUpdating } =
     api.posts.editPost.useMutation({
       onSuccess: () => {
-        invalidateResources(location, homePage, params)
-
+        invalidateResources(location, homePage, params);
 
         console.log("Post Edited");
       },
@@ -483,8 +491,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
     api.posts.deletePost.useMutation({
       onSuccess: () => {
         setShowDeleteModal(false);
-        invalidateResources(location, homePage, params)
-
+        invalidateResources(location, homePage, params);
 
         console.log("Post Deleted");
       },
@@ -522,8 +529,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         if (publicId) {
           deleteMediaCloudinary({ publicId: publicId });
         }
-        invalidateResources(location, homePage, params)
-
+        invalidateResources(location, homePage, params);
 
         console.log("Post Image Deleted");
       },
@@ -758,8 +764,9 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   }
 
   return (
+    <div  key={post.id} className="flex-col flex">
     <div
-      key={post.id}
+     
       className="flex gap-3 border-b border-slate-400 p-4 phone:relative"
     >
       <Image
@@ -1541,8 +1548,36 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         {(/^\/post\/\w+/.test(router.asPath) ||
           /^\/reply\/\w+/.test(router.asPath)) &&
           post.replies.length > 0 &&
-          type === "reply" && <button className="text-Intone-300 mr-auto mt-2">Show Replies</button>}
+          type === "reply" && (
+            <button
+              className="mr-auto mt-2 text-Intone-300"
+              onClick={() => setFetchRepliesOfReply(true)}
+            >
+              Show Replies
+            </button>
+          )}
+        
       </div>
+      
+    </div>
+    {isLoadingRepliesOfReply && fetchRepliesOfReply ? (
+          // Render the loading spinner when isLoadingRepliesOfReply is true
+          // Replace 'LoadingSpinner' with your loading spinner component
+          <div className="mx-auto">
+            <LoadingSpinner size={32} />
+          </div>
+        ) : (
+          // Render the map of PostView components when isLoadingRepliesOfReply is false
+          repliesOfReply &&
+          fetchRepliesOfReply &&
+          typeof repliesOfReply !== "boolean" &&
+          repliesOfReply.replies &&
+          repliesOfReply.replies.map((reply) => (
+            <div key={reply.post.id} className="">
+              <PostView  {...reply} type="reply" />
+            </div>
+          ))
+        )}
     </div>
   );
 };
