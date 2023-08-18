@@ -29,9 +29,7 @@ const SingleReplyPage: NextPage<{ id: string }> = ({ id }) => {
 
           <BackButton />
         </div>
-        <div className="px-6">
-        <PostView {...data.parent} />
-        </div>
+        <PostView {...data.parent} showLineBelow={true} />
         <PostView {...data} />
         <div className="px-6 mt-6">
         <CreatePostWizard

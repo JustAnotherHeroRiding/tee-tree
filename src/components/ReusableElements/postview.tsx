@@ -267,7 +267,6 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const [showLineBelow, setShowLineBelow] = useState(props.showLineBelow);
 
-
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
 
@@ -305,12 +304,11 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const [showShareModal, setShowShareModal] = useState(false);
 
-
   useEffect(() => {
     if (repliesOfReply) {
-      setShowLineBelow(true)
+      setShowLineBelow(true);
     }
-  },[repliesOfReply])
+  }, [repliesOfReply]);
 
   useOutsideClick(modalCommentPostRef, () => {
     if (showCommentModal) {
@@ -780,9 +778,116 @@ const PostViewComponent = (props: PostViewComponentProps) => {
     }
   }
 
+  const [fetchAuthorFollowingData, setFetchAuthorFollowingData] =
+    useState(false);
+
+  const { data: followingData } = api.follow.getFollowingCurrentUser.useQuery();
+
+  const { data: followersDataAuthor } = api.follow.getFollowersById.useQuery(
+    { followedUserId: post.authorId },
+    { enabled: fetchAuthorFollowingData }
+  );
+  const { data: followingDataAuthor } = api.follow.getFollowingById.useQuery(
+    { followingUserId: post.authorId },
+    {
+      enabled: fetchAuthorFollowingData,
+    }
+  );
+
+  const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>(
+    {}
+  );  
+  const [followerCount, setFollowerCount] = useState<{ [key: string]: number }>(
+    {}
+  );
+  const [followingCount, setFollowingCount] = useState<{
+    [key: string]: number;
+  }>({});
+
+  useEffect(() => {
+    if (post.authorId) {
+      setFetchAuthorFollowingData(true);
+    }
+  }, [post.authorId]);
+
+  useEffect(() => {
+    if (followingData) {
+      const followingMap = followingData.reduce<{ [key: string]: boolean }>(
+        (acc, user) => {
+          acc[user.followed.followingId] = true;
+          return acc;
+        },
+        {}
+      );
+      setIsFollowing(followingMap);
+    }
+  }, [followingData]);
+
+  useEffect(() => {
+    if (followersDataAuthor && followingDataAuthor) {
+      const followerObject: Record<string, number> = {};
+      const followingObject: Record<string, number> = {};
+  
+      followerObject[post.authorId] = followersDataAuthor.length;
+      followingObject[post.authorId] = followingDataAuthor.length;
+  
+      setFollowerCount(followerObject);
+      setFollowingCount(followingObject);
+    }
+  }, [followersDataAuthor, followingDataAuthor, post.authorId]);
+  
+  
+
+  const { mutate: followUser, isLoading: isFollowingLoading } =
+    api.profile.followUser.useMutation({
+      onSuccess: (data, variables) => {
+        console.log(`You are now following the user.`);
+
+        // Create a copy of the 'isFollowing' and 'followerCount' states
+        const newIsFollowing = { ...isFollowing };
+        const newFollowerCount = { ...followerCount };
+
+        // Check if the current user is already following the user
+        if (isFollowing[variables.userToFollowId]) {
+          // If so, set 'isFollowing[userId]' to false to indicate that the current user has unfollowed the user
+          newIsFollowing[variables.userToFollowId] = false;
+          setIsFollowing(newIsFollowing);
+
+          // Decrement the follower count for this user
+          if (newFollowerCount[variables.userToFollowId]) {
+            newFollowerCount[variables.userToFollowId] -= 1;
+          } else {
+            newFollowerCount[variables.userToFollowId] = 0; // assuming when not found, the followerCount should be 0
+          }
+        } else {
+          // Otherwise, set 'isFollowing[userId]' to true to indicate that the current user is now following the user
+          newIsFollowing[variables.userToFollowId] = true;
+          setIsFollowing(newIsFollowing);
+
+          // Increment the follower count for this user
+          newFollowerCount[variables.userToFollowId] =
+            (newFollowerCount[variables.userToFollowId] || 0) + 1;
+        }
+
+        // Update the 'followerCount' state
+        setFollowerCount(newFollowerCount);
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Follow! Are you logged in?");
+        }
+      },
+    });
   return (
     <div key={post.id} className="flex flex-col">
-      <div className={`flex gap-3 ${!showLineBelow ? "border-b border-slate-400": ""} p-4 phone:relative`}>
+      <div
+        className={`flex gap-3 ${
+          !showLineBelow ? "border-b border-slate-400" : ""
+        } p-4 phone:relative`}
+      >
         {showLineBelow ? (
           <div className="flex flex-shrink-0  flex-col">
             <Image
@@ -806,12 +911,27 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
         <div className="relative flex w-full flex-col">
           <div className="flex gap-1 text-slate-300">
-            <Link href={`/@${author.username ?? ""}`}>
-              @
-              <span className="hover:text-white hover:underline">{`${
-                author.username ?? ""
-              }`}</span>
-            </Link>
+            <div className="group inline-block">
+              <Link href={`/@${author.username ?? ""}`}>
+                @
+                <span className="hover:text-white hover:underline">{`${
+                  author.username ?? ""
+                }`}</span>
+              </Link>
+              <UserHoverCard
+                user={user as User}
+                userList={userList}
+                mentionedUser={author as User}
+                username={author.username ?? ""}
+                isFollowingLoading={isFollowingLoading}
+                isFollowing={isFollowing}
+                followingData={followingData}
+                mutate={followUser}
+                followingCount={followingCount}
+                followerCount={followerCount}
+                location="post"
+              />
+            </div>
             <span className="font-thin">{` · ${dayjs(
               post.createdAt
             ).fromNow()}`}</span>
@@ -1590,7 +1710,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
           {(/^\/post\/\w+/.test(router.asPath) ||
             /^\/reply\/\w+/.test(router.asPath)) &&
             post.replies.length > 0 &&
-            type === "reply" && !repliesOfReply && (
+            type === "reply" &&
+            !repliesOfReply && (
               <button
                 className="mr-auto mt-2 text-Intone-300"
                 onClick={() => {
@@ -1616,7 +1737,11 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         repliesOfReply.replies &&
         repliesOfReply.replies.map((reply, index) => (
           <div key={reply.post.id} className="">
-            <PostView {...reply} type="reply" showLineBelow={index < repliesOfReply.replies.length - 1} />
+            <PostView
+              {...reply}
+              type="reply"
+              showLineBelow={index < repliesOfReply.replies.length - 1}
+            />
           </div>
         ))
       )}

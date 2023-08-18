@@ -127,6 +127,7 @@ Let's implement some features I have already implemented before in order to lear
 - No borders for replies #DONE 
 - Lines between the profile pictures #DONE 
 - Set a default view for the show border value #DONE 
+- Line between parent post when opening a single reply view #DONE 
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - If the reply is shown without the parent there should be a banner like for retweets
 - Infinite scroll for the replies of a post, perhaps create a brand new feed
@@ -141,7 +142,7 @@ Let's implement some features I have already implemented before in order to lear
 
 ### Invalidating data
 - Perhaps I should create an array with all the url patterns so that I can clean up the code, or create a function for the invalidation where I pass the current url #DONE 
-- Invalidating the new replies loaded when clicking on show more
+- Invalidating the new replies loaded when clicking on show more #DONE 
 
 
 
