@@ -126,18 +126,22 @@ Let's implement some features I have already implemented before in order to lear
 - I need to center them somehow, perhaps a brand new parent div #DONE 
 - No borders for replies #DONE 
 - Lines between the profile pictures #DONE 
-- Set a default view for the showborder value
-- Perhaps the replies should be a bit smaller and the line should be curved
-- When i click show more on a reply that was loaded with show more suddenly the line and border reappear for the last post
+- Set a default view for the show border value #DONE 
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - If the reply is shown without the parent there should be a banner like for retweets
 - Infinite scroll for the replies of a post, perhaps create a brand new feed
+
+
+## Replies border reappearing
+- When I click show more on a reply that was loaded with show more suddenly the line and border reappear for the last post
+##### I'm not sure how to log this as the border is shown for the last reply, so when loading the replies of a reply the border is reapplied and the connection between the reply and the parent is severed
 
 ### User card on hover on post author
 - Let us implement the same feature inside the PostView component where the user card shows up upon hovering on the post Author
 
 ### Invalidating data
 - Perhaps I should create an array with all the url patterns so that I can clean up the code, or create a function for the invalidation where I pass the current url #DONE 
+- Invalidating the new replies loaded when clicking on show more
 
 
 

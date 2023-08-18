@@ -436,8 +436,14 @@ const PostViewComponent = (props: PostViewComponentProps) => {
       void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
     } else if (isInvalidateById) {
       void ctx.posts.getById.invalidate();
+      if (repliesOfReply) {
+        void ctx.posts.enrichReplies.invalidate();
+      }
     } else if (isInvalidateReplyById) {
       void ctx.posts.getReplyById.invalidate();
+      if (repliesOfReply) {
+        void ctx.posts.enrichReplies.invalidate();
+      }
     } else if (isInvalidateSearchResults) {
       void ctx.posts.infiniteScrollSearchResults.invalidate();
     } else if (isInvalidateSearchResultsImages) {
@@ -1584,7 +1590,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
           {(/^\/post\/\w+/.test(router.asPath) ||
             /^\/reply\/\w+/.test(router.asPath)) &&
             post.replies.length > 0 &&
-            type === "reply" && (
+            type === "reply" && !repliesOfReply && (
               <button
                 className="mr-auto mt-2 text-Intone-300"
                 onClick={() => {
@@ -1599,7 +1605,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
       {isLoadingRepliesOfReply && fetchRepliesOfReply ? (
         // Render the loading spinner when isLoadingRepliesOfReply is true
         // Replace 'LoadingSpinner' with your loading spinner component
-        <div className="mx-auto">
+        <div className="mx-auto mb-12">
           <LoadingSpinner size={32} />
         </div>
       ) : (
