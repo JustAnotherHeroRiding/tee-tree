@@ -260,12 +260,12 @@ type PostViewComponentProps = {
   showLineBelow: boolean;
 };
 
-const PostViewComponent = (props: PostViewComponentProps) => {
+const PostViewComponent = ({showLineBelow: showLineBelowProp = false, ...props }: PostViewComponentProps) => {
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
   const { post, author, type } = props;
 
-  const [showLineBelow, setShowLineBelow] = useState(props.showLineBelow);
+  const [showLineBelow, setShowLineBelow] = useState(showLineBelowProp);
 
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
@@ -775,7 +775,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   return (
     <div key={post.id} className="flex flex-col">
-      <div className="flex gap-3 border-b border-slate-400 p-4 phone:relative">
+      <div className={`flex gap-3 ${!showLineBelow ? "border-b border-slate-400": ""} p-4 phone:relative`}>
         {showLineBelow ? (
           <div className="flex flex-shrink-0  flex-col">
             <Image

@@ -121,12 +121,14 @@ Let's implement some features I have already implemented before in order to lear
 - Sort replies by likes and number of comments if likes are the same and number of comments is the same and then by newest #DONE 
 ###### The relations for the replies are not being fetched as they are not included in post.replies #DONE 
 - Show more under replies that have replies #DONE 
-- Once again it looks like i will either have to fetch the replies to get the relations from the start or fetch them after clicking on show more #DONE 
+- Once again it looks like I will either have to fetch the replies to get the relations from the start or fetch them after clicking on show more #DONE 
 - Show number of replies below each reply and fetch them upon clicking on the show Replies banner without loading a new page #DONE 
 - I need to center them somehow, perhaps a brand new parent div #DONE 
+- No borders for replies #DONE 
 - Lines between the profile pictures #DONE 
+- Set a default view for the showborder value
 - Perhaps the replies should be a bit smaller and the line should be curved
-- No borders for replies
+- When i click show more on a reply that was loaded with show more suddenly the line and border reappear for the last post
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - If the reply is shown without the parent there should be a banner like for retweets
 - Infinite scroll for the replies of a post, perhaps create a brand new feed
