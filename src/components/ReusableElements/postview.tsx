@@ -257,15 +257,16 @@ type PostViewComponentProps = {
   type?: string;
   post: ExtendedPost;
   author: PostAuthor;
-  showLineBelow: boolean;
+  showLineBelow?: boolean;
 };
 
-const PostViewComponent = ({showLineBelow: showLineBelowProp = false, ...props }: PostViewComponentProps) => {
+const PostViewComponent = (props: PostViewComponentProps) => {
   //const deleteImageUrl = `https://api.cloudinary.com/v1_1/de5zmknvp/image/destroy`;
 
   const { post, author, type } = props;
 
-  const [showLineBelow, setShowLineBelow] = useState(showLineBelowProp);
+  const [showLineBelow, setShowLineBelow] = useState(props.showLineBelow);
+
 
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const { homePage } = useHomePage();
