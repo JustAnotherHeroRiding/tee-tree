@@ -32,13 +32,13 @@ jest.mock("@upstash/ratelimit", () => {
   };
 }); */
 
-
 afterAll(async () => {
   // Disconnect Prisma
   await prisma.$disconnect();
 });
 
 test("Get all users test", async () => {
+
   const caller = appRouter.createCaller({
     session: null,
     prisma: prisma,
@@ -58,4 +58,4 @@ test("Get all users test", async () => {
       }),
     ])
   );
-}, 5000);
+});
