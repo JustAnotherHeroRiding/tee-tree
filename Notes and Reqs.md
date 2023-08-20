@@ -213,7 +213,9 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 
 ## Testing
-- Implement testing with Jest 
+- Implement testing with Jest  #DONE 
+- Test if the user list will be fetched #DONE 
+- 
 
 ### Trends should also include replies
 - Include replies in the trend fetching endpoint #DONE 
