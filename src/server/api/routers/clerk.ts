@@ -2,9 +2,8 @@ import { clerkClient } from "@clerk/nextjs";
 //import { type User } from "@clerk/nextjs/dist/types/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
-
 
 export const clerkRouter = createTRPCRouter({
     getUserById: publicProcedure.input(z.object({ userId: z.string().optional() })).

@@ -6,12 +6,14 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { getAuth } from "@clerk/nextjs/server";
+import { type SignedInAuthObject, type SignedOutAuthObject, getAuth } from "@clerk/nextjs/server";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { prisma } from "~/server/db";
+import { prisma } from "../db"; 
+import { type Session } from "@clerk/nextjs/server";
+import { type PrismaClient } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -30,17 +32,32 @@ import { prisma } from "~/server/db";
  *
  * @see https://trpc.io/docs/context
  */
+
+
+type CreateContextOptions = {
+  session: Session | null;
+  prisma?: PrismaClient;
+};
+
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
   const {req} = opts;
-  const sesh = getAuth(req);
+  const sesh : SignedInAuthObject | SignedOutAuthObject | null = getAuth(req);
 
   const userId = sesh.userId;
 
-
+  type SessionType = SignedInAuthObject | SignedOutAuthObject | null;
 
   return {
     prisma,
     userId,
+    session: sesh as SessionType
+  };
+};
+
+export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+  return {
+    session: opts.session,
+    prisma: opts.prisma || prisma,
   };
 };
 

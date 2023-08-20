@@ -138,7 +138,7 @@ Let's implement some features I have already implemented before in order to lear
 ##### I'm not sure how to log this as the border is shown for the last reply, so when loading the replies of a reply the border is reapplied and the connection between the reply and the parent is severed
 
 ### User card on hover on post author
-- Let us implement the same feature inside the PostView component where the user card shows up upon hovering on the post Author
+- Let us implement the same feature inside the PostView component where the user card shows up upon hovering on the post Author #DONE 
 
 ### Invalidating data
 - Perhaps I should create an array with all the url patterns so that I can clean up the code, or create a function for the invalidation where I pass the current url #DONE 
@@ -210,6 +210,10 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 ### Search results should also include replies
 - Currently it only queries for posts and not replies #DONE 
 ##### This needs more work as it fetches the limit from both posts and replies so it fetches double as many items per fetch trigger
+
+
+## Testing
+- Implement testing with Jest 
 
 ### Trends should also include replies
 - Include replies in the trend fetching endpoint #DONE 
