@@ -13,15 +13,15 @@ export const PageLayout = (props: PropsWithChildren) => {
   return (
     <>
       <main className="relative flex h-screen justify-center">
-        <div className="fixed left-[3%] showSidebar:hidden">
+        <div className="fixed left-[3%] showSidebar:hidden flex flex-col items-start gap-2">
           <Link
-            className="flex flex-row items-center justify-center rounded-xl hover:text-Intone-300"
+            className="flex flex-row items-center justify-center rounded-xl mt-2 hover:bg-Intone-100 hover:text-Intone-300"
             href={"/"}
           >
             <svg
               className="sticky top-2 h-10 w-10 rounded-2xl p-1"
-              width="1em"
-              height="1em"
+              width="1rem"
+              height="1rem"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -31,6 +31,33 @@ export const PageLayout = (props: PropsWithChildren) => {
               ></path>
             </svg>
             <h1 className="-ml-2 logoNameClip:hidden">teeTree</h1>
+          </Link>
+          <Link
+            className="flex flex-row items-center justify-center rounded-xl hover:bg-Intone-100 hover:text-Intone-300"
+            href={"/messages"}
+          >
+            <svg
+              className=" h-10 w-10 rounded-2xl p-1"
+              width='1rem'
+              height='1rem'
+              viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g fill="none" stroke-width="4">
+                <path
+                  fill="#2F88FF"
+                  stroke="#000"
+                  d="M39 6H9C7.34315 6 6 7.34315 6 9V39C6 40.6569 7.34315 42 9 42H39C40.6569 42 42 40.6569 42 39V9C42 7.34315 40.6569 6 39 6Z"
+                />
+                <path
+                  fill="#43CCF8"
+                  stroke="#fff"
+                  stroke-linejoin="round"
+                  d="M34 23C34 26.8624 31.2967 30.1565 27.5 31.4334C26.4107 31.7997 25.2313 32 24 32C20 32 15 34 15 34L16.1323 31.5543C16.6952 30.3384 16.336 28.9248 15.5616 27.8314C14.5729 26.4356 14 24.778 14 23C14 18.0294 18.4772 14 24 14C29.5228 14 34 18.0294 34 23Z"
+                />
+              </g>
+            </svg>{" "}
+            <h1 className="-ml-2 logoNameClip:hidden">Messages</h1>
           </Link>
         </div>
 
@@ -65,7 +92,9 @@ export const PageLayout = (props: PropsWithChildren) => {
                   <SuggestedUsers />
                 ) : (
                   <>
-                    <h1 className="mb-4 px-4 py-2 text-2xl">You are not logged in</h1>
+                    <h1 className="mb-4 px-4 py-2 text-2xl">
+                      You are not logged in
+                    </h1>
                     <SignInButton>
                       <div
                         className="mb-2 ml-2 flex w-fit cursor-pointer 
