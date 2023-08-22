@@ -12,7 +12,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { prisma } from "../db"; 
-import { type Session } from "@clerk/nextjs/server";
+//import { type Session } from "@clerk/nextjs/server";
 import { type PrismaClient } from "@prisma/client";
 
 /**
@@ -35,9 +35,13 @@ import { type PrismaClient } from "@prisma/client";
 
 
 type CreateContextOptions = {
-  session: Session | null;
+  session: SessionType | null;
   prisma?: PrismaClient;
+  userId? : string | null;
 };
+
+type SessionType = SignedInAuthObject | SignedOutAuthObject | null;
+
 
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
   const {req} = opts;
@@ -45,7 +49,6 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 
   const userId = sesh.userId;
 
-  type SessionType = SignedInAuthObject | SignedOutAuthObject | null;
 
   return {
     prisma,
@@ -56,8 +59,9 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 
 export const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
-    session: opts.session,
+    session: opts.session || null,
     prisma: opts.prisma || prisma,
+    userId: opts.userId || null
   };
 };
 
