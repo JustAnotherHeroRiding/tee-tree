@@ -53,7 +53,7 @@ function generateSignature(publicId: string, apiSecret: string) {
   return crypto.createHash("sha1").update(stringToSign).digest("hex");
 }
 
-const addUserDataToPosts = async (posts: ExtendedPost[]) => {
+export const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   const users = (
     await clerkClient.users.getUserList({
       userId: posts.map((post) => post.authorId),
@@ -80,7 +80,7 @@ const addUserDataToPosts = async (posts: ExtendedPost[]) => {
   });
 };
 
-const addUserDataToReplies = async (
+export const addUserDataToReplies = async (
   replies: ExtendedPost[]
 ): Promise<ReplyWithParent[]> => {
   const users = (
@@ -189,7 +189,7 @@ const addUserDataToReplies = async (
   return enrichedReplies;
 };
 
-const sortReplies = (replies: ReplyWithParent[]): ReplyWithParent[] => {
+export const sortReplies = (replies: ReplyWithParent[]): ReplyWithParent[] => {
   const weights = {
     likes: 10000,
     replies: 15000,
@@ -474,6 +474,15 @@ export const postsRouter = createTRPCRouter({
 
     return addUserDataToPosts(posts);
   }),
+
+  getOneExample: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.post.findFirst({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }),
+  
 
   getAllLastWeek: publicProcedure.query(async ({ ctx }) => {
     // Get the date for one week ago
