@@ -612,7 +612,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         </h1>
         <div className="gray-thin-scrollbar relative max-h-[45vh] w-full overflow-auto">
           <div
-            className="absolute whitespace-pre-wrap text-transparent"
+            className="absolute whitespace-pre-wrap text-transparent pointer-events-none"
             dangerouslySetInnerHTML={{
               __html: highlightedInput.replace(/\n/g, "<br/>"),
             }}

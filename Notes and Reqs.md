@@ -236,6 +236,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 ## Update the read me
 - Make the read me give a clear overview of the project and remove the boilerplate #DONE 
+- Extend it to include all the various features and pages I have implemented as most are gated behind being logged in and not visible on a first sight
 
 ## Messaging
 - Let's use git to create a separate version to work on and then merge it with the main branch once I am finished with it
