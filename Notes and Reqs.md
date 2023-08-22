@@ -219,6 +219,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Test if the initial feed will render 4 posts #DONE 
 - Create a mock test for liking a post #DONE 
 - Mock test for unliking a post will need to be passed the found post or found reply in order to work
+- Cypress end to end testing
 
 ### Trends should also include replies
 - Include replies in the trend fetching endpoint #DONE 

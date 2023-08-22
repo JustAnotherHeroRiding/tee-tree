@@ -14,7 +14,7 @@ describe("likePost Endpoint", () => {
     const postId = "test-post-id";
     prismaMock.like.findFirst.mockResolvedValue(null);
 
-    const createSpy = jest.spyOn(prismaMock.like, 'create');
+    const createSpy = jest.spyOn(prismaMock.like, "create");
 
     const caller = appRouter.createCaller({
       session: null,
@@ -37,8 +37,7 @@ describe("likePost Endpoint", () => {
     const replyId = "test-reply-id";
     prismaMock.like.findFirst.mockResolvedValue(null);
 
-    const createSpy = jest.spyOn(prismaMock.like, 'create');
-
+    const createSpy = jest.spyOn(prismaMock.like, "create");
 
     const caller = appRouter.createCaller({
       session: null,
@@ -57,11 +56,17 @@ describe("likePost Endpoint", () => {
     });
   });
 
-  test("Like a Post", async () => {
+  test("Unlike a Post", async () => {
     const postId = "test-post-id";
-    prismaMock.like.findFirst.mockResolvedValue(true);
+    const existingLike = {
+      id: "existing-like-id",
+      authorId: userId,
+      postId: postId,
+      replyId: null,
+    };
+    prismaMock.like.findFirst.mockResolvedValue(existingLike);
 
-    const createSpy = jest.spyOn(prismaMock.like, 'create');
+    const deleteSpy = jest.spyOn(prismaMock.like, "delete");
 
     const caller = appRouter.createCaller({
       session: null,
@@ -72,20 +77,24 @@ describe("likePost Endpoint", () => {
     const result = await caller.posts.likePost({ postId });
 
     expect(result).toEqual({ success: true });
-    expect(createSpy).toHaveBeenCalledWith({
-      data: {
-        postId,
-        authorId: userId,
+    expect(deleteSpy).toHaveBeenCalledWith({
+      where: {
+        id: existingLike.id,
       },
     });
   });
 
-  test("Like a Reply", async () => {
+  test("Unlike a Reply", async () => {
     const replyId = "test-reply-id";
-    prismaMock.like.findFirst.mockResolvedValue(true);
+    const existingLike = {
+      id: "existing-like-id",
+      authorId: userId,
+      postId: null,
+      replyId: replyId,
+    };
+    prismaMock.like.findFirst.mockResolvedValue(existingLike);
 
-    const createSpy = jest.spyOn(prismaMock.like, 'create');
-
+    const deleteSpy = jest.spyOn(prismaMock.like, "delete");
 
     const caller = appRouter.createCaller({
       session: null,
@@ -96,10 +105,9 @@ describe("likePost Endpoint", () => {
     const result = await caller.posts.likePost({ replyId });
 
     expect(result).toEqual({ success: true });
-    expect(createSpy).toHaveBeenCalledWith({
-      data: {
-        replyId,
-        authorId: userId,
+    expect(deleteSpy).toHaveBeenCalledWith({
+      where: {
+        id: existingLike.id,
       },
     });
   });
