@@ -218,7 +218,8 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Test if a single post will be fetched #DONE 
 - Test if the initial feed will render 4 posts #DONE 
 - Create a mock test for liking a post #DONE 
-- Mock test for unliking a post will need to be passed the found post or found reply in order to work
+- Mock test for unliking a post will need to be passed the found post or found reply in order to work #DONE 
+- Mock test for un/retweeting a post
 - Cypress end to end testing
 
 ### Trends should also include replies
@@ -232,6 +233,9 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 ## Database calls optimization
 - Try to see if we are fetching doubled or unnecessary data in the trpc endpoints and try to slim down the data being fetched
+
+## Update the read me
+- Make the read me give a clear overview of the project and remove the boilerplate
 
 ## Messaging
 - Let's use git to create a separate version to work on and then merge it with the main branch once I am finished with it
