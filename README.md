@@ -4,7 +4,7 @@
 ## Tee-Tree
 ### What is this?
 
-[Example](https://imgur.com/a/A6z2MbP)
+![Example](https://imgur.com/a/A6z2MbP)
 
 This is my attempt at building a fully realized twitter clone with all of the features being cloned in order to learn the technologies used in the T3 Stack.
 
