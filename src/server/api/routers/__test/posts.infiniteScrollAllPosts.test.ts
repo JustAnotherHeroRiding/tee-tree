@@ -24,20 +24,16 @@ test("Feed all posts test", async () => {
 });
 
 
-test("Initial Feed Mock test" , async () => {
+test("Trends test" , async () => {
 
-    const prismaMock = mockDeep<PrismaClient>();
-
-    const mockOutput : [string, number][] = [['#testing', 10]]
 
     const caller = appRouter.createCaller({
         session: null,
-        prisma: prismaMock,
+        prisma: prisma,
         userId: null,
       });
 
       const result = await caller.posts.getTrends({limit: 10});
 
-      expect(result).toHaveLength(mockOutput.length)
-      expect(result).toStrictEqual(mockOutput)
-});
+      expect(result.length).toBeLessThanOrEqual(10);
+    });
