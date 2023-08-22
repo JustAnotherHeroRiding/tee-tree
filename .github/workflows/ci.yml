@@ -8,6 +8,8 @@ env:
   CLOUDINARY_API_KEY: "your_api_key"
   CLOUDINARY_API_SECRET: "your_api_secret"
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+  UPSTASH_REDIS_REST_URL: "example_env"
+  UPSTASH_REDIS_REST_TOKEN: "example_env"
 
 jobs:
   build:
