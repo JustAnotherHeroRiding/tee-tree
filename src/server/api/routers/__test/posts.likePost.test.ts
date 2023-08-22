@@ -57,5 +57,52 @@ describe("likePost Endpoint", () => {
     });
   });
 
+  test("Like a Post", async () => {
+    const postId = "test-post-id";
+    prismaMock.like.findFirst.mockResolvedValue(true);
+
+    const createSpy = jest.spyOn(prismaMock.like, 'create');
+
+    const caller = appRouter.createCaller({
+      session: null,
+      prisma: prismaMock,
+      userId,
+    });
+
+    const result = await caller.posts.likePost({ postId });
+
+    expect(result).toEqual({ success: true });
+    expect(createSpy).toHaveBeenCalledWith({
+      data: {
+        postId,
+        authorId: userId,
+      },
+    });
+  });
+
+  test("Like a Reply", async () => {
+    const replyId = "test-reply-id";
+    prismaMock.like.findFirst.mockResolvedValue(true);
+
+    const createSpy = jest.spyOn(prismaMock.like, 'create');
+
+
+    const caller = appRouter.createCaller({
+      session: null,
+      prisma: prismaMock,
+      userId,
+    });
+
+    const result = await caller.posts.likePost({ replyId });
+
+    expect(result).toEqual({ success: true });
+    expect(createSpy).toHaveBeenCalledWith({
+      data: {
+        replyId,
+        authorId: userId,
+      },
+    });
+  });
+
   // You can add more test cases for scenarios like unliking a post or reply
 });

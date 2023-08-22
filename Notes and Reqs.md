@@ -217,7 +217,8 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Test if the user list will be fetched #DONE 
 - Test if a single post will be fetched #DONE 
 - Test if the initial feed will render 4 posts #DONE 
-- Create a mock test for liking a post
+- Create a mock test for liking a post #DONE 
+- Mock test for unliking a post will need to be passed the found post or found reply in order to work
 
 ### Trends should also include replies
 - Include replies in the trend fetching endpoint #DONE 
@@ -226,6 +227,10 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 ## Web bundle
 - Added the web bundle analyzer #DONE 
+
+
+## Database calls optimization
+- Try to see if we are fetching doubled or unnecessary data in the trpc endpoints and try to slim down the data being fetched
 
 ## Messaging
 - Let's use git to create a separate version to work on and then merge it with the main branch once I am finished with it
