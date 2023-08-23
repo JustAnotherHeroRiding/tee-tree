@@ -240,6 +240,9 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Make the read me give a clear overview of the project and remove the boilerplate #DONE 
 - Extend it to include all the various features and pages I have implemented as most are gated behind being logged in and not visible on a first sight
 
+
+## Github Secrets
+- Add the environmental variables as github secrets so that I can run the tests with github actions
 ## Messaging
 - Let's use git to create a separate version to work on
 - Separate page where users can message each other
