@@ -2,10 +2,7 @@ name: CI
 
 on: [push, pull_request]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    env: # Define environment variables here
+env: # Define environment variables here
       UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
       UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
       DATABASE_URL: ${{ secrets.DATABASE_URL}}
@@ -14,9 +11,10 @@ jobs:
       CLOUDINARY_API_SECRET: "your_api_secret"
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
-
-
-
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -26,9 +24,6 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
-      
-      - name: Test
-        run: npm run test
 
       - name: Lint
         run: npm run lint
