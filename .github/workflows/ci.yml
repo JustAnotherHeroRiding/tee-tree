@@ -2,18 +2,20 @@ name: CI
 
 on: [push, pull_request]
 
-env:
-  DATABASE_URL: "https://fake.com"
-  CLOUDINARY_CLOUD_NAME: "your_cloud_name"
-  CLOUDINARY_API_KEY: "your_api_key"
-  CLOUDINARY_API_SECRET: "your_api_secret"
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-  UPSTASH_REDIS_REST_URL: "example_env"
-  UPSTASH_REDIS_REST_TOKEN: "example_env"
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env: # Define environment variables here
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL}}
+      CLOUDINARY_CLOUD_NAME: "your_cloud_name"
+      CLOUDINARY_API_KEY: "your_api_key"
+      CLOUDINARY_API_SECRET: "your_api_secret"
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+
+
 
     steps:
       - name: Checkout
