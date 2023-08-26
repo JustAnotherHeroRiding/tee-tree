@@ -250,17 +250,18 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Separate page where users can message each other #DONE 
 - Better image for the gif upload button #DONE 
 - New message icon that will open a modal for writing a new message #DONE 
-- Use outside hook for the modal
+- Use outside hook for the modal #DONE 
+- New model for messages
+- Search bar that can search people or messages
 - Most recently messaged users should appear on the main page
 - Clicking on a user will open the conversation with him
 - The user's messages should be on the right, the correspondent on the left
 - Seen if the message was opened 
 - Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition
-- Messages can be copies
-- Replied
+- Messages can be copied
+- Replied to
 - Reacted to, this should be an array of emojis connected to a message, one emoji per user, the last one should overwrite it. Perhaps it should not be an array but just an emoji field
 - Users profile on top when messaging that user
-- Search bar that can search people or messages
 - If a user has an unread message, in the bottom corner a message popup should appear, when clicked it will open a mini version of the inbox
 - Merge the Messages branch with the main branch when the feature is complete
 
