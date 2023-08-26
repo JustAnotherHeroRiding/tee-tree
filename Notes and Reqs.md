@@ -251,8 +251,10 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Better image for the gif upload button #DONE 
 - New message icon that will open a modal for writing a new message #DONE 
 - Use outside hook for the modal #DONE 
-- New model for messages
+- New model for messages #DONE 
 - Search bar that can search people or messages
+- Previous search results for logged in users
+- Clear all button to delete all search results
 - Most recently messaged users should appear on the main page
 - Clicking on a user will open the conversation with him
 - The user's messages should be on the right, the correspondent on the left
