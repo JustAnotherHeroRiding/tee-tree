@@ -33,11 +33,16 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 10  # Set a timeout
+    
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Dependencies
         run: npm install
+      - name: Debug - Show Node Version
+        run: node -v
+      - name: Debug - Show NPM Version
+        run: npm -v
       - name: Run Tests
         run: npm run workflow
