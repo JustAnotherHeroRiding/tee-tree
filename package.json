@@ -8,6 +8,7 @@
     "postinstall": "prisma generate",
     "testOpen": "jest --detectOpenHandles",
     "test" : "jest --verbose",
+    "workflow": "jest --forceExit --detectOpenHandles",
     "coverage" : "jest --coverage",
     "lint": "next lint",
     "start": "next start",
