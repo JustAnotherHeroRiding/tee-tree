@@ -242,11 +242,12 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 
 ## Github Secrets
-- Add the environmental variables as github secrets so that I can run the tests with github actions
+- Add the environmental variables as github secrets so that I can run the tests with github actions #DONE 
+- Add tests to the CI #DONE 
 ## Messaging
-- Let's use git to create a separate version to work on
+- Let's use git to create a separate version to work on #DONE
+- Let's create a new branch separate from the main branch where I will work on Messaging then then merge them #DONE
 - Separate page where users can message each other
-- Let's create a new branch separate from the main branch where I will work on Messaging then then merge them
 - Merge the Messages branch with the main branch
 
 ## Recommended Users to follow
