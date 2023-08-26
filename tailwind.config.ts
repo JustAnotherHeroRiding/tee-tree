@@ -11,7 +11,7 @@ export default {
         'phone': {'max': '385px'},
         'showSidebar': {'max': '645px'},
         'trendsbreakpoint' : {'max': '1231px'},
-        'logoNameClip' : {'max': '728px'}
+        'logoNameClip' : {'max': '780px'}
       },
       spacing: {
         '1/5': '20%',

@@ -248,6 +248,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Let's use git to create a separate version to work on #DONE
 - Let's create a new branch separate from the main branch where I will work on Messaging then then merge them #DONE
 - Separate page where users can message each other
+- Better image for the gif upload button
 - Merge the Messages branch with the main branch
 
 ## Recommended Users to follow
