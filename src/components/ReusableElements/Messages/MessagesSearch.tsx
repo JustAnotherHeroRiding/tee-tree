@@ -74,7 +74,7 @@ export const MessageSearch = (props: { searchPosition: string }) => {
       />
       {isTypingQuery && (
         <div
-          className={`${"right-1/2 top-14 hidden min-w-3/4 translate-x-1/2 trendsbreakpoint:block"} 
+          className={`${"right-1/2 top-14 min-w-3/4 translate-x-1/2 "} 
           gray-thin-scrollbar absolute z-10 flex max-h-[300px] 
                 scroll-p-4 
                 flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl`}
