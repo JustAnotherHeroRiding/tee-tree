@@ -20,7 +20,6 @@ export const MessageSearch = (props: { searchPosition: string }) => {
     setInput(currentValue);
 
     if (currentValue.length > 0) {
-      console.log(currentValue)
       setIsTypingQuery(true);
     } else if (currentValue.length === 0) {
       setIsTypingQuery(false);

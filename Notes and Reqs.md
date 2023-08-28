@@ -258,7 +258,8 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Endpoint for sending messages #DONE 
 - Search bar that can search people or messages #DONE 
 - All users shown to test messages #DONE 
-- Search bar that can search people or messages that actually filters users just like when typing a post
+- Search bar that can search users #DONE 
+- Search bar should also search messages and display the users and messages mixed
 - Clicking on a user will open the conversation with him
 - Clear all button to delete all search results
 - Previous search results for logged in users 
