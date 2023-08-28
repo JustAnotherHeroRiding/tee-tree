@@ -19,6 +19,15 @@ const ratelimit = new Ratelimit({
 
 export const messagesRouter = createTRPCRouter({
 
+    getAll: publicProcedure.query(async ({ ctx }) => {
+        const messages = await ctx.prisma.message.findMany({
+          take: 100,
+          orderBy: [{ createdAt: "desc" }],
+        });
+    
+        return messages;
+      }),
+    
 
     sendMessage: privateProcedure
     .input(

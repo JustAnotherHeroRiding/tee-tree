@@ -256,11 +256,13 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - New model for messages #DONE 
 - Messages sidebar icon updated #DONE 
 - Endpoint for sending messages #DONE 
-- Search bar that can search people or messages 
-- Previous search results for logged in users
-- Clear all button to delete all search results
-- Most recently messaged users should appear on the main page
+- Search bar that can search people or messages #DONE 
+- All users shown to test messages #DONE 
 - Clicking on a user will open the conversation with him
+- Search bar that can search people or messages that actually filters users just like when typing a post
+- Clear all button to delete all search results
+- Previous search results for logged in users 
+- Most recently messaged users should appear on the main page
 - The user's messages should be on the right, the correspondent on the left
 - Seen if the message was opened 
 - Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition
