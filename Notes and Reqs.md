@@ -258,8 +258,8 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Endpoint for sending messages #DONE 
 - Search bar that can search people or messages #DONE 
 - All users shown to test messages #DONE 
-- Clicking on a user will open the conversation with him
 - Search bar that can search people or messages that actually filters users just like when typing a post
+- Clicking on a user will open the conversation with him
 - Clear all button to delete all search results
 - Previous search results for logged in users 
 - Most recently messaged users should appear on the main page
@@ -271,6 +271,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Reacted to, this should be an array of emojis connected to a message, one emoji per user, the last one should overwrite it. Perhaps it should not be an array but just an emoji field
 - Users profile on top when messaging that user
 - If a user has an unread message, in the bottom corner a message popup should appear, when clicked it will open a mini version of the inbox
+- Add websockets for instant messaging(whatever websockets are)
 - Merge the Messages branch with the main branch when the feature is complete
 
 ## Sidebar

@@ -18,6 +18,7 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
   modalNewMessageRef,
 }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
+  
 
   return (
     <div
