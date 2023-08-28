@@ -94,6 +94,7 @@ export const MessageSearch = (props: { searchPosition: string }) => {
                     key={index}
                     user={user}
                     index={index}
+                    src='message'
                     highlightedIndex={highlightedIndex}
                     scrollRef={
                       resultRefs.current?.[index] ||

@@ -18,6 +18,7 @@ interface UserCardPropsSearch {
   index: number;
   highlightedIndex: number;
   scrollRef: React.RefObject<HTMLAnchorElement>;
+  src? : string;
 }
 
 export const UserCard: React.FC<UserCardProps> = ({
@@ -75,9 +76,10 @@ export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({
   index,
   highlightedIndex,
   scrollRef,
+  src,
 }) => {
   return (
-    <Link ref={scrollRef} href={`/@${user.username ?? ""}`}>
+<Link ref={scrollRef} href={src === 'message' ? `/messages/${user.id}` : `/@${user.username ?? ''}`}>
       <div
         tabIndex={0}
         className={`flex flex-row rounded-xl p-4  hover:bg-Intone-200 ${

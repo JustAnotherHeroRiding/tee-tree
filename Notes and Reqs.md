@@ -259,6 +259,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Search bar that can search people or messages #DONE 
 - All users shown to test messages #DONE 
 - Search bar that can search users #DONE 
+- Make the suggested results link using the id when searching messages #DONE 
 - Search bar should also search messages and display the users and messages mixed
 - Clicking on a user will open the conversation with him
 - Clear all button to delete all search results
@@ -274,6 +275,11 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - If a user has an unread message, in the bottom corner a message popup should appear, when clicked it will open a mini version of the inbox
 - Add websockets for instant messaging(whatever websockets are)
 - Merge the Messages branch with the main branch when the feature is complete
+
+
+
+## User fetching
+- Currently users are being fetched by their usernames, but we should instead try to fetch by id
 
 ## Sidebar
 - Turn the separate sidebar elements into separate components 
