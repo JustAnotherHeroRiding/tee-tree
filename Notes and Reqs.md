@@ -255,7 +255,8 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Use outside hook for the modal #DONE 
 - New model for messages #DONE 
 - Messages sidebar icon updated #DONE 
-- Search bar that can search people or messages
+- Endpoint for sending messages #DONE 
+- Search bar that can search people or messages 
 - Previous search results for logged in users
 - Clear all button to delete all search results
 - Most recently messaged users should appear on the main page

@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
-import { SuggestedUsers } from "~/components/ReusableElements/SuggestedUsers";
+import { SuggestedUsers } from "~/components/ReusableElements/Users/SuggestedUsers";
 
 
 

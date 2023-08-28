@@ -1,14 +1,14 @@
 import { api } from "~/utils/api";
-import { LoadingSpinner } from "./loading";
+import { LoadingSpinner } from "../loading";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useContext } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { UserContext } from "../Context/UserContext";
+import { UserContext } from "../../Context/UserContext";
 import { UserHoverCard } from "./UserHover";
-import { type User } from "./CreatePostWizard";
+import { type User } from "../CreatePostWizard";
 
 export const SuggestedUsers = ({ limit = 3, sideBar = true }) => {
   const { userList, isLoading: loadingUserList } = useContext(UserContext);

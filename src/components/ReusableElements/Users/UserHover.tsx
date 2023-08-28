@@ -1,8 +1,8 @@
-import { type User } from "./CreatePostWizard";
+import { type User } from "../CreatePostWizard";
 import Image from "next/image";
 import Link from "next/link";
 import { type FollowedWithAuthor } from "~/server/api/routers/followers";
-import { LoadingSpinner } from "./loading";
+import { LoadingSpinner } from "../loading";
 import { useRouter } from "next/router";
 
 type MutateFunction = (params: { userToFollowId: string }) => void;

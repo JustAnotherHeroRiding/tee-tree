@@ -3,15 +3,15 @@ import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
 import { Tooltip } from "react-tooltip";
 import { useState, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faSearch } from "@fortawesome/free-solid-svg-icons";
 import useOutsideClick from "~/components/customHooks/outsideClick";
+import { NewMessageModal } from "~/components/ReusableElements/Messages/NewMessageModal";
+import { MessageSearch } from "~/components/ReusableElements/Messages/MessagesSearch";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
-  const [input, setInput] = useState("")
+
 
   useOutsideClick(modalNewMessageRef, () => {
     if (showNewMessageModal) {
@@ -55,45 +55,11 @@ const MessagesPage: NextPage = () => {
         </button>
       </div>
       {showNewMessageModal && (
-        <div
-          className={`modalparent transform transition-transform duration-300 ease-in-out ${
-            showNewMessageModal
-              ? "visible scale-100 opacity-100"
-              : "invisible scale-0 opacity-0"
-          }`}
-        >
-          <div
-            ref={modalNewMessageRef}
-            className="modalComment mx-auto flex h-fit w-[95vw] flex-col rounded-3xl border
-        border-indigo-200 bg-black p-4 sm:w-[55vw] lg:w-[35vw]"
-          >
-            <div className="flex flex-row">
-              <button
-                className="w-fit rounded-3xl p-1 -mt-1 hover:bg-Intone-700"
-                onClick={() => setShowNewMessageModal(false)}
-              >
-                <FontAwesomeIcon className="h-6 w-6" icon={faXmark} />
-              </button>
-              <p className="text-xl">New Message</p>
-            </div>
-          </div>
-        </div>
+        <NewMessageModal showNewMessageModal={showNewMessageModal} 
+        setShowNewMessageModal={setShowNewMessageModal} modalNewMessageRef={modalNewMessageRef} />
       )}
-      <div className="px-4 relative">
-        <input
-          type="text"
-          placeholder="Search Direct Messages"
-          className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
-          name="q" // query parameter
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          autoComplete="off"
-        />
-        <FontAwesomeIcon
-          icon={faSearch}
-          className="absolute left-[4%] top-[38%] h-3 w-3 text-Intone-300"
-        />
-        </div>
+      <MessageSearch searchPosition="left-[5%]" />
+      
     </PageLayout>
   );
 };

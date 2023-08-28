@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { Trends } from "./ReusableElements/Trends";
 import { useRouter } from "next/router";
 import { SearchInput } from "./ReusableElements/SearchForm";
-import { SuggestedUsers } from "./ReusableElements/SuggestedUsers";
+import { SuggestedUsers } from "./ReusableElements/Users/SuggestedUsers";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import Sidebar from "./SidebarIcons/Sidebar";
 
@@ -13,9 +13,7 @@ export const PageLayout = (props: PropsWithChildren) => {
   return (
     <>
       <main className="relative flex h-screen justify-center">
-        <div className="fixed left-0 flex flex-col items-start gap-2 sm:left-[1%] md:left-[2%] lg:left-[3%] showSidebar:hidden">
           <Sidebar />
-        </div>
 
         <div
           className="gray-thin-scrollbar h-full min-h-screen w-full overflow-y-scroll  border-x border-slate-400 

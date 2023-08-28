@@ -18,7 +18,7 @@ import { filesize } from "filesize";
 import Compressor from "compressorjs";
 import { Tooltip } from "react-tooltip";
 import { UserContext } from "../Context/UserContext";
-import { UserCard } from "./UserMentionSuggestions";
+import { UserCard } from "./Users/UserMentionSuggestions";
 import EmojiSelector from "./EmojiPicker";
 
 dayjs.extend(relativeTime);
