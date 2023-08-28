@@ -254,6 +254,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - New message icon that will open a modal for writing a new message #DONE 
 - Use outside hook for the modal #DONE 
 - New model for messages #DONE 
+- Messages sidebar icon updated #DONE 
 - Search bar that can search people or messages
 - Previous search results for logged in users
 - Clear all button to delete all search results
@@ -270,6 +271,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Merge the Messages branch with the main branch when the feature is complete
 
 ## Sidebar
+- Turn the separate sidebar elements into separate components 
 - Currently the sidebar is not at all visible from mobile devices
 - If the user is on messages, the icon should be colored, can be a simple router check
 
