@@ -44,9 +44,9 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useRouter } from "next/router";
-import { UserHoverCard } from "./UserHover";
+import { UserHoverCard } from "./Users/UserHover";
 import { CreatePostWizard, type User } from "./CreatePostWizard";
-import { UserCard } from "./UserMentionSuggestions";
+import { UserCard } from "./Users/UserMentionSuggestions";
 import {
   type ExtendedPost,
   type PostAuthor,

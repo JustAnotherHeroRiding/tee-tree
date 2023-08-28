@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { api } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "../ReusableElements/loading";
 import { PostView, type PostWithUser } from "../ReusableElements/postview";
-import { RetweetedBy } from "../ReusableElements/RetweetedBy";
+import { RetweetedBy } from "../ReusableElements/Users/RetweetedBy";
 
 export const InfiniteScrollProfileFeed = (props: {
   userId: string;

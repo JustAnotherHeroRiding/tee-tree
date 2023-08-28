@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { User } from "./CreatePostWizard";
+import type { User } from "../CreatePostWizard";
 import Image from "next/image";
 
 interface UserCardProps {
