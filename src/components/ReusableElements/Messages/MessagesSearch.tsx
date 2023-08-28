@@ -82,29 +82,34 @@ export const MessageSearch = (props: { searchPosition: string }) => {
           <div className="flex flex-col">
             {LoadingUserList ? (
               <LoadingSpinner />
-            ) : userList ? (
-              userList.map((user, index) => {
-                if (!resultRefs.current[index]) {
-                  resultRefs.current[index] =
-                    React.createRef<HTMLAnchorElement>();
-                }
-
-                return (
-                  <UserCardSearchResults
-                    key={index}
-                    user={user}
-                    index={index}
-                    src='message'
-                    highlightedIndex={highlightedIndex}
-                    scrollRef={
-                      resultRefs.current?.[index] ||
-                      React.createRef<HTMLAnchorElement>()
-                    }
-                  />
-                );
-              })
             ) : (
-              <LoadingSpinner />
+              userList.map((user, index) => {
+                if (
+                  user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+                  user.firstName?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+                  user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
+                ) {
+                  if (!resultRefs.current[index]) {
+                    resultRefs.current[index] =
+                      React.createRef<HTMLAnchorElement>();
+                  }
+
+                  return (
+                    <UserCardSearchResults
+                      key={index}
+                      user={user}
+                      index={index}
+                      src="message"
+                      highlightedIndex={highlightedIndex}
+                      scrollRef={
+                        resultRefs.current?.[index] ||
+                        React.createRef<HTMLAnchorElement>()
+                      }
+                    />
+                  );
+                }
+                return null;
+              })
             )}
           </div>
         </div>
