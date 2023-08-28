@@ -13,51 +13,39 @@ export const PageLayout = (props: PropsWithChildren) => {
   return (
     <>
       <main className="relative flex h-screen justify-center">
-        <div className="fixed left-[3%] showSidebar:hidden flex flex-col items-start gap-2">
+        <div className="fixed left-0 flex flex-col items-start gap-2 sm:left-[1%] md:left-[2%] lg:left-[3%] showSidebar:hidden">
           <Link
-            className="flex flex-row items-center justify-center rounded-xl mt-2 hover:bg-Intone-100 hover:text-Intone-300"
+            className="group mt-2 flex flex-row items-center justify-center rounded-xl hover:bg-Intone-100 hover:text-Intone-300"
             href={"/"}
           >
             <svg
-              className="sticky top-2 h-10 w-10 rounded-2xl p-1"
-              width="1rem"
-              height="1rem"
+              className=" h-10 w-10 rounded-2xl p-1 group-hover:text-Intone-300"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill="#ffffff"
+                fill="currentColor"
                 d="M7 19v-2h10v2h-2c-.5 0-1 .2-1.4.6s-.6.9-.6 1.4v1h-2v-1c0-.5-.2-1-.6-1.4S9.5 19 9 19H7m4-13c0-.3.1-.5.3-.7s.4-.3.7-.3s.5.1.7.3s.3.4.3.7s-.1.5-.3.7s-.4.3-.7.3s-.5-.1-.7-.3s-.3-.4-.3-.7m2 2c0-.3.1-.5.3-.7s.4-.3.7-.3s.5.1.7.3s.3.4.3.7s-.1.5-.3.7s-.4.3-.7.3s-.5-.1-.7-.3s-.3-.4-.3-.7M9 8c0-.3.1-.5.3-.7s.4-.3.7-.3s.5.1.7.3s.3.4.3.7s-.1.5-.3.7s-.4.3-.7.3s-.5-.1-.7-.3S9 8.3 9 8m7.9-3.9c-1.4-1.4-3-2-4.9-2s-3.6.7-4.9 2S5 7.1 5 9s.7 3.6 2 4.9s3 2 4.9 2s3.6-.7 4.9-2s2-3 2-4.9s-.5-3.6-1.9-4.9m-1.4 8.4c-1 1-2.2 1.5-3.5 1.5s-2.6-.5-3.5-1.5S7 10.4 7 9s.5-2.6 1.5-3.5S10.6 4 12 4s2.6.5 3.5 1.5S17 7.6 17 9s-.5 2.6-1.5 3.5Z"
               ></path>
             </svg>
-            <h1 className="-ml-2 logoNameClip:hidden">teeTree</h1>
+            <h1 className="logoNameClip:hidden">teeTree</h1>
           </Link>
           <Link
-            className="flex flex-row items-center justify-center rounded-xl hover:bg-Intone-100 hover:text-Intone-300"
+            className=" flex flex-row items-center justify-center rounded-xl hover:bg-Intone-100 hover:text-Intone-300"
             href={"/messages"}
           >
             <svg
-              className=" h-10 w-10 rounded-2xl p-1"
-              width='1rem'
-              height='1rem'
-              viewBox="0 0 48 48"
+              className="h-10 w-10 rounded-2xl p-1 group-hover:text-Intone-300"
               xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+
             >
-              <g fill="none" stroke-width="4">
-                <path
-                  fill="#2F88FF"
-                  stroke="#000"
-                  d="M39 6H9C7.34315 6 6 7.34315 6 9V39C6 40.6569 7.34315 42 9 42H39C40.6569 42 42 40.6569 42 39V9C42 7.34315 40.6569 6 39 6Z"
-                />
-                <path
-                  fill="#43CCF8"
-                  stroke="#fff"
-                  stroke-linejoin="round"
-                  d="M34 23C34 26.8624 31.2967 30.1565 27.5 31.4334C26.4107 31.7997 25.2313 32 24 32C20 32 15 34 15 34L16.1323 31.5543C16.6952 30.3384 16.336 28.9248 15.5616 27.8314C14.5729 26.4356 14 24.778 14 23C14 18.0294 18.4772 14 24 14C29.5228 14 34 18.0294 34 23Z"
-                />
-              </g>
-            </svg>{" "}
-            <h1 className="-ml-2 logoNameClip:hidden">Messages</h1>
+              <path
+                fill="currentColor"
+                d="m20.34 9.32l-14-7a3 3 0 0 0-4.08 3.9l2.4 5.37a1.06 1.06 0 0 1 0 .82l-2.4 5.37A3 3 0 0 0 5 22a3.14 3.14 0 0 0 1.35-.32l14-7a3 3 0 0 0 0-5.36Zm-.89 3.57l-14 7a1 1 0 0 1-1.35-1.3l2.39-5.37a2 2 0 0 0 .08-.22h6.89a1 1 0 0 0 0-2H6.57a2 2 0 0 0-.08-.22L4.1 5.41a1 1 0 0 1 1.35-1.3l14 7a1 1 0 0 1 0 1.78Z"
+              />
+            </svg>
+            <h1 className="logoNameClip:hidden">Messages</h1>
           </Link>
         </div>
 

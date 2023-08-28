@@ -92,6 +92,32 @@ model Reply {
   @@index([parentId])
 }
 
+model Message {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  content     String   @db.VarChar(280)
+  
+  // Fields for image, gif, and video URLs
+  imageUrl    String?
+  gifUrl      String?
+  videoUrl    String?
+
+  // Field for reaction (emoji)
+  reaction    String?
+
+  // Fields for author and recipient IDs
+  authorId    String
+  recipientId String
+
+  // Additional fields you might consider
+  isRead      Boolean  @default(false)
+  isDeleted   Boolean  @default(false)
+
+  @@index([authorId])
+  @@index([recipientId])
+}
+
+
 model Follow {
   id          String @id @default(cuid())
   followerId  String
