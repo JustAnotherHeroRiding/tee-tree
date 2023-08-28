@@ -128,11 +128,13 @@ Let's implement some features I have already implemented before in order to lear
 - Lines between the profile pictures #DONE 
 - Set a default view for the show border value #DONE 
 - Line between parent post when opening a single reply view #DONE 
+
+
+## Replies Extras
+
 - Replies should also appear on the main feed, with the original post nested inside the reply
 - If the reply is shown without the parent there should be a banner like for retweets
 - Infinite scroll for the replies of a post, perhaps create a brand new feed
-
-
 ## Replies border reappearing
 - When I click show more on a reply that was loaded with show more suddenly the line and border reappear for the last post
 ##### I'm not sure how to log this as the border is shown for the last reply, so when loading the replies of a reply the border is reapplied and the connection between the reply and the parent is severed
