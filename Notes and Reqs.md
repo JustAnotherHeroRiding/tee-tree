@@ -248,8 +248,8 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Add tests to the CI #DONE 
 
 ## Custom Auth pages
-- Add a custom sign in page
-- Add a custom sign up page
+- Add a custom sign in page #DONE 
+- Add a custom sign up page #DONE 
 ## Messaging
 - Let's use git to create a separate version to work on #DONE
 - Let's create a new branch separate from the main branch where I will work on Messaging then then merge them #DONE
@@ -264,7 +264,8 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - All users shown to test messages #DONE 
 - Search bar that can search users #DONE 
 - Make the suggested results link using the id when searching messages #DONE 
-- Require auth for accessing /messages
+- Require auth for accessing /messages #DONE 
+- Remove messages when no user
 - Search bar should also search messages and display the users and messages mixed
 - Clicking on a user will open the conversation with him
 - Clear all button to delete all search results
