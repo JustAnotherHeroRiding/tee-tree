@@ -5,12 +5,17 @@ import { generateSsgHelper } from "~/server/helpers/ssgHelper";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
 import { CreatePostWizard } from "~/components/ReusableElements/CreatePostWizard";
+import { useUser } from "@clerk/nextjs";
 import { useHomePage } from "~/components/Context/HomePageContext";
 
-const MessageConversationPage: NextPage<{ id: string }> = ({ id }) => {
-  const { data } = api.messages.getById.useQuery({ authorId: id });
+const MessageConversationPage: NextPage<{ recipientId: string }> = ({ recipientId }) => {
+
+  const { user } = useUser();
+  const { data } = api.messages.getById.useQuery({ authorId: user?.id ?? "" });
 
   const { homePage } = useHomePage();
+
+
 
   if (!data) return <div>404</div>;
 
@@ -34,6 +39,7 @@ const MessageConversationPage: NextPage<{ id: string }> = ({ id }) => {
             src="message"
             showLineAbove={false}
             placeholder="Let them know!"
+            recipientId={recipientId}
           />
         </div>
       </PageLayout>
@@ -44,16 +50,18 @@ const MessageConversationPage: NextPage<{ id: string }> = ({ id }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const helpers = generateSsgHelper();
 
-  const id = context.params?.id;
 
-  if (typeof id !== "string") throw new Error("id must be a string");
+  const recipientId = context.params?.id;
+  
 
-  await helpers.messages.getById.prefetch({ authorId: id });
+  if (typeof recipientId !== "string") throw new Error("id must be a string");
+
+  await helpers.profile.getUserById.prefetch({ id: recipientId });
 
   return {
     props: {
       trpcState: helpers.dehydrate(),
-      id,
+      recipientId,
     },
   };
 };

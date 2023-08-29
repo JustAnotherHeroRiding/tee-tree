@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { UserContext } from "~/components/Context/UserContext";
 import { LoadingSpinner } from "../loading";
 import Image from "next/image";
+import Link from "next/link";
 
 type NewMessageModalProps = {
   showNewMessageModal: boolean;
@@ -49,7 +50,7 @@ border-indigo-200 bg-black sm:w-[55vw] lg:w-[35vw] overflow-auto"
         ) : (
             <div className="overflow-auto gray-thin-scrollbar ">
           {userList.map((user) => (
-            <div
+            <Link href={`/messages/${user.id}`}
               key={user.id}
               className="mt-2 px-4 py-2 flex flex-row items-center justify-between hover:bg-Intone-700"
             >
@@ -64,7 +65,7 @@ border-indigo-200 bg-black sm:w-[55vw] lg:w-[35vw] overflow-auto"
               <p className="text-lg">{user.username}</p>
               <span>{user.firstName}{"  "}{user.lastName}</span>
               </div>
-            </div>
+            </Link>
           ))}
           </div>
         )}

@@ -32,6 +32,7 @@ interface CreatePostWizardProps {
   setShowCommentModal?: React.Dispatch<React.SetStateAction<boolean>>;
   showLineAbove?: boolean;
   placeholder?: string;
+  recipientId?: string;
 }
 
 export type User = {
@@ -51,6 +52,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   showCommentModal,
   showLineAbove = true,
   placeholder = "What's on your mind?",
+  recipientId = "",
 }) => {
   const { user } = useUser();
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
@@ -231,6 +233,24 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       },
     });
 
+  const { mutate: mutateAddImageToMessage } =
+    api.messages.addImageToMessage.useMutation({
+      onSuccess: () => {
+        invalidateResources(location, homePage, params);
+
+        setImageFile(undefined);
+        setPreviewUrl("");
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to upload the image.");
+        }
+      },
+    });
+
   const { mutate: mutateAddGifToPost } = api.posts.addGifToPost.useMutation({
     onSuccess: () => {
       invalidateResources(location, homePage, params);
@@ -247,6 +267,24 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     },
   });
+
+  const { mutate: mutateAddGifToMessage } =
+    api.messages.addGifToMessage.useMutation({
+      onSuccess: () => {
+        invalidateResources(location, homePage, params);
+
+        setGifFile(undefined);
+        setPreviewUrl("");
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to upload the gif`.");
+        }
+      },
+    });
 
   const { mutate: mutateAddGifToReply } = api.posts.addGifToReply.useMutation({
     onSuccess: () => {
@@ -305,6 +343,44 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     },
   });
+
+  const { mutate: postMessage, isLoading: isPostingMessage } =
+    api.messages.sendMessage.useMutation({
+      onSuccess: async (message) => {
+        if (imageFile) {
+          const imageResponseJson = await imageUpload(imageFile);
+          if (imageResponseJson) {
+            mutateAddImageToMessage({
+              id: message.id,
+              publicId: imageResponseJson.public_id,
+            });
+          }
+        } else if (gifFile) {
+          const gifResponseJson = await gifUpload(gifFile);
+          if (gifResponseJson) {
+            mutateAddGifToMessage({
+              id: message.id,
+              publicId: gifResponseJson.public_id,
+            });
+          }
+        }
+
+        setInput("");
+        setTextLength(0);
+        setIsTypingUsername(false);
+        setIsTypingTrend(false);
+        setHighlightedInput("");
+        // Invalidate the messages
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Post! Please try again later.");
+        }
+      },
+    });
 
   const { mutate: postReply, isLoading: isPostingReply } =
     api.posts.replyToPost.useMutation({
@@ -742,6 +818,12 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
                 parentType === "post"
               ) {
                 postReply({ content: input, postId: parentPostId });
+              } else if (src === "message") {
+                postMessage({
+                  content: input,
+                  senderId: user.id,
+                  recipientId: recipientId,
+                });
               } else {
                 mutate({ content: input });
               }
@@ -751,12 +833,11 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           </button>
         )}
 
-        {isPosting ||
-          (isPostingReply && (
-            <div className="flex items-center justify-center">
-              <LoadingSpinner size={20} />
-            </div>
-          ))}
+        {(isPosting || isPostingMessage || isPostingReply) && (
+          <div className="flex items-center justify-center">
+            <LoadingSpinner size={20} />
+          </div>
+        )}
       </div>
       {LoadingUserList && (
         <div className="flex items-center justify-center">

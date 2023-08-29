@@ -250,7 +250,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 ## Custom Auth pages
 - Add a custom sign in page #DONE 
 - Add a custom sign up page #DONE 
-## Messaging
+## Messaging first step
 - Let's use git to create a separate version to work on #DONE
 - Let's create a new branch separate from the main branch where I will work on Messaging then then merge them #DONE
 - Separate page where users can message each other #DONE 
@@ -265,11 +265,16 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Search bar that can search users #DONE 
 - Make the suggested results link using the id when searching messages #DONE 
 - Require auth for accessing /messages #DONE 
-- Remove messages when no user
-- Search bar should also search messages and display the users and messages mixed
-- Clicking on a user will open the conversation with him
+- Remove messages when no user #DONE 
+
+## Messaging second step - Sending
+
+- Clicking on a user will open the conversation with him #DONE 
+- Make the createPostWizard work for sending messages #DONE 
+- Test the message poster
 - Clear all button to delete all search results
 - Previous search results for logged in users 
+- Search bar should also search messages and display the users and messages mixed
 - Most recently messaged users should appear on the main page
 - The user's messages should be on the right, the correspondent on the left
 - Seen if the message was opened 

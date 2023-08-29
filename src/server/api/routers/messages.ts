@@ -105,4 +105,42 @@ export const messagesRouter = createTRPCRouter({
 
       return message;
     }),
+
+    addImageToMessage: privateProcedure
+    .input(z.object({ id: z.string(), publicId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const updatedMessage = await ctx.prisma.message.update({
+        where: { id: input.id },
+        data: { imageUrl: input.publicId },
+      });
+
+      if (!updatedMessage) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      const messageWithUserData = await addUserDataToMessages([updatedMessage]);
+      return messageWithUserData[0];
+    }),
+
+    addGifToMessage: privateProcedure
+    .input(z.object({ id: z.string(), publicId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const updatedMessage = await ctx.prisma.message.update({
+        where: { id: input.id },
+        data: { gifUrl: input.publicId },
+      });
+
+      if (!updatedMessage) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      const messageWithUserData = await addUserDataToMessages([updatedMessage]);
+      return messageWithUserData[0];
+    }),
 });
