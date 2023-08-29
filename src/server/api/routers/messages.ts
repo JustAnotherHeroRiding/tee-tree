@@ -66,7 +66,9 @@ export const messagesRouter = createTRPCRouter({
     .input(z.object({ authorId: z.string() }))
     .query(async ({ ctx, input }) => {
       const messages = await ctx.prisma.message.findMany({
-        where: { authorId: input.authorId },
+        where: {
+          OR: [{ authorId: input.authorId }, { recipientId: input.authorId }],
+        },
       });
 
       return addUserDataToMessages(messages);
@@ -106,7 +108,7 @@ export const messagesRouter = createTRPCRouter({
       return message;
     }),
 
-    addImageToMessage: privateProcedure
+  addImageToMessage: privateProcedure
     .input(z.object({ id: z.string(), publicId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const updatedMessage = await ctx.prisma.message.update({
@@ -125,7 +127,7 @@ export const messagesRouter = createTRPCRouter({
       return messageWithUserData[0];
     }),
 
-    addGifToMessage: privateProcedure
+  addGifToMessage: privateProcedure
     .input(z.object({ id: z.string(), publicId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const updatedMessage = await ctx.prisma.message.update({
