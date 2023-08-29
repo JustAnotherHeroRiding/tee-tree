@@ -2,12 +2,13 @@ import Link from 'next/link';
 
 
 
-const LogoHomePageLink = () => {
+const LogoHomePageLink = (props: { src: string }) => {
 
 
   return (
     <Link
-            className="group mt-2 flex flex-row items-center justify-center rounded-xl hover:bg-Intone-100 hover:text-Intone-300"
+            className={`${props.src === 'index' ? "" : "mt-2"} group flex flex-row 
+            items-center justify-center rounded-xl hover:bg-Intone-100 hover:text-Intone-300`}
             href={"/"}
           >
             <svg

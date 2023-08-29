@@ -294,9 +294,9 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Currently users are being fetched by their usernames, but we should instead try to fetch by id
 
 ## Sidebar
-- Turn the separate sidebar elements into separate components 
-- Currently the sidebar is not at all visible from mobile devices
-- If the user is on messages, the icon should be colored, can be a simple router check
+- Turn the separate sidebar elements into separate components #DONE 
+- Currently the sidebar is not at all visible from mobile devices #DONE 
+- If the user is on messages, the icon should be colored, can be a simple router check #DONE 
 
 ## Recommended Users to follow
 - Endpoint to fetch users that the current user is not following #DONE 
