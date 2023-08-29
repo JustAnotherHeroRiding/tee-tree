@@ -55,10 +55,10 @@ Let's implement some features I have already implemented before in order to lear
 - Sharing posts, meaning share a link on social media platforms #DONE 
 - Improving Share post Modal Css #DONE 
 - Copy link button #DONE 
-- Image preview loads on the same file being uploaded #DONE 
+- Image preview loads on the same file being uploaded #DONE
+- Make post content be selectable #DONE
 - Views per post
 - Sharing audio files that can be played 
-- Make post content be selectable #DONE
 
 ### Emoji selector
 - Make the emoji selector work for the create post wizard #DONE 
@@ -246,6 +246,10 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 ## Github Secrets
 - Add the environmental variables as github secrets so that I can run the tests with github actions #DONE 
 - Add tests to the CI #DONE 
+
+## Custom Auth pages
+- Add a custom sign in page
+- Add a custom sign up page
 ## Messaging
 - Let's use git to create a separate version to work on #DONE
 - Let's create a new branch separate from the main branch where I will work on Messaging then then merge them #DONE
@@ -260,6 +264,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - All users shown to test messages #DONE 
 - Search bar that can search users #DONE 
 - Make the suggested results link using the id when searching messages #DONE 
+- Require auth for accessing /messages
 - Search bar should also search messages and display the users and messages mixed
 - Clicking on a user will open the conversation with him
 - Clear all button to delete all search results

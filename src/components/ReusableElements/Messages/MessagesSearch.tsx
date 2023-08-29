@@ -83,11 +83,18 @@ export const MessageSearch = (props: { searchPosition: string }) => {
             {LoadingUserList ? (
               <LoadingSpinner />
             ) : (
+              input.split(" ").slice(-1)[0]?.startsWith("@") &&
               userList.map((user, index) => {
                 if (
-                  user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
-                  user.firstName?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
-                  user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
+                  user.username
+                    ?.toLowerCase()
+                    .includes(input.slice(1).toLowerCase()) ||
+                  user.firstName
+                    ?.toLowerCase()
+                    .includes(input.slice(1).toLowerCase()) ||
+                  user.lastName
+                    ?.toLowerCase()
+                    .includes(input.slice(1).toLowerCase())
                 ) {
                   if (!resultRefs.current[index]) {
                     resultRefs.current[index] =
