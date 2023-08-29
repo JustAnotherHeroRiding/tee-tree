@@ -4,32 +4,75 @@ import { createTRPCRouter, publicProcedure, privateProcedure } from "../trpc";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis/nodejs";
 import { TRPCError } from "@trpc/server";
+import { type Message } from "@prisma/client";
+import { type PostAuthor } from "./posts";
+import { clerkClient } from "@clerk/nextjs";
+import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
+
+export type ExtendedMessage = Message & {
+  author?: PostAuthor;
+};
+
+export const addUserDataToMessages = async (messages: ExtendedMessage[]) => {
+  const users = (
+    await clerkClient.users.getUserList({
+      userId: messages.map((message) => message.authorId),
+      limit: 100,
+    })
+  ).map(filterUserForClient);
+
+  return messages.map((message) => {
+    const author = users.find((user) => user.id === message.authorId);
+
+    if (!author || !author.username)
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Author for post not found",
+      });
+
+    return {
+      message,
+      author: {
+        ...author,
+        username: author.username,
+      },
+    };
+  });
+};
 
 const ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(15, "1 m"),
-    analytics: true,
-    /**
-     * Optional prefix for the keys used in redis. This is useful if you want to share a redis
-     * instance with other applications and want to avoid key collisions. The default prefix is
-     * "@upstash/ratelimit"
-     */
-    prefix: "@upstash/ratelimit",
-  });
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(15, "1 m"),
+  analytics: true,
+  /**
+   * Optional prefix for the keys used in redis. This is useful if you want to share a redis
+   * instance with other applications and want to avoid key collisions. The default prefix is
+   * "@upstash/ratelimit"
+   */
+  prefix: "@upstash/ratelimit",
+});
 
 export const messagesRouter = createTRPCRouter({
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const messages = await ctx.prisma.message.findMany({
+      take: 100,
+      orderBy: [{ createdAt: "desc" }],
+    });
 
-    getAll: publicProcedure.query(async ({ ctx }) => {
-        const messages = await ctx.prisma.message.findMany({
-          take: 100,
-          orderBy: [{ createdAt: "desc" }],
-        });
-    
-        return messages;
-      }),
-    
+    return addUserDataToMessages(messages);
+  }),
 
-    sendMessage: privateProcedure
+  getById: publicProcedure
+    .input(z.object({ authorId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const messages = await ctx.prisma.message.findMany({
+        where: { authorId: input.authorId },
+      });
+
+      return addUserDataToMessages(messages);
+    }),
+
+  sendMessage: privateProcedure
     .input(
       z.object({
         senderId: z.string(),
@@ -63,4 +106,41 @@ export const messagesRouter = createTRPCRouter({
       return message;
     }),
 
+    addImageToMessage: privateProcedure
+    .input(z.object({ id: z.string(), publicId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const updatedMessage = await ctx.prisma.message.update({
+        where: { id: input.id },
+        data: { imageUrl: input.publicId },
+      });
+
+      if (!updatedMessage) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      const messageWithUserData = await addUserDataToMessages([updatedMessage]);
+      return messageWithUserData[0];
+    }),
+
+    addGifToMessage: privateProcedure
+    .input(z.object({ id: z.string(), publicId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const updatedMessage = await ctx.prisma.message.update({
+        where: { id: input.id },
+        data: { gifUrl: input.publicId },
+      });
+
+      if (!updatedMessage) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      const messageWithUserData = await addUserDataToMessages([updatedMessage]);
+      return messageWithUserData[0];
+    }),
 });

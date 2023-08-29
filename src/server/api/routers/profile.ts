@@ -28,6 +28,23 @@ export const profileRouter = createTRPCRouter({
       return filterUserForClient(user);
     }),
 
+    getUserById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const [user] = await clerkClient.users.getUserList({
+        userId: [input.id],
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User not found",
+        });
+      }
+
+      return filterUserForClient(user);
+    }),
+
+
     get3UsersSearch: publicProcedure
     .input(z.object({ query: z.string() }))
     .query(async ({ input }) => {

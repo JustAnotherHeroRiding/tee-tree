@@ -11,6 +11,11 @@ env: # Define environment variables here
   CLOUDINARY_API_SECRET: "your_api_secret"
   CLERK_SECRET_KEY: ${{secrets.CLERK_SECRET_KEY}}
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: "/sign-in"
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: "/sign-up"
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: "/"
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: "/"
+
 
 jobs:
   build:

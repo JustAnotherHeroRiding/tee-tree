@@ -475,6 +475,7 @@ export const postsRouter = createTRPCRouter({
     return addUserDataToPosts(posts);
   }),
 
+
   getOneExample: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.post.findFirst({
       orderBy: {

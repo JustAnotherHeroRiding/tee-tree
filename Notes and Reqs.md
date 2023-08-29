@@ -55,10 +55,10 @@ Let's implement some features I have already implemented before in order to lear
 - Sharing posts, meaning share a link on social media platforms #DONE 
 - Improving Share post Modal Css #DONE 
 - Copy link button #DONE 
-- Image preview loads on the same file being uploaded #DONE 
+- Image preview loads on the same file being uploaded #DONE
+- Make post content be selectable #DONE
 - Views per post
 - Sharing audio files that can be played 
-- Make post content be selectable #DONE
 
 ### Emoji selector
 - Make the emoji selector work for the create post wizard #DONE 
@@ -246,7 +246,11 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 ## Github Secrets
 - Add the environmental variables as github secrets so that I can run the tests with github actions #DONE 
 - Add tests to the CI #DONE 
-## Messaging
+
+## Custom Auth pages
+- Add a custom sign in page #DONE 
+- Add a custom sign up page #DONE 
+## Messaging first step
 - Let's use git to create a separate version to work on #DONE
 - Let's create a new branch separate from the main branch where I will work on Messaging then then merge them #DONE
 - Separate page where users can message each other #DONE 
@@ -258,10 +262,19 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Endpoint for sending messages #DONE 
 - Search bar that can search people or messages #DONE 
 - All users shown to test messages #DONE 
-- Clicking on a user will open the conversation with him
-- Search bar that can search people or messages that actually filters users just like when typing a post
+- Search bar that can search users #DONE 
+- Make the suggested results link using the id when searching messages #DONE 
+- Require auth for accessing /messages #DONE 
+- Remove messages when no user #DONE 
+
+## Messaging second step - Sending
+
+- Clicking on a user will open the conversation with him #DONE 
+- Make the createPostWizard work for sending messages #DONE 
+- Test the message poster
 - Clear all button to delete all search results
 - Previous search results for logged in users 
+- Search bar should also search messages and display the users and messages mixed
 - Most recently messaged users should appear on the main page
 - The user's messages should be on the right, the correspondent on the left
 - Seen if the message was opened 
@@ -271,7 +284,13 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Reacted to, this should be an array of emojis connected to a message, one emoji per user, the last one should overwrite it. Perhaps it should not be an array but just an emoji field
 - Users profile on top when messaging that user
 - If a user has an unread message, in the bottom corner a message popup should appear, when clicked it will open a mini version of the inbox
+- Add websockets for instant messaging(whatever websockets are)
 - Merge the Messages branch with the main branch when the feature is complete
+
+
+
+## User fetching
+- Currently users are being fetched by their usernames, but we should instead try to fetch by id
 
 ## Sidebar
 - Turn the separate sidebar elements into separate components 

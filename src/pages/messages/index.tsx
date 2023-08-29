@@ -2,14 +2,26 @@ import type { NextPage } from "next";
 import { PageLayout } from "~/components/layout";
 import BackButton from "~/components/ReusableElements/BackButton";
 import { Tooltip } from "react-tooltip";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import useOutsideClick from "~/components/customHooks/outsideClick";
 import { NewMessageModal } from "~/components/ReusableElements/Messages/NewMessageModal";
 import { MessageSearch } from "~/components/ReusableElements/Messages/MessagesSearch";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
+
+  const { user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      // Redirect to Clerk's sign-in page
+      void router.push('/sign-in');
+    }
+  }, [user, router]);
 
 
 

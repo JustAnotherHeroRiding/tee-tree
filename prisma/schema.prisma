@@ -15,7 +15,7 @@ model Like {
   id       String  @id @default(cuid())
   authorId String
   postId   String?
-  post     Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post     Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
   Reply    Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
   replyId  String?
 
@@ -28,7 +28,7 @@ model Retweet {
   id       String  @id @default(cuid())
   authorId String
   postId   String?
-  post     Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post     Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
   Reply    Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
   replyId  String?
 
@@ -50,8 +50,7 @@ model Post {
   likes    Like[]
   retweets Retweet[]
   isEdited Boolean   @default(false)
-  dataType  String   @default("post") // Added field to indicate data type
-
+  dataType String    @default("post") // Added field to indicate data type
 
   // Field for one-to-many relationship with Reply
   replies Reply[]
@@ -77,10 +76,9 @@ model Reply {
   authorId String
 
   // Field for parent post ID
-  postId String?
-  post   Post?   @relation(fields: [postId], references: [id])
-  dataType  String   @default("reply") // Added field to indicate data type
-
+  postId   String?
+  post     Post?   @relation(fields: [postId], references: [id])
+  dataType String  @default("reply") // Added field to indicate data type
 
   // Fields for self-referential relationship
   parentId String?
@@ -93,30 +91,31 @@ model Reply {
 }
 
 model Message {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  content     String   @db.VarChar(280)
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  content   String   @db.VarChar(280)
+
   // Fields for image, gif, and video URLs
-  imageUrl    String?
-  gifUrl      String?
-  videoUrl    String?
+  imageUrl String?
+  gifUrl   String?
+  videoUrl String?
 
   // Field for reaction (emoji)
-  reaction    String?
+  reaction String?
 
   // Fields for author and recipient IDs
   authorId    String
   recipientId String
 
   // Additional fields you might consider
-  isRead      Boolean  @default(false)
-  isDeleted   Boolean  @default(false)
+  isRead    Boolean @default(false)
+  isDeleted Boolean @default(false)
+
+  dataType String @default("message") // Added field to indicate data type
 
   @@index([authorId])
   @@index([recipientId])
 }
-
 
 model Follow {
   id          String @id @default(cuid())
