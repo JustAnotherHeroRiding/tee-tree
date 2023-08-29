@@ -7,5 +7,6 @@ export const filterUserForClient = (user: User) => {
       profileImageUrl: user.profileImageUrl,
       firstName: user.firstName,
       lastName: user.lastName,
+      createdAt: user.createdAt,
     }
   }
