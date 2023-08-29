@@ -274,6 +274,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Test the message poster #DONE 
 - Users profile on top when messaging that user #DONE 
 - MessageView Component where I can pass the fetched messages data #DONE 
+- Display images/gifs in the message history
 - Let's make the messages feed infinite with 10 messages loaded initially, in chronological order starting from the bottom.
 - Clear all button to delete all search results
 - Previous search results for logged in users 
