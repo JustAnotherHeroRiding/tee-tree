@@ -54,7 +54,7 @@ export const SearchInput = (props: { src: string }) => {
         method="get"
         className={`${
           props.src === "typed_query"
-            ? "hidden w-3/4 trendsbreakpoint:block"
+            ? "hidden w-full ml-4  phones:ml-8 trendsbreakpoint:flex"
             : "w-full trendsbreakpoint:hidden"
         } relative mx-auto mt-2 `}
       >

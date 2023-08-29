@@ -12,6 +12,7 @@ import { useHomePage } from "~/components/Context/HomePageContext";
 import { InfiniteScrollFollowingFeed } from "~/components/PostFeeds/infiniteScrollFollowerUsersFeed";
 import { CreatePostWizard } from "~/components/ReusableElements/CreatePostWizard";
 import { SearchInput } from "~/components/ReusableElements/SearchForm";
+import Sidebar from "~/components/SidebarIcons/Sidebar";
 
 dayjs.extend(relativeTime);
 
@@ -32,10 +33,11 @@ const Home: NextPage = () => {
   return (
     <PageLayout>
       <div className="sticky top-0 z-50 bg-transparent backdrop-blur-sm">
-      <SearchInput src="typed_query" />
-
+        <div className="flex flex-row">
+          <Sidebar src="index" />
+          <SearchInput src="typed_query" />
+        </div>
         <div className="flex border-b border-slate-400 px-4 pt-4">
-
           {!isSignedIn && (
             <div className="flex w-full flex-col">
               <SignInButton>

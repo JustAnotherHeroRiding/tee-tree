@@ -13,7 +13,7 @@ export const PageLayout = (props: PropsWithChildren) => {
   return (
     <>
       <main className="relative flex h-screen justify-center">
-          <Sidebar />
+          <Sidebar src="sidebar" />
 
         <div
           className="gray-thin-scrollbar h-full min-h-screen w-full overflow-y-scroll  border-x border-slate-400 

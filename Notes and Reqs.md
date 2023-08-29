@@ -271,7 +271,9 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 
 - Clicking on a user will open the conversation with him #DONE 
 - Make the createPostWizard work for sending messages #DONE 
-- Test the message poster
+- Test the message poster #DONE 
+- Users profile on top when messaging that user #DONE 
+- MessageView Component where I can pass the fetched messages data
 - Clear all button to delete all search results
 - Previous search results for logged in users 
 - Search bar should also search messages and display the users and messages mixed
@@ -282,7 +284,6 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Messages can be copied
 - Replied to
 - Reacted to, this should be an array of emojis connected to a message, one emoji per user, the last one should overwrite it. Perhaps it should not be an array but just an emoji field
-- Users profile on top when messaging that user
 - If a user has an unread message, in the bottom corner a message popup should appear, when clicked it will open a mini version of the inbox
 - Add websockets for instant messaging(whatever websockets are)
 - Merge the Messages branch with the main branch when the feature is complete
@@ -293,9 +294,9 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Currently users are being fetched by their usernames, but we should instead try to fetch by id
 
 ## Sidebar
-- Turn the separate sidebar elements into separate components 
-- Currently the sidebar is not at all visible from mobile devices
-- If the user is on messages, the icon should be colored, can be a simple router check
+- Turn the separate sidebar elements into separate components #DONE 
+- Currently the sidebar is not at all visible from mobile devices #DONE 
+- If the user is on messages, the icon should be colored, can be a simple router check #DONE 
 
 ## Recommended Users to follow
 - Endpoint to fetch users that the current user is not following #DONE 
