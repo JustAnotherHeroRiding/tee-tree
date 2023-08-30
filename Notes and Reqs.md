@@ -284,18 +284,42 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Let's make the messages feed infinite with 10 messages loaded initially, in chronological order starting from the bottom. #DONE 
 - Search result highlight is going out of bounds - Fix it #DONE 
 - The user's messages should be on the right, the correspondent on the left #DONE 
-- Refresh the messages when a user posts
+- Refresh the messages when a user posts #DONE 
+
+
+
+## T3 docs WebSockets Recommendations
+### [Pusher](https://create.t3.gg/en/other-recs#pusher)
+
+**For serverless WebSockets**
+
+If WebSockets are the primary focus of your project, you may want to consider a more traditional backend such as [Fastify↗](https://www.fastify.io/) (which [also works with tRPC!↗](https://trpc.io/docs/v10/fastify)). But for quickly adding WebSockets to a T3 App, Pusher is an excellent choice.
+
+- [Pusher Homepage↗](https://pusher.com/)
+
+### [Soketi](https://create.t3.gg/en/other-recs#soketi)
+
+Soketi is a self-hostable, simple, and fast alternative to Pusher. It’s fully compatible with the Pusher SDK which you can use to connect to the server. Soketi serverless is also in beta.
+
+- [Soketi Homepage↗](https://soketi.app/)
+- [Soketi GitHub↗](https://github.com/soketi/soketi)
+## Websockets for real time message updates
+- Currently only the posts for the sender get updated not the receiver as it is invalidated client side for the sender
+
+
+## M3sseging - Improved Search and Inbox
 - Search bar should also search messages and display the users and messages mixed
 - Clear all button to delete all search results 
 - Previous search results for logged in users 
 - Most recently messaged users should appear on the main page
+
+## Extended Message features
 - Seen if the message was opened 
 - Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition
 - Messages can be copied
 - Replied to
 - Reacted to, this should be an array of emojis connected to a message, one emoji per user, the last one should overwrite it. Perhaps it should not be an array but just an emoji field
 - If a user has an unread message, in the bottom corner a message popup should appear, when clicked it will open a mini version of the inbox
-- Add websockets for instant messaging(whatever websockets are)
 - Merge the Messages branch with the main branch when the feature is complete
 
 
