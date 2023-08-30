@@ -74,6 +74,40 @@ export const messagesRouter = createTRPCRouter({
       return addUserDataToMessages(messages);
     }),
 
+    infiniteScrollMessagesWithUserId: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        // cursor is a reference to the last item in the previous batch
+        // it's used to fetch the next batch
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+        authorId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const items = await ctx.prisma.message.findMany({
+        where: {
+          OR: [{ authorId: input.authorId }, { recipientId: input.authorId }],
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      const extendedMessages = await addUserDataToMessages(items);
+      return {
+        messages: extendedMessages,
+        nextCursor,
+      };
+    }),
+
+
     deleteMediaMessage: privateProcedure
     .input(z.object({ messageId: z.string(), mediaType: z.string() }))
     .mutation(async ({ ctx, input }) => {

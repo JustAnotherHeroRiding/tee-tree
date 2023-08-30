@@ -15,7 +15,7 @@ export const PageLayout = (props: PropsWithChildren) => {
       <main className="relative flex h-screen justify-center">
           <Sidebar src="sidebar" />
 
-        <div
+        <div id="mainScrollDiv"
           className="gray-thin-scrollbar h-full min-h-screen w-full overflow-y-scroll  border-x border-slate-400 
             sm:max-w-[500px] md:max-w-[550px] lg:max-w-[650px] phone:border-none"
         >

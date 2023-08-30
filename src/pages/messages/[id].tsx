@@ -18,9 +18,10 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
 }) => {
   const { user } = useUser();
   const { data } = api.messages.getById.useQuery({ authorId: user?.id ?? "" });
-  const { data: recipientProfile, isLoading } = api.profile.getUserById.useQuery({
-    id: recipientId,
-  });
+  const { data: recipientProfile, isLoading } =
+    api.profile.getUserById.useQuery({
+      id: recipientId,
+    });
   const [creationMonth, setCreationMonth] = useState<string | null>(null);
   const [creationYear, setCreationYear] = useState<number | null>(null);
 
@@ -36,9 +37,42 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
     }
   }, [recipientProfile?.createdAt]);
 
+  const [displayName, setDisplayName] = useState<string | null | undefined>(
+    null
+  );
+
+  useEffect(() => {
+    if (recipientProfile?.firstName && recipientProfile?.lastName) {
+      setDisplayName(
+        `${recipientProfile?.firstName} ${recipientProfile?.lastName}`
+      );
+    } else {
+      setDisplayName(recipientProfile?.username);
+    }
+  }, [
+    recipientProfile?.firstName,
+    recipientProfile?.lastName,
+    recipientProfile?.username,
+  ]);
+
   const { homePage } = useHomePage();
 
-  if (isLoading) return <LoadingPage />
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const parentDiv = document.getElementById('mainScrollDiv');
+      if (parentDiv) {
+        parentDiv.scrollTop = parentDiv.scrollHeight;
+        clearInterval(intervalId);
+      }
+    }, 100);
+  
+    return () => clearInterval(intervalId);
+  }, []);
+  
+  
+  
+
+  if (isLoading) return <LoadingPage />;
 
   if (!data && !isLoading) return <LoadingPage />;
 
@@ -51,7 +85,14 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
       </Head>
       <PageLayout>
         <div className="sticky top-0 z-50 flex h-16 items-center justify-between pb-2 backdrop-blur-sm">
-          <h1 className="ml-16 mr-auto text-lg font-bold">Post</h1>
+          <Image
+            src={recipientProfile?.profileImageUrl as string}
+            width={36}
+            height={36}
+            alt="profile"
+            className="ml-16 h-9 w-9 rounded-full"
+          />
+          <h1 className="ml-4 mr-auto text-lg font-bold">{displayName}</h1>
 
           <BackButton />
         </div>
