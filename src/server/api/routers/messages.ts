@@ -74,6 +74,55 @@ export const messagesRouter = createTRPCRouter({
       return addUserDataToMessages(messages);
     }),
 
+    deleteMediaMessage: privateProcedure
+    .input(z.object({ messageId: z.string(), mediaType: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      // Check if the user is the author of the post
+      const message = await ctx.prisma.message.findUnique({
+        where: { id: input.messageId },
+      });
+
+      if (!message || message.authorId !== authorId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not authorized to edit this post",
+        });
+      }
+
+      // ...existing code...
+
+      let mediaUpdate = {};
+      let public_id = null;
+
+      switch (input.mediaType) {
+        case "image":
+          public_id = message.imageUrl;
+          mediaUpdate = { imageUrl: null };
+          break;
+        case "gif":
+          public_id = message.gifUrl;
+          mediaUpdate = { gifUrl: null };
+          break;
+        case "video":
+          public_id = message.videoUrl;
+          mediaUpdate = { videoUrl: null };
+          break;
+        default:
+          throw new Error("Invalid media type");
+      }
+
+      const updatedMessage = await ctx.prisma.message.update({
+        where: { id: input.messageId },
+        data: {
+          ...mediaUpdate,
+        },
+      });
+
+      return { updatedMessage, public_id }; // include public_id in the return value
+    }),
+
   sendMessage: privateProcedure
     .input(
       z.object({

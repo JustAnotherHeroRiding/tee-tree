@@ -224,6 +224,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Create a mock test for liking a post #DONE 
 - Mock test for unliking a post will need to be passed the found post or found reply in order to work #DONE 
 - Mock test for un/retweeting a post #DONE 
+### Continue Writing Tests
 - Cypress end to end testing
 
 ### Trends should also include replies
