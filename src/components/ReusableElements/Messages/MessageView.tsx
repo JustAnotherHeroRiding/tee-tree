@@ -232,7 +232,6 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
               </div>
             </div>
           )}
-      <span>{author.username}</span>
     </div>
   );
 };

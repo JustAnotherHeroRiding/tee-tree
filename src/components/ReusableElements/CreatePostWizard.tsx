@@ -347,6 +347,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({
       onSuccess: async (message) => {
+        void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
+
         if (imageFile) {
           const imageResponseJson = await imageUpload(imageFile);
           if (imageResponseJson) {

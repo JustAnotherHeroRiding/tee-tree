@@ -282,12 +282,13 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Infinite query messages #DONE 
 - Filter messages to only show posts between the two users #DONE 
 - Let's make the messages feed infinite with 10 messages loaded initially, in chronological order starting from the bottom. #DONE 
-- Search result highlight is going out of bounds - Fix it
-- Clear all button to delete all search results
-- Previous search results for logged in users 
+- Search result highlight is going out of bounds - Fix it #DONE 
+- The user's messages should be on the right, the correspondent on the left #DONE 
+- Refresh the messages when a user posts
 - Search bar should also search messages and display the users and messages mixed
+- Clear all button to delete all search results 
+- Previous search results for logged in users 
 - Most recently messaged users should appear on the main page
-- The user's messages should be on the right, the correspondent on the left
 - Seen if the message was opened 
 - Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition
 - Messages can be copied
