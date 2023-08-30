@@ -224,6 +224,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Create a mock test for liking a post #DONE 
 - Mock test for unliking a post will need to be passed the found post or found reply in order to work #DONE 
 - Mock test for un/retweeting a post #DONE 
+### Continue Writing Tests
 - Cypress end to end testing
 
 ### Trends should also include replies
@@ -273,12 +274,21 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Make the createPostWizard work for sending messages #DONE 
 - Test the message poster #DONE 
 - Users profile on top when messaging that user #DONE 
-- MessageView Component where I can pass the fetched messages data
-- Clear all button to delete all search results
-- Previous search results for logged in users 
+- MessageView Component where I can pass the fetched messages data #DONE 
+- Display images/gifs in the message history #DONE 
+- Display the profile picture and username with a sticky div with bg blur on top #DONE 
+- Scroll to the bottom of the chat history on load #DONE 
+- The other user's messages have a gray bg, current user has blue
+- Infinite query messages #DONE 
+- Filter messages to only show posts between the two users #DONE 
+- Let's make the messages feed infinite with 10 messages loaded initially, in chronological order starting from the bottom. #DONE 
+- Search result highlight is going out of bounds - Fix it #DONE 
+- The user's messages should be on the right, the correspondent on the left #DONE 
+- Refresh the messages when a user posts
 - Search bar should also search messages and display the users and messages mixed
+- Clear all button to delete all search results 
+- Previous search results for logged in users 
 - Most recently messaged users should appear on the main page
-- The user's messages should be on the right, the correspondent on the left
 - Seen if the message was opened 
 - Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition
 - Messages can be copied

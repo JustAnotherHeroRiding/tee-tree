@@ -97,7 +97,7 @@ export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({
         <div className="flex flex-col ">
           {user.firstName && user.lastName && (
             <span>
-              {user.firstName}
+              {user.firstName}{" "}
               {user.lastName}
             </span>
           )}

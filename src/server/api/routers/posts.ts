@@ -33,6 +33,7 @@ export type PostAuthor = {
   profileImageUrl: string;
   firstName? : string | null;
   lastName? : string | null;
+  createdAt? : number | null;
 };
 
 export type PostWithAuthor = {

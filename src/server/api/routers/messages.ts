@@ -63,13 +63,100 @@ export const messagesRouter = createTRPCRouter({
   }),
 
   getById: publicProcedure
-    .input(z.object({ authorId: z.string() }))
+    .input(z.object({ authorId: z.string(), }))
     .query(async ({ ctx, input }) => {
       const messages = await ctx.prisma.message.findMany({
-        where: { authorId: input.authorId },
+        where: {
+          OR: [{ authorId: input.authorId }, { recipientId: input.authorId }],
+        },
       });
 
       return addUserDataToMessages(messages);
+    }),
+
+    infiniteScrollMessagesWithUserId: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+        authorId: z.string(),
+        recipientId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor, authorId, recipientId } = input;
+      const items = await ctx.prisma.message.findMany({
+        where: {
+          OR: [
+            { AND: [{ authorId: authorId }, { recipientId: recipientId }] },
+            { AND: [{ authorId: recipientId }, { recipientId: authorId }] }
+          ]
+        },
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem?.id;
+      }
+      const extendedMessages = await addUserDataToMessages(items);
+      return {
+        messages: extendedMessages,
+        nextCursor,
+      };
+    }),
+  
+
+    deleteMediaMessage: privateProcedure
+    .input(z.object({ messageId: z.string(), mediaType: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      // Check if the user is the author of the post
+      const message = await ctx.prisma.message.findUnique({
+        where: { id: input.messageId },
+      });
+
+      if (!message || message.authorId !== authorId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not authorized to edit this post",
+        });
+      }
+
+      // ...existing code...
+
+      let mediaUpdate = {};
+      let public_id = null;
+
+      switch (input.mediaType) {
+        case "image":
+          public_id = message.imageUrl;
+          mediaUpdate = { imageUrl: null };
+          break;
+        case "gif":
+          public_id = message.gifUrl;
+          mediaUpdate = { gifUrl: null };
+          break;
+        case "video":
+          public_id = message.videoUrl;
+          mediaUpdate = { videoUrl: null };
+          break;
+        default:
+          throw new Error("Invalid media type");
+      }
+
+      const updatedMessage = await ctx.prisma.message.update({
+        where: { id: input.messageId },
+        data: {
+          ...mediaUpdate,
+        },
+      });
+
+      return { updatedMessage, public_id }; // include public_id in the return value
     }),
 
   sendMessage: privateProcedure
@@ -106,7 +193,7 @@ export const messagesRouter = createTRPCRouter({
       return message;
     }),
 
-    addImageToMessage: privateProcedure
+  addImageToMessage: privateProcedure
     .input(z.object({ id: z.string(), publicId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const updatedMessage = await ctx.prisma.message.update({
@@ -125,7 +212,7 @@ export const messagesRouter = createTRPCRouter({
       return messageWithUserData[0];
     }),
 
-    addGifToMessage: privateProcedure
+  addGifToMessage: privateProcedure
     .input(z.object({ id: z.string(), publicId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const updatedMessage = await ctx.prisma.message.update({
