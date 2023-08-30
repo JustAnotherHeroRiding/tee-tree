@@ -17,7 +17,7 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
   recipientId,
 }) => {
   const { user } = useUser();
-  const { data } = api.messages.getById.useQuery({ authorId: user?.id ?? "" });
+  const { data } = api.messages.getById.useQuery({ authorId: user?.id ?? "", });
   const { data: recipientProfile, isLoading } =
     api.profile.getUserById.useQuery({
       id: recipientId,
@@ -57,17 +57,6 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
 
   const { homePage } = useHomePage();
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const parentDiv = document.getElementById('mainScrollDiv');
-      if (parentDiv) {
-        parentDiv.scrollTop = parentDiv.scrollHeight;
-        clearInterval(intervalId);
-      }
-    }, 100);
-  
-    return () => clearInterval(intervalId);
-  }, []);
   
   
   
@@ -121,7 +110,7 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
             Joined in {creationMonth} {creationYear}
           </span>
         </div>
-        {user?.id && <MessageFeed senderId={user.id} />}
+        {user?.id && <MessageFeed senderId={user.id} recipientId={recipientId} />}
 
         <div className="mt-6 px-6">
           <CreatePostWizard

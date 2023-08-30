@@ -82,8 +82,8 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
 
   return (
     <div
-      className={`mx-2 mb-2 rounded-lg border border-slate-300 max-w-[250px] ${
-        author.id === user?.id ? "ml-auto" : "mr-auto"
+      className={`mx-2 mb-2  rounded-lg border border-slate-300 max-w-[250px] ${
+        author.id === user?.id ? "ml-auto bg-Intone-100" : "mr-auto bg-slate-700"
       } w-fit p-1 px-2`}
     >
       <h1>{message.content}</h1>

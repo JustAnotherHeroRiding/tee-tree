@@ -279,7 +279,10 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Display the profile picture and username with a sticky div with bg blur on top #DONE 
 - Scroll to the bottom of the chat history on load #DONE 
 - The other user's messages have a gray bg, current user has blue
-- Let's make the messages feed infinite with 10 messages loaded initially, in chronological order starting from the bottom.
+- Infinite query messages #DONE 
+- Filter messages to only show posts between the two users #DONE 
+- Let's make the messages feed infinite with 10 messages loaded initially, in chronological order starting from the bottom. #DONE 
+- Search result highlight is going out of bounds - Fix it
 - Clear all button to delete all search results
 - Previous search results for logged in users 
 - Search bar should also search messages and display the users and messages mixed

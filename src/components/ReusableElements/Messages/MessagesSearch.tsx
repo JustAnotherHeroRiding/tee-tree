@@ -5,9 +5,12 @@ import { UserContext } from "~/components/Context/UserContext";
 import { LoadingSpinner } from "../loading";
 import React from "react";
 import { UserCardSearchResults } from "../Users/UserMentionSuggestions";
+import { useUser } from "@clerk/nextjs";
 
 export const MessageSearch = (props: { searchPosition: string }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
+
+  const { user: currentUser } = useUser();
 
   const resultRefs = useRef<React.RefObject<HTMLAnchorElement>[]>([]);
 
@@ -30,11 +33,12 @@ export const MessageSearch = (props: { searchPosition: string }) => {
   const handleArrowNavigation = (direction: "up" | "down") => {
     setHighlightedIndex((prevIndex) => {
       let nextIndex = direction === "up" ? prevIndex - 1 : prevIndex + 1;
-
+  
       // Boundary checks
+      const maxIndex = resultRefs.current.length - 1; // Use the actual length of the displayed list
       if (nextIndex < 0) nextIndex = 0;
-      if (nextIndex >= userList.length) nextIndex = userList.length - 1;
-
+      if (nextIndex > maxIndex) nextIndex = maxIndex;
+  
       // Scroll into view
       const nextRef = resultRefs.current[nextIndex];
       if (nextRef && nextRef.current) {
@@ -43,10 +47,11 @@ export const MessageSearch = (props: { searchPosition: string }) => {
           block: "nearest",
         });
       }
-
+  
       return nextIndex;
     });
   };
+  
 
   return (
     <div className="relative px-4">
@@ -99,6 +104,10 @@ export const MessageSearch = (props: { searchPosition: string }) => {
                   if (!resultRefs.current[index]) {
                     resultRefs.current[index] =
                       React.createRef<HTMLAnchorElement>();
+                  }
+
+                  if (currentUser?.id === user.id) {
+                    return null;
                   }
 
                   return (

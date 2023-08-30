@@ -63,7 +63,7 @@ export const messagesRouter = createTRPCRouter({
   }),
 
   getById: publicProcedure
-    .input(z.object({ authorId: z.string() }))
+    .input(z.object({ authorId: z.string(), }))
     .query(async ({ ctx, input }) => {
       const messages = await ctx.prisma.message.findMany({
         where: {
@@ -78,18 +78,20 @@ export const messagesRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number(),
-        // cursor is a reference to the last item in the previous batch
-        // it's used to fetch the next batch
         cursor: z.string().nullish(),
         skip: z.number().optional(),
         authorId: z.string(),
+        recipientId: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
-      const { limit, skip, cursor } = input;
+      const { limit, skip, cursor, authorId, recipientId } = input;
       const items = await ctx.prisma.message.findMany({
         where: {
-          OR: [{ authorId: input.authorId }, { recipientId: input.authorId }],
+          OR: [
+            { AND: [{ authorId: authorId }, { recipientId: recipientId }] },
+            { AND: [{ authorId: recipientId }, { recipientId: authorId }] }
+          ]
         },
         take: limit + 1,
         skip: skip,
@@ -97,7 +99,7 @@ export const messagesRouter = createTRPCRouter({
       });
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
-        const nextItem = items.pop(); // return the last item from the array
+        const nextItem = items.pop();
         nextCursor = nextItem?.id;
       }
       const extendedMessages = await addUserDataToMessages(items);
@@ -106,7 +108,7 @@ export const messagesRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-
+  
 
     deleteMediaMessage: privateProcedure
     .input(z.object({ messageId: z.string(), mediaType: z.string() }))
