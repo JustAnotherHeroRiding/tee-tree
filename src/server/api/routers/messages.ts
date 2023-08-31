@@ -190,8 +190,15 @@ export const messagesRouter = createTRPCRouter({
         },
       });
 
-      // Trigger a Pusher event
-      void pusherServerClient.trigger("messagesUpdates", "new-message", {
+      // Trigger a Pusher event for sender
+      const senderChannelName = `messagesUpdates-${input.senderId}`;
+      void pusherServerClient.trigger(senderChannelName, "new-message", {
+        message: message,
+      });
+
+      // Trigger a Pusher event for recipient
+      const recipientChannelName = `messagesUpdates-${input.recipientId}`;
+      void pusherServerClient.trigger(recipientChannelName, "new-message", {
         message: message,
       });
 

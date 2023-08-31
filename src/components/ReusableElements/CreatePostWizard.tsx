@@ -40,7 +40,6 @@ interface PostsContext {
   infiniteScrollSearchResultsGifs: InfiniteScroll;
   infiniteScrollPostsByUserId: InfiniteScroll;
   enrichReplies: InfiniteScroll;
-  
 }
 
 export interface Ctx {
@@ -51,7 +50,7 @@ export function invalidateResources(
   location: Location,
   homePage: boolean,
   params: URLSearchParams,
-  ctx: Ctx,
+  ctx: Ctx
 ) {
   const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
   const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
@@ -222,7 +221,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const ctx = api.useContext();
   const params = new URLSearchParams(location.search);
 
-
   const { mutate: mutateAddImageToPost } = api.posts.addImageToPost.useMutation(
     {
       onSuccess: () => {
@@ -371,26 +369,31 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   });
 
   useEffect(() => {
-    const pusher = new Pusher(
-      process.env.NEXT_PUBLIC_PUSHER_KEY as string,
-      {
-        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
-      }
-    );
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
+    });
 
-    const channel = pusher.subscribe("messagesUpdates");
+    // Subscribe to sender's channel
+    const senderChannel = pusher.subscribe(`messagesUpdates-${user.id}`);
+    senderChannel.bind("new-message", (newMessage: ExtendedMessage) => {
+      console.log(newMessage);
+      void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
+    });
 
-    channel.bind("new-message", (newMessage: ExtendedMessage) => {
-      // Update your state or invalidate tRPC queries
+    // Subscribe to recipient's channel
+    const recipientChannel = pusher.subscribe(`messagesUpdates-${recipientId}`);
+    recipientChannel.bind("new-message", (newMessage: ExtendedMessage) => {
       console.log(newMessage);
       void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
     });
 
     return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
+      senderChannel.unbind_all();
+      senderChannel.unsubscribe();
+      recipientChannel.unbind_all();
+      recipientChannel.unsubscribe();
     };
-  }, [ctx.messages.infiniteScrollMessagesWithUserId]);
+  }, [ctx.messages.infiniteScrollMessagesWithUserId, user?.id, recipientId]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({
