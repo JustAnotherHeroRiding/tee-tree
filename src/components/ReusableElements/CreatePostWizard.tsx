@@ -369,12 +369,12 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   });
   const pusher = usePusher();
 
-  useEffect(() => {
+  let userId = "";
+  if (user) {
+    userId = user?.id;
+  }
 
-    let userId = "";
-    if (user) {
-      userId = user?.id;
-    }
+  useEffect(() => {
 
     const senderChannel = pusher.subscribe(`messagesUpdates-${userId}`);
     senderChannel.bind("new-message", (_newMessage: ExtendedMessage) => {
@@ -393,7 +393,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       recipientChannel.unbind_all();
       recipientChannel.unsubscribe();
     };
-  }, [ctx.messages.infiniteScrollMessagesWithUserId, user, recipientId, pusher]);
+  }, [ctx.messages.infiniteScrollMessagesWithUserId, userId, recipientId, pusher]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({

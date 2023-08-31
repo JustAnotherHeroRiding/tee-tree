@@ -54,7 +54,7 @@ export const SearchInput = (props: { src: string }) => {
         method="get"
         className={`${
           props.src === "typed_query"
-            ? "hidden w-full ml-4  phones:ml-8 trendsbreakpoint:flex"
+            ? "phone:ml-2 phone:w-fit ml-4 hidden  w-full trendsbreakpoint:flex"
             : "w-full trendsbreakpoint:hidden"
         } relative mx-auto mt-2 `}
       >
@@ -68,33 +68,35 @@ export const SearchInput = (props: { src: string }) => {
           autoComplete="off"
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
-                if (highlightedIndex < possibleTrends.length - 1 + userList.length)
-              setHighlightedIndex((prevHighlightedIndex) => {
-                const nextHighlightedIndex = prevHighlightedIndex + 1;
-                const nextRef = resultRefs.current[nextHighlightedIndex];
-                if (nextRef && nextRef.current) {
-                  nextRef.current.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                  });
-                }
-                return nextHighlightedIndex;
-              });
+              if (
+                highlightedIndex <
+                possibleTrends.length - 1 + userList.length
+              )
+                setHighlightedIndex((prevHighlightedIndex) => {
+                  const nextHighlightedIndex = prevHighlightedIndex + 1;
+                  const nextRef = resultRefs.current[nextHighlightedIndex];
+                  if (nextRef && nextRef.current) {
+                    nextRef.current.scrollIntoView({
+                      behavior: "smooth",
+                      block: "nearest",
+                    });
+                  }
+                  return nextHighlightedIndex;
+                });
             } else if (e.key === "ArrowUp") {
               if (highlightedIndex > 0) {
                 setHighlightedIndex((setHighlightedIndex) => {
-                    const nextHighlightedIndex = setHighlightedIndex - 1;
-                    const nextRef = resultRefs.current[nextHighlightedIndex];
-                    if (nextRef && nextRef.current) {
-                      nextRef.current.scrollIntoView({
-                        behavior: "smooth",
-                        block: "nearest",
-                      });
-                    }
-                    return nextHighlightedIndex;
-                  });
+                  const nextHighlightedIndex = setHighlightedIndex - 1;
+                  const nextRef = resultRefs.current[nextHighlightedIndex];
+                  if (nextRef && nextRef.current) {
+                    nextRef.current.scrollIntoView({
+                      behavior: "smooth",
+                      block: "nearest",
+                    });
+                  }
+                  return nextHighlightedIndex;
+                });
               }
-              
             } else if (e.key === "Tab") {
               resultRefs.current[highlightedIndex]?.current?.click();
             }
@@ -111,7 +113,7 @@ export const SearchInput = (props: { src: string }) => {
         <div
           className={`${
             props.src === "typed_query"
-              ? "top-14 min-w-3/4 hidden right-1/2 translate-x-1/2 trendsbreakpoint:block"
+              ? "right-1/2 top-14 hidden min-w-3/4 translate-x-1/2 trendsbreakpoint:block"
               : "top-16 w-full trendsbreakpoint:hidden"
           } gray-thin-scrollbar absolute z-10 flex max-h-[300px] 
                 scroll-p-4 
