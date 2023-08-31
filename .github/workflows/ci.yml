@@ -15,10 +15,10 @@ env: # Define environment variables here
   NEXT_PUBLIC_CLERK_SIGN_UP_URL: "/sign-up"
   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: "/"
   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: "/"
-  PUSHER_APP_ID: ""
-  PUSHER_SECRET: ""
-  NEXT_PUBLIC_PUSHER_KEY: ""
-  NEXT_PUBLIC_PUSHER_CLUSTER: ""
+  PUSHER_APP_ID: "example"
+  PUSHER_SECRET: "pusher"
+  NEXT_PUBLIC_PUSHER_KEY: "envs"
+  NEXT_PUBLIC_PUSHER_CLUSTER: "so that test do not fail"
 
 
 jobs:
