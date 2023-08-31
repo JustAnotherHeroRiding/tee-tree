@@ -20,6 +20,8 @@ import { Tooltip } from "react-tooltip";
 import { UserContext } from "../Context/UserContext";
 import { UserCard } from "./Users/UserMentionSuggestions";
 import EmojiSelector from "./EmojiPicker";
+import Pusher from 'pusher-js';
+import { type ExtendedMessage } from "~/server/api/routers/messages";
 
 dayjs.extend(relativeTime);
 
@@ -343,6 +345,27 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     },
   });
+
+
+  useEffect(() => {
+    const pusher = new Pusher("APP_KEY", {
+      cluster: "APP_CLUSTER",
+    });
+
+    const channel = pusher.subscribe("my-channel");
+
+    channel.bind('new-message', (newMessage: ExtendedMessage) => {
+      // Update your state or invalidate tRPC queries
+      console.log(newMessage)
+      void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
+    });
+    
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
+  }, [ctx.messages.infiniteScrollMessagesWithUserId]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({

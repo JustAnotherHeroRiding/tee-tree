@@ -8,6 +8,7 @@ import { type Message } from "@prisma/client";
 import { type PostAuthor } from "./posts";
 import { clerkClient } from "@clerk/nextjs";
 import { filterUserForClient } from "~/server/helpers/FilterUserForClient";
+import { pusherServerClient } from "~/server/pusher";
 
 export type ExtendedMessage = Message & {
   author?: PostAuthor;
@@ -63,7 +64,7 @@ export const messagesRouter = createTRPCRouter({
   }),
 
   getById: publicProcedure
-    .input(z.object({ authorId: z.string(), }))
+    .input(z.object({ authorId: z.string() }))
     .query(async ({ ctx, input }) => {
       const messages = await ctx.prisma.message.findMany({
         where: {
@@ -74,7 +75,7 @@ export const messagesRouter = createTRPCRouter({
       return addUserDataToMessages(messages);
     }),
 
-    infiniteScrollMessagesWithUserId: publicProcedure
+  infiniteScrollMessagesWithUserId: publicProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -90,8 +91,8 @@ export const messagesRouter = createTRPCRouter({
         where: {
           OR: [
             { AND: [{ authorId: authorId }, { recipientId: recipientId }] },
-            { AND: [{ authorId: recipientId }, { recipientId: authorId }] }
-          ]
+            { AND: [{ authorId: recipientId }, { recipientId: authorId }] },
+          ],
         },
         take: limit + 1,
         skip: skip,
@@ -108,9 +109,8 @@ export const messagesRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-  
 
-    deleteMediaMessage: privateProcedure
+  deleteMediaMessage: privateProcedure
     .input(z.object({ messageId: z.string(), mediaType: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
@@ -188,6 +188,11 @@ export const messagesRouter = createTRPCRouter({
           recipientId: input.recipientId,
           content: input.content,
         },
+      });
+
+      // Trigger a Pusher event
+      void pusherServerClient.trigger("my-channel", "new-message", {
+        message: message,
       });
 
       return message;
