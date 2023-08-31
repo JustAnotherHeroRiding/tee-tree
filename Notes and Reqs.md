@@ -305,6 +305,8 @@ Soketi is a self-hostable, simple, and fast alternative to Pusher. It’s fully 
 - [Soketi GitHub↗](https://github.com/soketi/soketi)
 ## Websockets for real time message updates
 - Currently only the posts for the sender get updated not the receiver as it is invalidated client side for the sender
+- Invalidate resources seems to break the rules of hooks and produces and error #DONE 
+- Let's add the context as a parameter so that I can reuse it
 
 
 ## M3sseging - Improved Search and Inbox
