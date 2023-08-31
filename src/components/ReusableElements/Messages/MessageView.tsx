@@ -10,7 +10,7 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import useOutsideClick from "~/components/customHooks/outsideClick";
-import { type ReplyWithParent } from "~/server/api/routers/posts";
+import { invalidateResources } from "../CreatePostWizard";
 
 type MessageViewComponentProps = {
   type?: string;
@@ -29,54 +29,6 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const ctx = api.useContext();
 
-  function invalidateResourcesExport(
-    location: Location,
-    homePage: boolean,
-    params: URLSearchParams,
-    repliesOfReply: { replies: ReplyWithParent[] } | undefined
-  ) {
-    const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
-    const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
-    const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
-    const isInvalidateReplyById = /^\/reply\/\w+/.test(location.pathname);
-    const isInvalidateSearchResults =
-      location.pathname.startsWith("/i/search") &&
-      params.get("selector") !== "photos" &&
-      params.get("selector") !== "gifs";
-    const isInvalidateSearchResultsImages = params.get("selector") === "photos";
-    const isInvalidateSearchResultsGifs = params.get("selector") === "gifs";
-    const isInvalidateUserPosts = location.pathname.startsWith("/@");
-
-    if (location.pathname === "/") {
-      if (homePage) {
-        void ctx.posts.infiniteScrollAllPosts?.invalidate();
-      } else {
-        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
-      }
-    } else if (isInvalidateUserLikes) {
-      void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-    } else if (isInvalidateReplies) {
-      void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-    } else if (isInvalidateById) {
-      void ctx.posts.getById.invalidate();
-      if (repliesOfReply) {
-        void ctx.posts.enrichReplies.invalidate();
-      }
-    } else if (isInvalidateReplyById) {
-      void ctx.posts.getReplyById.invalidate();
-      if (repliesOfReply) {
-        void ctx.posts.enrichReplies.invalidate();
-      }
-    } else if (isInvalidateSearchResults) {
-      void ctx.posts.infiniteScrollSearchResults.invalidate();
-    } else if (isInvalidateSearchResultsImages) {
-      void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-    } else if (isInvalidateSearchResultsGifs) {
-      void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-    } else if (isInvalidateUserPosts) {
-      void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-    }
-  }
 
   const modalMediaFullRef = useRef<HTMLDivElement>(null);
 
@@ -96,7 +48,7 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
         if (publicId) {
           deleteMediaCloudinary({ publicId: publicId });
         }
-        invalidateResourcesExport(location, props.homePage, params, undefined);
+        invalidateResources(location, props.homePage, params, ctx);
 
         console.log("Post Image Deleted");
       },

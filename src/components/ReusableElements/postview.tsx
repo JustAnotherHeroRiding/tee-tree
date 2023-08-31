@@ -54,6 +54,7 @@ import {
   type PostWithAuthor,
 } from "~/server/api/routers/posts";
 import useOutsideClick from "../customHooks/outsideClick";
+import { type Ctx } from "./CreatePostWizard";
 
 dayjs.extend(relativeTime);
 
@@ -62,6 +63,57 @@ export type PostWithUser = PostWithAuthor;
 type PostContentProps = {
   content: string;
 };
+
+export function invalidateResources(
+  location: Location,
+  homePage: boolean,
+  params: URLSearchParams,
+  repliesOfReply: { replies: ReplyWithParent[] } | undefined,
+  ctx: Ctx
+) {
+
+  const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
+  const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
+  const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
+  const isInvalidateReplyById = /^\/reply\/\w+/.test(location.pathname);
+  const isInvalidateSearchResults =
+    location.pathname.startsWith("/i/search") &&
+    params.get("selector") !== "photos" &&
+    params.get("selector") !== "gifs";
+  const isInvalidateSearchResultsImages = params.get("selector") === "photos";
+  const isInvalidateSearchResultsGifs = params.get("selector") === "gifs";
+  const isInvalidateUserPosts = location.pathname.startsWith("/@");
+
+  if (location.pathname === "/") {
+    if (homePage) {
+      void ctx.posts.infiniteScrollAllPosts?.invalidate();
+    } else {
+      void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+    }
+  } else if (isInvalidateUserLikes) {
+    void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+  } else if (isInvalidateReplies) {
+    void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+  } else if (isInvalidateById) {
+    void ctx.posts.getById.invalidate();
+    if (repliesOfReply) {
+      void ctx.posts.enrichReplies.invalidate();
+    }
+  } else if (isInvalidateReplyById) {
+    void ctx.posts.getReplyById.invalidate();
+    if (repliesOfReply) {
+      void ctx.posts.enrichReplies.invalidate();
+    }
+  } else if (isInvalidateSearchResults) {
+    void ctx.posts.infiniteScrollSearchResults.invalidate();
+  } else if (isInvalidateSearchResultsImages) {
+    void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+  } else if (isInvalidateSearchResultsGifs) {
+    void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
+  } else if (isInvalidateUserPosts) {
+    void ctx.posts.infiniteScrollPostsByUserId.invalidate();
+  }
+}
 
 export const PostContent: FC<PostContentProps> = ({ content }) => {
   const { userList, isLoading } = useContext(UserContext);
@@ -308,55 +360,6 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const ctx = api.useContext();
 
 
-  function invalidateResources(
-    location: Location,
-    homePage: boolean,
-    params: URLSearchParams,
-    repliesOfReply: { replies: ReplyWithParent[] } | undefined
-  ) {
-
-    const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
-    const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
-    const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
-    const isInvalidateReplyById = /^\/reply\/\w+/.test(location.pathname);
-    const isInvalidateSearchResults =
-      location.pathname.startsWith("/i/search") &&
-      params.get("selector") !== "photos" &&
-      params.get("selector") !== "gifs";
-    const isInvalidateSearchResultsImages = params.get("selector") === "photos";
-    const isInvalidateSearchResultsGifs = params.get("selector") === "gifs";
-    const isInvalidateUserPosts = location.pathname.startsWith("/@");
-
-    if (location.pathname === "/") {
-      if (homePage) {
-        void ctx.posts.infiniteScrollAllPosts?.invalidate();
-      } else {
-        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
-      }
-    } else if (isInvalidateUserLikes) {
-      void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-    } else if (isInvalidateReplies) {
-      void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-    } else if (isInvalidateById) {
-      void ctx.posts.getById.invalidate();
-      if (repliesOfReply) {
-        void ctx.posts.enrichReplies.invalidate();
-      }
-    } else if (isInvalidateReplyById) {
-      void ctx.posts.getReplyById.invalidate();
-      if (repliesOfReply) {
-        void ctx.posts.enrichReplies.invalidate();
-      }
-    } else if (isInvalidateSearchResults) {
-      void ctx.posts.infiniteScrollSearchResults.invalidate();
-    } else if (isInvalidateSearchResultsImages) {
-      void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-    } else if (isInvalidateSearchResultsGifs) {
-      void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-    } else if (isInvalidateUserPosts) {
-      void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-    }
-  }
 
   useEffect(() => {
     if (repliesOfReply) {
@@ -461,7 +464,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
-      invalidateResources(location, homePage, params, repliesOfReply);
+      invalidateResources(location, homePage, params, repliesOfReply, ctx);
       console.log("Post Liked");
     },
     onError: (e) => {
@@ -477,7 +480,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { mutate: retweetPost, isLoading: isRetweeting } =
     api.posts.retweetPost.useMutation({
       onSuccess: () => {
-        invalidateResources(location, homePage, params, repliesOfReply);
+        invalidateResources(location, homePage, params, repliesOfReply, ctx);
 
         console.log("Retweeted post");
       },
@@ -494,7 +497,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { mutate: editPost, isLoading: isEditingPostUpdating } =
     api.posts.editPost.useMutation({
       onSuccess: () => {
-        invalidateResources(location, homePage, params, repliesOfReply);
+        invalidateResources(location, homePage, params, repliesOfReply, ctx);
 
         console.log("Post Edited");
       },
@@ -512,7 +515,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
     api.posts.deletePost.useMutation({
       onSuccess: () => {
         setShowDeleteModal(false);
-        invalidateResources(location, homePage, params, repliesOfReply);
+        invalidateResources(location, homePage, params, repliesOfReply, ctx);
 
         console.log("Post Deleted");
       },
@@ -550,7 +553,7 @@ const PostViewComponent = (props: PostViewComponentProps) => {
         if (publicId) {
           deleteMediaCloudinary({ publicId: publicId });
         }
-        invalidateResources(location, homePage, params, repliesOfReply);
+        invalidateResources(location, homePage, params, repliesOfReply, ctx);
 
         console.log("Post Image Deleted");
       },

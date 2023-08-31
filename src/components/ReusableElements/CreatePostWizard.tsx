@@ -24,6 +24,70 @@ import Pusher from "pusher-js";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
 
 dayjs.extend(relativeTime);
+interface InfiniteScroll {
+  invalidate: () => void;
+}
+
+interface PostsContext {
+  infiniteScrollAllPosts?: InfiniteScroll;
+  infiniteScrollFollowerUsersPosts: InfiniteScroll;
+  infiniteScrollPostsByUserIdLiked: InfiniteScroll;
+  infiniteScrollRepliesByUserId: InfiniteScroll;
+  getById: InfiniteScroll;
+  getReplyById: InfiniteScroll;
+  infiniteScrollSearchResults: InfiniteScroll;
+  infiniteScrollSearchResultsImages: InfiniteScroll;
+  infiniteScrollSearchResultsGifs: InfiniteScroll;
+  infiniteScrollPostsByUserId: InfiniteScroll;
+  enrichReplies: InfiniteScroll;
+}
+
+export interface Ctx {
+  posts: PostsContext;
+}
+
+export function invalidateResources(
+  location: Location,
+  homePage: boolean,
+  params: URLSearchParams,
+  ctx: Ctx
+) {
+  const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
+  const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
+  const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
+  const isInvalidateReplyById = /^\/reply\/\w+/.test(location.pathname);
+  const isInvalidateSearchResults =
+    location.pathname.startsWith("/i/search") &&
+    params.get("selector") !== "photos" &&
+    params.get("selector") !== "gifs";
+  const isInvalidateSearchResultsImages = params.get("selector") === "photos";
+  const isInvalidateSearchResultsGifs = params.get("selector") === "gifs";
+  const isInvalidateUserPosts = location.pathname.startsWith("/@");
+
+  if (location.pathname === "/") {
+    if (homePage) {
+      void ctx.posts.infiniteScrollAllPosts?.invalidate();
+    } else {
+      void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
+    }
+  } else if (isInvalidateUserLikes) {
+    void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
+  } else if (isInvalidateReplies) {
+    void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
+  } else if (isInvalidateById) {
+    void ctx.posts.getById.invalidate();
+  } else if (isInvalidateReplyById) {
+    void ctx.posts.getReplyById.invalidate();
+  } else if (isInvalidateSearchResults) {
+    void ctx.posts.infiniteScrollSearchResults.invalidate();
+  } else if (isInvalidateSearchResultsImages) {
+    void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
+  } else if (isInvalidateSearchResultsGifs) {
+    void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
+  } else if (isInvalidateUserPosts) {
+    void ctx.posts.infiniteScrollPostsByUserId.invalidate();
+  }
+}
 
 interface CreatePostWizardProps {
   homePage: boolean;
@@ -157,52 +221,10 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const ctx = api.useContext();
   const params = new URLSearchParams(location.search);
 
-  function invalidateResources(
-    location: Location,
-    homePage: boolean,
-    params: URLSearchParams
-  ) {
-    const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
-    const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
-    const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
-    const isInvalidateReplyById = /^\/reply\/\w+/.test(location.pathname);
-    const isInvalidateSearchResults =
-      location.pathname.startsWith("/i/search") &&
-      params.get("selector") !== "photos" &&
-      params.get("selector") !== "gifs";
-    const isInvalidateSearchResultsImages = params.get("selector") === "photos";
-    const isInvalidateSearchResultsGifs = params.get("selector") === "gifs";
-    const isInvalidateUserPosts = location.pathname.startsWith("/@");
-
-    if (location.pathname === "/") {
-      if (homePage) {
-        void ctx.posts.infiniteScrollAllPosts?.invalidate();
-      } else {
-        void ctx.posts.infiniteScrollFollowerUsersPosts.invalidate();
-      }
-    } else if (isInvalidateUserLikes) {
-      void ctx.posts.infiniteScrollPostsByUserIdLiked.invalidate();
-    } else if (isInvalidateReplies) {
-      void ctx.posts.infiniteScrollRepliesByUserId.invalidate();
-    } else if (isInvalidateById) {
-      void ctx.posts.getById.invalidate();
-    } else if (isInvalidateReplyById) {
-      void ctx.posts.getReplyById.invalidate();
-    } else if (isInvalidateSearchResults) {
-      void ctx.posts.infiniteScrollSearchResults.invalidate();
-    } else if (isInvalidateSearchResultsImages) {
-      void ctx.posts.infiniteScrollSearchResultsImages.invalidate();
-    } else if (isInvalidateSearchResultsGifs) {
-      void ctx.posts.infiniteScrollSearchResultsGifs.invalidate();
-    } else if (isInvalidateUserPosts) {
-      void ctx.posts.infiniteScrollPostsByUserId.invalidate();
-    }
-  }
-
   const { mutate: mutateAddImageToPost } = api.posts.addImageToPost.useMutation(
     {
       onSuccess: () => {
-        invalidateResources(location, homePage, params);
+        invalidateResources(location, homePage, params, ctx);
         setImageFile(undefined);
         setPreviewUrl("");
       },
@@ -220,7 +242,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { mutate: mutateAddImageToReply } =
     api.posts.addImageToReply.useMutation({
       onSuccess: () => {
-        invalidateResources(location, homePage, params);
+        invalidateResources(location, homePage, params, ctx);
 
         setImageFile(undefined);
         setPreviewUrl("");
@@ -238,7 +260,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { mutate: mutateAddImageToMessage } =
     api.messages.addImageToMessage.useMutation({
       onSuccess: () => {
-        invalidateResources(location, homePage, params);
+        invalidateResources(location, homePage, params, ctx);
 
         setImageFile(undefined);
         setPreviewUrl("");
@@ -255,7 +277,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const { mutate: mutateAddGifToPost } = api.posts.addGifToPost.useMutation({
     onSuccess: () => {
-      invalidateResources(location, homePage, params);
+      invalidateResources(location, homePage, params, ctx);
 
       setGifFile(undefined);
       setPreviewUrl("");
@@ -273,7 +295,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   const { mutate: mutateAddGifToMessage } =
     api.messages.addGifToMessage.useMutation({
       onSuccess: () => {
-        invalidateResources(location, homePage, params);
+        invalidateResources(location, homePage, params, ctx);
 
         setGifFile(undefined);
         setPreviewUrl("");
@@ -290,7 +312,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
   const { mutate: mutateAddGifToReply } = api.posts.addGifToReply.useMutation({
     onSuccess: () => {
-      invalidateResources(location, homePage, params);
+      invalidateResources(location, homePage, params, ctx);
 
       setGifFile(undefined);
       setPreviewUrl("");
@@ -347,26 +369,35 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   });
 
   useEffect(() => {
-    const pusher = new Pusher(
-      process.env.NEXT_PUBLIC_PUSHER_KEY as string,
-      {
-        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
-      }
-    );
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
+    });
 
-    const channel = pusher.subscribe("messagesUpdates");
+    let userId = "";
+    if (user) {
+      userId = user?.id;
+    }
 
-    channel.bind("new-message", (newMessage: ExtendedMessage) => {
-      // Update your state or invalidate tRPC queries
+    const senderChannel = pusher.subscribe(`messagesUpdates-${userId}`);
+    senderChannel.bind("new-message", (newMessage: ExtendedMessage) => {
+      console.log(newMessage);
+      void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
+    });
+
+    // Subscribe to recipient's channel
+    const recipientChannel = pusher.subscribe(`messagesUpdates-${recipientId}`);
+    recipientChannel.bind("new-message", (newMessage: ExtendedMessage) => {
       console.log(newMessage);
       void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
     });
 
     return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
+      senderChannel.unbind_all();
+      senderChannel.unsubscribe();
+      recipientChannel.unbind_all();
+      recipientChannel.unsubscribe();
     };
-  }, [ctx.messages.infiniteScrollMessagesWithUserId]);
+  }, [ctx.messages.infiniteScrollMessagesWithUserId, user, recipientId]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({
@@ -438,7 +469,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
           setShowCommentModal(false);
         }
 
-        invalidateResources(location, homePage, params);
+        invalidateResources(location, homePage, params, ctx);
       },
       onError: (e) => {
         const errorMessage = e.data?.zodError?.fieldErrors.content;

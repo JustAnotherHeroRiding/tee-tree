@@ -304,9 +304,10 @@ Soketi is a self-hostable, simple, and fast alternative to Pusher. It’s fully 
 - [Soketi Homepage↗](https://soketi.app/)
 - [Soketi GitHub↗](https://github.com/soketi/soketi)
 ## Websockets for real time message updates
-- Currently only the posts for the sender get updated not the receiver as it is invalidated client side for the sender
+- Currently only the posts for the sender get updated not the receiver as it is invalidated client side for the sender #DONE 
 - Invalidate resources seems to break the rules of hooks and produces and error #DONE 
-- Let's add the context as a parameter so that I can reuse it
+- The websocket server name should be connected to the user id so that not all chats get refreshed whenever anyone posts a message
+- Let's add the context as a parameter so that I can reuse it #DONE 
 
 
 ## M3sseging - Improved Search and Inbox
@@ -316,6 +317,7 @@ Soketi is a self-hostable, simple, and fast alternative to Pusher. It’s fully 
 - Most recently messaged users should appear on the main page
 
 ## Extended Message features
+- Add a message link to the hover card
 - Seen if the message was opened 
 - Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition
 - Messages can be copied
