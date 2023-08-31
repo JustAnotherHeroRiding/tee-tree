@@ -373,8 +373,12 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
     });
 
-    // Subscribe to sender's channel
-    const senderChannel = pusher.subscribe(`messagesUpdates-${user.id}`);
+    let userId = "";
+    if (user) {
+      userId = user?.id;
+    }
+
+    const senderChannel = pusher.subscribe(`messagesUpdates-${userId}`);
     senderChannel.bind("new-message", (newMessage: ExtendedMessage) => {
       console.log(newMessage);
       void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
@@ -393,7 +397,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       recipientChannel.unbind_all();
       recipientChannel.unsubscribe();
     };
-  }, [ctx.messages.infiniteScrollMessagesWithUserId, user?.id, recipientId]);
+  }, [ctx.messages.infiniteScrollMessagesWithUserId, user, recipientId]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({
