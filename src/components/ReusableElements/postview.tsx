@@ -465,7 +465,6 @@ const PostViewComponent = (props: PostViewComponentProps) => {
   const { mutate, isLoading: isLiking } = api.posts.likePost.useMutation({
     onSuccess: () => {
       invalidateResources(location, homePage, params, repliesOfReply, ctx);
-      console.log("Post Liked");
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content;
@@ -482,7 +481,6 @@ const PostViewComponent = (props: PostViewComponentProps) => {
       onSuccess: () => {
         invalidateResources(location, homePage, params, repliesOfReply, ctx);
 
-        console.log("Retweeted post");
       },
       onError: (e) => {
         const errorMessage = e.data?.zodError?.fieldErrors.content;

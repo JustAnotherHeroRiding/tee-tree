@@ -20,8 +20,8 @@ import { Tooltip } from "react-tooltip";
 import { UserContext } from "../Context/UserContext";
 import { UserCard } from "./Users/UserMentionSuggestions";
 import EmojiSelector from "./EmojiPicker";
-import Pusher from "pusher-js";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
+import { usePusher } from "../Context/PusherContex";
 
 dayjs.extend(relativeTime);
 interface InfiniteScroll {
@@ -367,11 +367,9 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       }
     },
   });
+  const pusher = usePusher();
 
   useEffect(() => {
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
-    });
 
     let userId = "";
     if (user) {
@@ -379,15 +377,13 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
     }
 
     const senderChannel = pusher.subscribe(`messagesUpdates-${userId}`);
-    senderChannel.bind("new-message", (newMessage: ExtendedMessage) => {
-      console.log(newMessage);
+    senderChannel.bind("new-message", (_newMessage: ExtendedMessage) => {
       void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
     });
 
     // Subscribe to recipient's channel
     const recipientChannel = pusher.subscribe(`messagesUpdates-${recipientId}`);
-    recipientChannel.bind("new-message", (newMessage: ExtendedMessage) => {
-      console.log(newMessage);
+    recipientChannel.bind("new-message", (_newMessage: ExtendedMessage) => {
       void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
     });
 
@@ -397,7 +393,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       recipientChannel.unbind_all();
       recipientChannel.unsubscribe();
     };
-  }, [ctx.messages.infiniteScrollMessagesWithUserId, user, recipientId]);
+  }, [ctx.messages.infiniteScrollMessagesWithUserId, user, recipientId, pusher]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({
