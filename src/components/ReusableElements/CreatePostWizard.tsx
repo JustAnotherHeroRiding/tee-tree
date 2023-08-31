@@ -21,7 +21,7 @@ import { UserContext } from "../Context/UserContext";
 import { UserCard } from "./Users/UserMentionSuggestions";
 import EmojiSelector from "./EmojiPicker";
 import Pusher from 'pusher-js';
-import { ExtendedMessage } from "~/server/api/routers/messages";
+import { type ExtendedMessage } from "~/server/api/routers/messages";
 
 dayjs.extend(relativeTime);
 
@@ -356,6 +356,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
 
     channel.bind('new-message', (newMessage: ExtendedMessage) => {
       // Update your state or invalidate tRPC queries
+      console.log(newMessage)
       void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
     });
     
@@ -364,7 +365,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, []);
+  }, [ctx.messages.infiniteScrollMessagesWithUserId]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({
