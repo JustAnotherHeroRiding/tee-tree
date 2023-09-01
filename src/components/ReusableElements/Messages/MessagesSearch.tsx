@@ -36,8 +36,22 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const [isTypingQuery, setIsTypingQuery] = useState(false);
 
   useEffect(() => {
-    setUserResultsCount(0); // Reset the count when the input changes
-  }, [input]);
+  let count = 0;
+
+  userList.forEach((user) => {
+    if (
+      user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+      user.firstName?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+      user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
+    ) {
+      count++;
+    }
+  });
+
+  setUserResultsCount(count);
+}, [input, userList]);
+
+
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = event.target.value;
@@ -131,7 +145,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
                       if (currentUser?.id === user.id) {
                         return null;
                       }
-                      setUserResultsCount((prevCount) => prevCount + 1);
 
                       return (
                         <UserCardSearchResults
