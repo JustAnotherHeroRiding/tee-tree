@@ -226,6 +226,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Mock test for un/retweeting a post #DONE 
 ### Continue Writing Tests
 - Cypress end to end testing
+- Extensive coverage for the most important endpoints
 
 ### Trends should also include replies
 - Include replies in the trend fetching endpoint #DONE 
@@ -296,18 +297,17 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 If WebSockets are the primary focus of your project, you may want to consider a more traditional backend such as [Fastify↗](https://www.fastify.io/) (which [also works with tRPC!↗](https://trpc.io/docs/v10/fastify)). But for quickly adding WebSockets to a T3 App, Pusher is an excellent choice.
 
 - [Pusher Homepage↗](https://pusher.com/)
-
-### [Soketi](https://create.t3.gg/en/other-recs#soketi)
-
-Soketi is a self-hostable, simple, and fast alternative to Pusher. It’s fully compatible with the Pusher SDK which you can use to connect to the server. Soketi serverless is also in beta.
-
-- [Soketi Homepage↗](https://soketi.app/)
-- [Soketi GitHub↗](https://github.com/soketi/soketi)
 ## Websockets for real time message updates
 - Currently only the posts for the sender get updated not the receiver as it is invalidated client side for the sender #DONE 
 - Invalidate resources seems to break the rules of hooks and produces and error #DONE 
 - The websocket server name should be connected to the user id so that not all chats get refreshed whenever anyone posts a message #DONE 
 - Let's add the context as a parameter so that I can reuse it #DONE 
+- Turned the pusher into a provider as it was creating a new connection in each useEffect loop #DONE 
+- Implement further watchers where needed, perhaps message edits, deletes and reactions
+- Show the recipient that the sender is typing
+
+## Mobile Ui
+- The search bar on top is too big on phones and is stretching the screen #DONE 
 
 
 ## M3sseging - Improved Search and Inbox
@@ -325,6 +325,8 @@ Soketi is a self-hostable, simple, and fast alternative to Pusher. It’s fully 
 - Reacted to, this should be an array of emojis connected to a message, one emoji per user, the last one should overwrite it. Perhaps it should not be an array but just an emoji field
 - If a user has an unread message, in the bottom corner a message popup should appear, when clicked it will open a mini version of the inbox
 - Merge the Messages branch with the main branch when the feature is complete
+- Messages can also be deleted
+- If a message was deleted, do not delete it from the server but set a isDeleted flag to true and display that it was deleted to the user
 
 
 

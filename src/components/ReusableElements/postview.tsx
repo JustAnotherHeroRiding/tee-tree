@@ -46,7 +46,7 @@ import {
 import { useRouter } from "next/router";
 import { UserHoverCard } from "./Users/UserHover";
 import { CreatePostWizard, type User } from "./CreatePostWizard";
-import { UserCard } from "./Users/UserMentionSuggestions";
+import { UserCard } from "./Users/SearchResultCards";
 import {
   type ReplyWithParent,
   type ExtendedPost,

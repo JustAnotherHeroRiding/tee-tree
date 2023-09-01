@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { User } from "../CreatePostWizard";
 import Image from "next/image";
+import { type ExtendedMessage } from "~/server/api/routers/messages";
 
 interface UserCardProps {
   user: User;
@@ -15,6 +16,14 @@ interface UserCardProps {
 
 interface UserCardPropsSearch {
   user: User;
+  index: number;
+  highlightedIndex: number;
+  scrollRef: React.RefObject<HTMLAnchorElement>;
+  src? : string;
+}
+
+interface MessageCardPropsSearch {
+  message: ExtendedMessage;
   index: number;
   highlightedIndex: number;
   scrollRef: React.RefObject<HTMLAnchorElement>;
@@ -102,6 +111,42 @@ export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({
             </span>
           )}
           <p className="text-slate-300">@{user.username}</p>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+
+export const MessageCardSearchResults: React.FC<MessageCardPropsSearch> = ({
+  message,
+  index,
+  highlightedIndex,
+  scrollRef,
+  src,
+}) => {
+
+  return (
+<Link ref={scrollRef} href={src === 'message' ? `/messages/${message.author?.id ?? ""}` : `/@${message.author?.username ?? ''}`}>
+      <div
+        tabIndex={0}
+        className={`flex flex-row rounded-xl p-4  hover:bg-Intone-200 ${
+          highlightedIndex == index ? "bg-Intone-200" : ""
+        }`}
+      >
+        <Image
+          className="mr-4 h-14 w-14 rounded-full"
+          src={message.author?.profileImageUrl ?? ""}
+          alt="Profile Image"
+          width={56}
+          height={56}
+          priority={true}
+        />
+        <div className="flex flex-col ">
+            <span>
+              {message.content}
+            </span>
+          <p className="text-slate-300">@{message.author?.username}</p>
         </div>
       </div>
     </Link>
