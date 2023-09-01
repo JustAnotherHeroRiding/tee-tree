@@ -8,28 +8,35 @@ import { NewMessageModal } from "~/components/ReusableElements/Messages/NewMessa
 import { MessageSearch } from "~/components/ReusableElements/Messages/MessagesSearch";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
+import { api } from "~/utils/api";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
   const { user } = useUser();
+
+  const { data: allMessages, isLoading: isLoadingMessages } =
+    api.messages.getById.useQuery({ authorId: user?.id ?? "" });
+
   const router = useRouter();
 
   useEffect(() => {
     if (!user) {
       // Redirect to Clerk's sign-in page
-      void router.push('/sign-in');
+      void router.push("/sign-in");
     }
   }, [user, router]);
-
-
 
   useOutsideClick(modalNewMessageRef, () => {
     if (showNewMessageModal) {
       setShowNewMessageModal(false);
     }
   });
+
+  if (!allMessages) {
+    return null;
+  }
 
   return (
     <PageLayout>
@@ -67,11 +74,13 @@ const MessagesPage: NextPage = () => {
         </button>
       </div>
       {showNewMessageModal && (
-        <NewMessageModal showNewMessageModal={showNewMessageModal} 
-        setShowNewMessageModal={setShowNewMessageModal} modalNewMessageRef={modalNewMessageRef} />
+        <NewMessageModal
+          showNewMessageModal={showNewMessageModal}
+          setShowNewMessageModal={setShowNewMessageModal}
+          modalNewMessageRef={modalNewMessageRef}
+        />
       )}
-      <MessageSearch searchPosition="left-[5%]" />
-      
+      <MessageSearch searchPosition="left-[5%]" messages={allMessages} isLoadingMessages={isLoadingMessages} />
     </PageLayout>
   );
 };

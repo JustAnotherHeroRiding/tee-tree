@@ -17,7 +17,6 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
   recipientId,
 }) => {
   const { user } = useUser();
-  const { data } = api.messages.getById.useQuery({ authorId: user?.id ?? "", });
   const { data: recipientProfile, isLoading } =
     api.profile.getUserById.useQuery({
       id: recipientId,
@@ -63,7 +62,6 @@ const MessageConversationPage: NextPage<{ recipientId: string }> = ({
 
   if (isLoading) return <LoadingPage />;
 
-  if (!data && !isLoading) return <LoadingPage />;
 
   return (
     <>

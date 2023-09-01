@@ -14,6 +14,8 @@ export type ExtendedMessage = Message & {
   author?: PostAuthor;
 };
 
+
+
 export const addUserDataToMessages = async (messages: ExtendedMessage[]) => {
   const users = (
     await clerkClient.users.getUserList({
@@ -74,6 +76,7 @@ export const messagesRouter = createTRPCRouter({
 
       return addUserDataToMessages(messages);
     }),
+
 
   infiniteScrollMessagesWithUserId: publicProcedure
     .input(

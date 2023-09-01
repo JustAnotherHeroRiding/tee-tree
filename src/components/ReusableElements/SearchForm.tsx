@@ -4,7 +4,7 @@ import { useState, useContext, useRef, useEffect } from "react";
 import { UserContext } from "../Context/UserContext";
 import { LoadingSpinner } from "./loading";
 import React from "react";
-import { UserCardSearchResults } from "./Users/UserMentionSuggestions";
+import { UserCardSearchResults } from "./Users/SearchResultCards";
 import { api } from "~/utils/api";
 import Link from "next/link";
 

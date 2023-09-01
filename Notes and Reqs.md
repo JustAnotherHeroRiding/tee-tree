@@ -226,6 +226,7 @@ Umami is an open-sourced, self-hostable, simple, fast, privacy-focused alternati
 - Mock test for un/retweeting a post #DONE 
 ### Continue Writing Tests
 - Cypress end to end testing
+- Extensive coverage for the most important endpoints
 
 ### Trends should also include replies
 - Include replies in the trend fetching endpoint #DONE 
@@ -303,9 +304,10 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Let's add the context as a parameter so that I can reuse it #DONE 
 - Turned the pusher into a provider as it was creating a new connection in each useEffect loop #DONE 
 - Implement further watchers where needed, perhaps message edits, deletes and reactions
+- Show the recipient that the sender is typing
 
 ## Mobile Ui
-- The search bar on top is too big on phones and is stretching the screen
+- The search bar on top is too big on phones and is stretching the screen #DONE 
 
 
 ## M3sseging - Improved Search and Inbox

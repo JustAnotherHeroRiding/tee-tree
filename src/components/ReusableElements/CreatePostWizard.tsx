@@ -18,7 +18,7 @@ import { filesize } from "filesize";
 import Compressor from "compressorjs";
 import { Tooltip } from "react-tooltip";
 import { UserContext } from "../Context/UserContext";
-import { UserCard } from "./Users/UserMentionSuggestions";
+import { UserCard } from "./Users/SearchResultCards";
 import EmojiSelector from "./EmojiPicker";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
 import { usePusher } from "../Context/PusherContex";
