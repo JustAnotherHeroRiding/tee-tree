@@ -321,14 +321,21 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Make the scroll smoother #DONE 
 - Messages no longer redirects logged in users #DONE 
 - Add message and search suggestions in the new message modal #DONE 
+- Previously messaged users by default #DONE 
+- Previous users should link to the convo #DONE 
+- Hover cards on previous users #DONE 
+- Add a new location prop as currently the location is too much on the right
+- If user submits a query, then it should search again and filter the results, removing the previously messaged users
+- Selector for only messages or Users
+- Back button which will show the previous users again
 - Clear all button to delete all search results 
 - Previous search results for logged in users 
 - Most recently messaged users should appear on the main page
 
 ## Extended Message features
-- Add a message link to the hover card
+- Add a message icon on the profile page
 - Seen if the message was opened 
-- Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition
+- Photos, gifs and emojis, perhaps reuse the create post wizard to send messages also by adding one more condition #DONE 
 - Messages can be copied
 - Replied to
 - Reacted to, this should be an array of emojis connected to a message, one emoji per user, the last one should overwrite it. Perhaps it should not be an array but just an emoji field
