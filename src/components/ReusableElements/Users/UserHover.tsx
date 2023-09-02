@@ -33,7 +33,8 @@ export const UserHoverCard = (props: {
           ? "-top-60 right-0"
           : props.location === "standalone"
           ? "-top-30 right-2"
-          : ""
+          : props.location === "previousUsers" ?
+          "right-1/4 top-1/2" : ""
       } z-10
             scale-0 cursor-default rounded-2xl border border-slate-400 bg-black 
             p-4 transition-all duration-[500ms] ease-in-out group-hover:visible group-hover:scale-100`}

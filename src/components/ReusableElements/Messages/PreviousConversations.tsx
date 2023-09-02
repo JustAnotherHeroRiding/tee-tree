@@ -131,7 +131,7 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
   }
 
   return (
-    <div className="mt-8 flex flex-col">
+    <div className="mt-8 flex flex-col relative">
       {filteredUsers.map((user) => (
         <Link
           href={`/messages/${user.id}`}
@@ -165,7 +165,7 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
                   mutate={mutate}
                   followingCount={followingCount}
                   followerCount={followerCount}
-                  location="post"
+                  location="previousUsers"
                 />
               </div>
               <span className="whitespace-normal">

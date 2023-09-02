@@ -324,7 +324,8 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Previously messaged users by default #DONE 
 - Previous users should link to the convo #DONE 
 - Hover cards on previous users #DONE 
-- Add a new location prop as currently the location is too much on the right
+- Add a new location prop as currently the location is too much on the right #DONE 
+- Do not show the search results div if there are no possible suggestions
 - If user submits a query, then it should search again and filter the results, removing the previously messaged users
 - Selector for only messages or Users
 - Back button which will show the previous users again
