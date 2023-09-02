@@ -14,19 +14,33 @@ const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
-  const { user } = useUser();
+  const { user, isLoaded: isUserLoaded } = useUser();
 
   const { data: allMessages, isLoading: isLoadingMessages } =
     api.messages.getById.useQuery({ authorId: user?.id ?? "" });
 
   const router = useRouter();
 
+  const [uniqueUserIds, setUniqueUserIds] = useState<Set<string>>(new Set());
+
   useEffect(() => {
-    if (!user) {
+    const newUniqueUserIds = new Set<string>();
+
+    allMessages?.forEach((message) => {
+      newUniqueUserIds.add(message.message.authorId);
+      newUniqueUserIds.add(message.message.recipientId);
+    });
+
+    setUniqueUserIds(newUniqueUserIds);
+  }, [allMessages]);
+
+  useEffect(() => {
+    if (!user && isUserLoaded) {
+      console.log("No user");
       // Redirect to Clerk's sign-in page
       void router.push("/sign-in");
     }
-  }, [user, router]);
+  }, [user, router, isUserLoaded]);
 
   useOutsideClick(modalNewMessageRef, () => {
     if (showNewMessageModal) {
@@ -78,9 +92,15 @@ const MessagesPage: NextPage = () => {
           showNewMessageModal={showNewMessageModal}
           setShowNewMessageModal={setShowNewMessageModal}
           modalNewMessageRef={modalNewMessageRef}
+          messages={allMessages}
+          isLoadingMessages={isLoadingMessages}
         />
       )}
-      <MessageSearch searchPosition="left-[5%]" messages={allMessages} isLoadingMessages={isLoadingMessages} />
+      <MessageSearch
+        searchPosition="left-[5%]"
+        messages={allMessages}
+        isLoadingMessages={isLoadingMessages}
+      />
     </PageLayout>
   );
 };

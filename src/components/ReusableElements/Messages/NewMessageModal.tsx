@@ -6,17 +6,23 @@ import { UserContext } from "~/components/Context/UserContext";
 import { LoadingSpinner } from "../loading";
 import Image from "next/image";
 import Link from "next/link";
+import { type ExtendedMessage } from "~/server/api/routers/messages";
+import type { PostAuthor } from "~/server/api/routers/posts";
 
 type NewMessageModalProps = {
   showNewMessageModal: boolean;
   setShowNewMessageModal: React.Dispatch<React.SetStateAction<boolean>>;
   modalNewMessageRef: React.RefObject<HTMLDivElement>;
+  messages: { message: ExtendedMessage; author: PostAuthor }[];
+  isLoadingMessages : boolean;
 };
 
 export const NewMessageModal: React.FC<NewMessageModalProps> = ({
   showNewMessageModal,
   setShowNewMessageModal,
   modalNewMessageRef,
+  messages,
+  isLoadingMessages
 }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
   
@@ -43,7 +49,7 @@ border-indigo-200 bg-black sm:w-[55vw] lg:w-[35vw] overflow-auto"
           </button>
           <p className="text-xl">New Message</p>
         </div>
-        <MessageSearch searchPosition="left-[6%]" />
+        <MessageSearch searchPosition="left-[6%]" messages={messages} isLoadingMessages={isLoadingMessages}/>
         <h1 className="mt-4 text-xl px-4"> Previously messaged users</h1>
         {LoadingUserList ? (
           <LoadingSpinner />

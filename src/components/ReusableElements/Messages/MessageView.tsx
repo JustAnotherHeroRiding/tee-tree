@@ -85,7 +85,7 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
         author.id === user?.id
           ? "ml-auto bg-Intone-100"
           : "mr-auto bg-slate-700"
-      } w-fit p-1 px-2`}
+      } w-fit py-1 px-2`}
     >
       <h1>{message.content}</h1>
       {message.imageUrl && (
