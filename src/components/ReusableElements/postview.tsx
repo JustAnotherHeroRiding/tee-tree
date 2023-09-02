@@ -71,7 +71,6 @@ export function invalidateResources(
   repliesOfReply: { replies: ReplyWithParent[] } | undefined,
   ctx: Ctx
 ) {
-
   const isInvalidateUserLikes = /^\/[^\/]+\/likes/.test(location.pathname);
   const isInvalidateReplies = /^\/@[^\/]+\/replies/.test(location.pathname);
   const isInvalidateById = /^\/post\/\w+/.test(location.pathname);
@@ -359,8 +358,6 @@ const PostViewComponent = (props: PostViewComponentProps) => {
 
   const ctx = api.useContext();
 
-
-
   useEffect(() => {
     if (repliesOfReply) {
       setShowLineBelow(true);
@@ -480,7 +477,6 @@ const PostViewComponent = (props: PostViewComponentProps) => {
     api.posts.retweetPost.useMutation({
       onSuccess: () => {
         invalidateResources(location, homePage, params, repliesOfReply, ctx);
-
       },
       onError: (e) => {
         const errorMessage = e.data?.zodError?.fieldErrors.content;
@@ -1060,7 +1056,9 @@ const PostViewComponent = (props: PostViewComponentProps) => {
                 </h1>
                 <div className="gray-thin-scrollbar relative max-h-[45vh] w-full overflow-auto">
                   <div
-                    className="pointer-events-none absolute whitespace-pre-wrap pb-2 pl-4 pr-8 pt-4 text-transparent"
+                    className="gray-thin-scrollbar 
+                    pointer-events-none absolute overflow-auto 
+                    whitespace-pre-wrap pb-2 pl-4 pr-8 pt-4 text-transparent"
                     dangerouslySetInnerHTML={{
                       __html: highlightedInput.replace(/\n/g, "<br/>"),
                     }}
