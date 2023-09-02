@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { User } from "../CreatePostWizard";
 import Image from "next/image";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
+import { type PostAuthor } from "~/server/api/routers/posts";
 
 interface UserCardProps {
   user: User;
@@ -19,15 +20,21 @@ interface UserCardPropsSearch {
   index: number;
   highlightedIndex: number;
   scrollRef: React.RefObject<HTMLAnchorElement>;
-  src? : string;
+  src?: string;
+}
+
+interface ExtendedMessageCard {
+  message: ExtendedMessage;
+  author: PostAuthor;
 }
 
 interface MessageCardPropsSearch {
-  message: ExtendedMessage;
+  message: ExtendedMessageCard;
   index: number;
   highlightedIndex: number;
   scrollRef: React.RefObject<HTMLAnchorElement>;
-  src? : string;
+  src?: string;
+  currentUserId: string;
 }
 
 export const UserCard: React.FC<UserCardProps> = ({
@@ -88,7 +95,12 @@ export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({
   src,
 }) => {
   return (
-<Link ref={scrollRef} href={src === 'message' ? `/messages/${user.id}` : `/@${user.username ?? ''}`}>
+    <Link
+      ref={scrollRef}
+      href={
+        src === "message" ? `/messages/${user.id}` : `/@${user.username ?? ""}`
+      }
+    >
       <div
         tabIndex={0}
         className={`flex flex-row rounded-xl p-4  hover:bg-Intone-200 ${
@@ -106,8 +118,7 @@ export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({
         <div className="flex flex-col ">
           {user.firstName && user.lastName && (
             <span>
-              {user.firstName}{" "}
-              {user.lastName}
+              {user.firstName} {user.lastName}
             </span>
           )}
           <p className="text-slate-300">@{user.username}</p>
@@ -117,17 +128,24 @@ export const UserCardSearchResults: React.FC<UserCardPropsSearch> = ({
   );
 };
 
-
 export const MessageCardSearchResults: React.FC<MessageCardPropsSearch> = ({
   message,
   index,
   highlightedIndex,
   scrollRef,
-  src,
+  //src,
+  currentUserId,
 }) => {
-
   return (
-<Link ref={scrollRef} href={src === 'message' ? `/messages/${message.author?.id ?? ""}` : `/@${message.author?.username ?? ''}`}>
+    <Link
+      ref={scrollRef}
+      href={
+        message.author?.id === currentUserId
+          ? `/messages/${message.message.recipientId}?targetMessageId=${message.message.id}`
+          : `/messages/${message.author?.id}?targetMessageId=${message.message.id}`
+      }
+    >
+      {" "}
       <div
         tabIndex={0}
         className={`flex flex-row rounded-xl p-4  hover:bg-Intone-200 ${
@@ -143,9 +161,7 @@ export const MessageCardSearchResults: React.FC<MessageCardPropsSearch> = ({
           priority={true}
         />
         <div className="flex flex-col ">
-            <span>
-              {message.content}
-            </span>
+          <span>{message.message.content}</span>
           <p className="text-slate-300">@{message.author?.username}</p>
         </div>
       </div>

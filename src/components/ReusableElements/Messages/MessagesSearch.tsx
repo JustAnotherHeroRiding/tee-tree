@@ -11,6 +11,7 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
 import { type PostAuthor } from "~/server/api/routers/posts";
+import { type User } from "../CreatePostWizard";
 
 interface MessageSearchProps {
   searchPosition: string;
@@ -29,29 +30,45 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
 
   const resultRefs = useRef<React.RefObject<HTMLAnchorElement>[]>([]);
 
-  const [userResultsCount, setUserResultsCount] = useState(0);
-
   const [input, setInput] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [isTypingQuery, setIsTypingQuery] = useState(false);
 
+  type CombinedResult =
+    | { type: "user"; data: User; index: number }
+    | {
+        type: "message";
+        data: { message: ExtendedMessage; author: PostAuthor };
+        index: number;
+      };
+
+  const [combinedResults, setCombinedResults] = useState<CombinedResult[]>([]);
+
   useEffect(() => {
-  let count = 0;
+    const newCombinedResults: CombinedResult[] = [];
 
-  userList.forEach((user) => {
-    if (
-      user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
-      user.firstName?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
-      user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
-    ) {
-      count++;
+    if (input.startsWith("@")) {
+      userList.forEach((user, index) => {
+        if (
+          user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+          user.firstName
+            ?.toLowerCase()
+            .includes(input.slice(1).toLowerCase()) ||
+          user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
+        ) {
+          newCombinedResults.push({ type: "user", data: user, index });
+        }
+      });
     }
-  });
 
-  setUserResultsCount(count);
-}, [input, userList]);
+    messages.forEach((message, index) => {
+      if (message.message.content.toLowerCase().includes(input.toLowerCase())) {
+        newCombinedResults.push({ type: "message", data: message, index });
+      }
+    });
 
-
+    setCombinedResults(newCombinedResults);
+  }, [input, userList, messages]);
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = event.target.value;
@@ -68,12 +85,12 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const handleArrowNavigation = (direction: "up" | "down") => {
     setHighlightedIndex((prevIndex) => {
       let nextIndex = direction === "up" ? prevIndex - 1 : prevIndex + 1;
-
+  
       // Boundary checks
-      const maxIndex = resultRefs.current.length - 1; // Use the actual length of the displayed list
+      const maxIndex = combinedResults.length - 1; // Use the length of combinedResults
       if (nextIndex < 0) nextIndex = 0;
       if (nextIndex > maxIndex) nextIndex = maxIndex;
-
+  
       // Scroll into view
       const nextRef = resultRefs.current[nextIndex];
       if (nextRef && nextRef.current) {
@@ -82,10 +99,11 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           block: "nearest",
         });
       }
-
+  
       return nextIndex;
     });
   };
+  
 
   return (
     <div className="relative px-4">
@@ -119,81 +137,45 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl`}
         >
           <div className="flex flex-col">
-            {LoadingUserList ? (
+            {LoadingUserList || isLoadingMessages ? (
               <LoadingSpinner />
             ) : (
               <>
-                {/* Filtering and showing user results */}
-                {input.split(" ").slice(-1)[0]?.startsWith("@") &&
-                  userList.map((user, index) => {
-                    if (
-                      user.username
-                        ?.toLowerCase()
-                        .includes(input.slice(1).toLowerCase()) ||
-                      user.firstName
-                        ?.toLowerCase()
-                        .includes(input.slice(1).toLowerCase()) ||
-                      user.lastName
-                        ?.toLowerCase()
-                        .includes(input.slice(1).toLowerCase())
-                    ) {
-                      if (!resultRefs.current[index]) {
-                        resultRefs.current[index] =
-                          React.createRef<HTMLAnchorElement>();
-                      }
+                {combinedResults.map((result, index) => {
+                  const refIndex = index;
 
-                      if (currentUser?.id === user.id) {
-                        return null;
-                      }
-
-                      return (
+                  if (!resultRefs.current[refIndex]) {
+                    resultRefs.current[refIndex] =
+                      React.createRef<HTMLAnchorElement>();
+                  }
+                  return (
+                    <React.Fragment key={index}>
+                      {result.type === "user" && (
                         <UserCardSearchResults
-                          key={index}
-                          user={user}
+                          user={result.data}
                           index={index}
                           src="message"
                           highlightedIndex={highlightedIndex}
                           scrollRef={
-                            resultRefs.current?.[index] ||
+                            resultRefs.current?.[index] ??
                             React.createRef<HTMLAnchorElement>()
                           }
                         />
-                      );
-                    }
-                    return null;
-                  })}
-
-                {/* Filtering and showing message results */}
-                {messages.map((message, index) => {
-                  const messageIndex = userResultsCount + index; // Adjust index based on actual userResultsCount
-
-                  if (
-                    message.message.content
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  ) {
-                    if (!resultRefs.current[messageIndex]) {
-                      resultRefs.current[messageIndex] =
-                        React.createRef<HTMLAnchorElement>();
-                    }
-
-                    if (isLoadingMessages) {
-                      return <LoadingSpinner key={message.message.id} />;
-                    }
-                    return (
-                      <MessageCardSearchResults
-                        key={index}
-                        message={message.message}
-                        index={index}
-                        highlightedIndex={highlightedIndex}
-                        scrollRef={
-                          resultRefs.current[messageIndex] ||
-                          React.createRef<HTMLAnchorElement>()
-                        }
-                      />
-                    );
-                  }
-                  return null;
+                      )}
+                      {result.type === "message" && (
+                        <MessageCardSearchResults
+                          message={result.data}
+                          index={index}
+                          highlightedIndex={highlightedIndex}
+                          currentUserId={currentUser?.id ?? ""}
+                          scrollRef={
+                            resultRefs.current?.[index] ??
+                            React.createRef<HTMLAnchorElement>()
+                          }
+                        />
+                      )}
+                    </React.Fragment>
+                  );
                 })}
               </>
             )}

@@ -9,24 +9,42 @@ import { MessageSearch } from "~/components/ReusableElements/Messages/MessagesSe
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import { PreviousUsers } from "~/components/ReusableElements/Messages/PreviousConversations";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
-  const { user } = useUser();
+  const { user, isLoaded: isUserLoaded } = useUser();
 
   const { data: allMessages, isLoading: isLoadingMessages } =
     api.messages.getById.useQuery({ authorId: user?.id ?? "" });
 
   const router = useRouter();
 
+  const [uniqueUserIds, setUniqueUserIds] = useState<Set<string>>(new Set());
+
   useEffect(() => {
-    if (!user) {
+    const newUniqueUserIds = new Set<string>();
+  
+    allMessages?.forEach((message) => {
+      if (message.message.authorId === user?.id) {
+        newUniqueUserIds.add(message.message.recipientId);
+      } else if (message.message.recipientId === user?.id) {
+        newUniqueUserIds.add(message.message.authorId);
+      }
+    });
+  
+    setUniqueUserIds(newUniqueUserIds);
+  }, [allMessages, user?.id]);
+
+  useEffect(() => {
+    if (!user && isUserLoaded) {
+      console.log("No user");
       // Redirect to Clerk's sign-in page
       void router.push("/sign-in");
     }
-  }, [user, router]);
+  }, [user, router, isUserLoaded]);
 
   useOutsideClick(modalNewMessageRef, () => {
     if (showNewMessageModal) {
@@ -78,9 +96,16 @@ const MessagesPage: NextPage = () => {
           showNewMessageModal={showNewMessageModal}
           setShowNewMessageModal={setShowNewMessageModal}
           modalNewMessageRef={modalNewMessageRef}
+          messages={allMessages}
+          isLoadingMessages={isLoadingMessages}
         />
       )}
-      <MessageSearch searchPosition="left-[5%]" messages={allMessages} isLoadingMessages={isLoadingMessages} />
+      <MessageSearch
+        searchPosition="left-[5%]"
+        messages={allMessages}
+        isLoadingMessages={isLoadingMessages}
+      />
+      <PreviousUsers uniqueUserIds={uniqueUserIds} />
     </PageLayout>
   );
 };
