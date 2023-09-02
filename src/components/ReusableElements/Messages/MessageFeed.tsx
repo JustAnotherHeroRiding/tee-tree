@@ -7,10 +7,45 @@ import { LoadingSpinner } from "../loading";
 import React from "react";
 import { useRouter } from "next/router";
 
+declare global {
+  interface Math {
+    easeInOutQuad(t: number, b: number, c: number, d: number): number;
+  }
+}
+
+export const smoothScrollTo = (element: HTMLElement, target: number, duration: number) => {
+  const start = element.scrollTop;
+  const change = target - start;
+  let currentTime = 0;
+  const increment = 20;
+
+  const animateScroll = () => {
+    currentTime += increment;
+    const val = Math.easeInOutQuad(currentTime, start, change, duration);
+    element.scrollTop = val;
+    if (currentTime < duration) {
+      window.requestAnimationFrame(animateScroll);
+    }
+  };
+
+  // Ease in-out function
+  Math.easeInOutQuad = function (t: number, b: number, c: number, d: number) {
+    t /= d / 2;
+    if (t < 1) return (c / 2) * t * t + b;
+    t--;
+    return (-c / 2) * (t * (t - 2) - 1) + b;
+  };
+
+  animateScroll();
+};
+
+
 export const MessageFeed = (props: {
   senderId: string;
   recipientId: string;
 }) => {
+
+  
   const { homePage } = useHomePage();
 
   const router = useRouter();
@@ -45,7 +80,6 @@ export const MessageFeed = (props: {
     string | null
   >(null);
 
-
   const messageRefs = useRef<{ [id: string]: React.RefObject<HTMLDivElement> }>(
     {}
   );
@@ -59,46 +93,66 @@ export const MessageFeed = (props: {
     });
   }, [data]);
 
+  const [scrollCompleted, setScrollCompleted] = useState(false);
+  const [highlightCompleted, setHighlightCompleted] = useState(false);
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     let intervalId: NodeJS.Timeout;
 
     if (targetMessageId) {
-      // Highlight the message
-      setHighlightedMessageId(targetMessageId);
+      if (!highlightCompleted) {
+        // Highlight the message
+        setHighlightedMessageId(targetMessageId);
 
-      // Remove highlight after 5 seconds
-      timer = setTimeout(() => {
-        setHighlightedMessageId(null);
-      }, 5000);
+        // Remove highlight after 2 seconds
+        timer = setTimeout(() => {
+          setHighlightedMessageId(null);
+          setHighlightCompleted(true);
+        }, 2000);
+      }
 
-      // Scroll to the specific message
-      intervalId = setInterval(() => {
-        const targetElement = messageRefs.current?.[targetMessageId]?.current;
-        if (targetElement) {
-          targetElement.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-          });
-          clearInterval(intervalId);
-        }
-      }, 100);
+      if (!scrollCompleted) {
+        // Scroll to the specific message
+        intervalId = setInterval(() => {
+          const targetElement = messageRefs.current?.[targetMessageId]?.current;
+          if (targetElement) {
+            const parentDiv = document.getElementById("mainScrollDiv");
+            const offset = 80; // Scroll 100px further down
+          
+            if (parentDiv) {
+              const targetPosition = targetElement.getBoundingClientRect().top;
+              const parentPosition = parentDiv.getBoundingClientRect().top;
+              const finalPosition = targetPosition - parentPosition + parentDiv.scrollTop;
+          
+              smoothScrollTo(parentDiv, finalPosition + offset, 800); // 800ms duration
+            }
+          
+            clearInterval(intervalId);
+            setScrollCompleted(true);
+          }
+          
+        }, 100);
+      }
     } else {
-      // Scroll to the bottom
-      intervalId = setInterval(() => {
-        const parentDiv = document.getElementById("mainScrollDiv");
-        if (parentDiv && data) {
-          parentDiv.scrollTop = parentDiv.scrollHeight;
-          clearInterval(intervalId);
-        }
-      }, 100);
+      if (!scrollCompleted) {
+        // Scroll to the bottom
+        intervalId = setInterval(() => {
+          const parentDiv = document.getElementById("mainScrollDiv");
+          if (parentDiv && data) {
+            parentDiv.scrollTop = parentDiv.scrollHeight;
+            clearInterval(intervalId);
+            setScrollCompleted(true);
+          }
+        }, 100);
+      }
     }
 
     return () => {
       clearTimeout(timer);
       clearInterval(intervalId);
     };
-  }, [data, targetMessageId]);
+  }, [data, targetMessageId, scrollCompleted, highlightCompleted]);
 
   useEffect(() => {
     const handleFetchNextPage = async () => {
