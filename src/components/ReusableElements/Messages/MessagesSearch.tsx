@@ -30,7 +30,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
 
   const resultRefs = useRef<React.RefObject<HTMLAnchorElement>[]>([]);
 
-
   const [input, setInput] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [isTypingQuery, setIsTypingQuery] = useState(false);
@@ -71,7 +70,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
     setCombinedResults(newCombinedResults);
   }, [input, userList, messages]);
 
-
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = event.target.value;
     setInput(currentValue);
@@ -87,12 +85,12 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const handleArrowNavigation = (direction: "up" | "down") => {
     setHighlightedIndex((prevIndex) => {
       let nextIndex = direction === "up" ? prevIndex - 1 : prevIndex + 1;
-
+  
       // Boundary checks
-      const maxIndex = resultRefs.current.length - 1; // Use the actual length of the displayed list
+      const maxIndex = combinedResults.length - 1; // Use the length of combinedResults
       if (nextIndex < 0) nextIndex = 0;
       if (nextIndex > maxIndex) nextIndex = maxIndex;
-
+  
       // Scroll into view
       const nextRef = resultRefs.current[nextIndex];
       if (nextRef && nextRef.current) {
@@ -101,10 +99,11 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           block: "nearest",
         });
       }
-
+  
       return nextIndex;
     });
   };
+  
 
   return (
     <div className="relative px-4">
@@ -149,7 +148,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
                     resultRefs.current[refIndex] =
                       React.createRef<HTMLAnchorElement>();
                   }
-
                   return (
                     <React.Fragment key={index}>
                       {result.type === "user" && (
@@ -169,6 +167,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
                           message={result.data}
                           index={index}
                           highlightedIndex={highlightedIndex}
+                          currentUserId={currentUser?.id ?? ""}
                           scrollRef={
                             resultRefs.current?.[index] ??
                             React.createRef<HTMLAnchorElement>()

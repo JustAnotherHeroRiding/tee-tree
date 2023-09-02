@@ -312,6 +312,11 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 
 ## M3sseging - Improved Search and Inbox
 - Search bar should also search messages and display the users and messages mixed #DONE 
+- Map over just one combined results array instead of twice #DONE 
+- Cap the highlight index at the number of current max results #DONE 
+- Messages should link to the chat history the sender/recipient #DONE 
+- Clicking on a message should scroll the screen to that message #DONE 
+- That message should be a little different, perhaps darker
 - Clear all button to delete all search results 
 - Previous search results for logged in users 
 - Most recently messaged users should appear on the main page
