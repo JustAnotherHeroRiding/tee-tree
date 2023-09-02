@@ -9,6 +9,7 @@ import { MessageSearch } from "~/components/ReusableElements/Messages/MessagesSe
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import { PreviousUsers } from "~/components/ReusableElements/Messages/PreviousConversations";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
@@ -25,14 +26,17 @@ const MessagesPage: NextPage = () => {
 
   useEffect(() => {
     const newUniqueUserIds = new Set<string>();
-
+  
     allMessages?.forEach((message) => {
-      newUniqueUserIds.add(message.message.authorId);
-      newUniqueUserIds.add(message.message.recipientId);
+      if (message.message.authorId === user?.id) {
+        newUniqueUserIds.add(message.message.recipientId);
+      } else if (message.message.recipientId === user?.id) {
+        newUniqueUserIds.add(message.message.authorId);
+      }
     });
-
+  
     setUniqueUserIds(newUniqueUserIds);
-  }, [allMessages]);
+  }, [allMessages, user?.id]);
 
   useEffect(() => {
     if (!user && isUserLoaded) {
@@ -101,6 +105,7 @@ const MessagesPage: NextPage = () => {
         messages={allMessages}
         isLoadingMessages={isLoadingMessages}
       />
+      <PreviousUsers uniqueUserIds={uniqueUserIds} />
     </PageLayout>
   );
 };
