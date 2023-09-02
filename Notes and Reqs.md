@@ -311,7 +311,7 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 
 
 ## M3sseging - Improved Search and Inbox
-- Search bar should also search messages and display the users and messages mixed
+- Search bar should also search messages and display the users and messages mixed #DONE 
 - Clear all button to delete all search results 
 - Previous search results for logged in users 
 - Most recently messaged users should appear on the main page

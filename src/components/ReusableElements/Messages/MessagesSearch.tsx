@@ -35,6 +35,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [isTypingQuery, setIsTypingQuery] = useState(false);
 
+
   useEffect(() => {
   let count = 0;
 
@@ -183,7 +184,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
                     return (
                       <MessageCardSearchResults
                         key={index}
-                        message={message.message}
+                        message={{...message.message, author: message.author}}
                         index={index}
                         highlightedIndex={highlightedIndex}
                         scrollRef={
