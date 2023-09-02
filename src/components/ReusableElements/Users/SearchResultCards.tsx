@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { User } from "../CreatePostWizard";
 import Image from "next/image";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
+import { type PostAuthor } from "~/server/api/routers/posts";
 
 interface UserCardProps {
   user: User;
@@ -22,8 +23,13 @@ interface UserCardPropsSearch {
   src? : string;
 }
 
-interface MessageCardPropsSearch {
+interface ExtendedMessageCard {
   message: ExtendedMessage;
+  author: PostAuthor
+}
+
+interface MessageCardPropsSearch {
+  message: ExtendedMessageCard;
   index: number;
   highlightedIndex: number;
   scrollRef: React.RefObject<HTMLAnchorElement>;
@@ -126,6 +132,7 @@ export const MessageCardSearchResults: React.FC<MessageCardPropsSearch> = ({
   src,
 }) => {
 
+
   return (
 <Link ref={scrollRef} href={src === 'message' ? `/messages/${message.author?.id ?? ""}` : `/@${message.author?.username ?? ''}`}>
       <div
@@ -144,7 +151,7 @@ export const MessageCardSearchResults: React.FC<MessageCardPropsSearch> = ({
         />
         <div className="flex flex-col ">
             <span>
-              {message.content}
+              {message.message.content}
             </span>
           <p className="text-slate-300">@{message.author?.username}</p>
         </div>

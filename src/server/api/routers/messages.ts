@@ -16,7 +16,7 @@ export type ExtendedMessage = Message & {
 
 
 
-export const addUserDataToMessages = async (messages: ExtendedMessage[]) => {
+export const addUserDataToMessages = async (messages: Message[]) => {
   const users = (
     await clerkClient.users.getUserList({
       userId: messages.map((message) => message.authorId),
