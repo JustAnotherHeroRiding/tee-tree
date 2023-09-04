@@ -129,7 +129,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
         icon={faSearch}
         className={`absolute ${searchPosition} top-[38%] h-3 w-3 text-Intone-300`}
       />
-      {isTypingQuery && (
+      {isTypingQuery && combinedResults.length > 0 && (
         <div
           className={`${"right-1/2 top-14 min-w-3/4 translate-x-1/2 "} 
     gray-thin-scrollbar absolute z-10 flex max-h-[300px] 

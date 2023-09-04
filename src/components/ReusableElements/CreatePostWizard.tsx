@@ -375,7 +375,6 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
   }
 
   useEffect(() => {
-
     const senderChannel = pusher.subscribe(`messagesUpdates-${userId}`);
     senderChannel.bind("new-message", (_newMessage: ExtendedMessage) => {
       void ctx.messages.infiniteScrollMessagesWithUserId.invalidate();
@@ -393,7 +392,12 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
       recipientChannel.unbind_all();
       recipientChannel.unsubscribe();
     };
-  }, [ctx.messages.infiniteScrollMessagesWithUserId, userId, recipientId, pusher]);
+  }, [
+    ctx.messages.infiniteScrollMessagesWithUserId,
+    userId,
+    recipientId,
+    pusher,
+  ]);
 
   const { mutate: postMessage, isLoading: isPostingMessage } =
     api.messages.sendMessage.useMutation({
@@ -741,7 +745,7 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
         </h1>
         <div className="gray-thin-scrollbar relative max-h-[45vh] w-full overflow-auto">
           <div
-            className="pointer-events-none absolute whitespace-pre-wrap text-transparent"
+            className="gray-thin-scrollbar pointer-events-none absolute overflow-auto whitespace-pre-wrap text-transparent"
             dangerouslySetInnerHTML={{
               __html: highlightedInput.replace(/\n/g, "<br/>"),
             }}

@@ -14,8 +14,6 @@ export type ExtendedMessage = Message & {
   author?: PostAuthor;
 };
 
-
-
 export const addUserDataToMessages = async (messages: Message[]) => {
   const users = (
     await clerkClient.users.getUserList({
@@ -76,7 +74,6 @@ export const messagesRouter = createTRPCRouter({
 
       return addUserDataToMessages(messages);
     }),
-
 
   infiniteScrollMessagesWithUserId: publicProcedure
     .input(
@@ -244,5 +241,44 @@ export const messagesRouter = createTRPCRouter({
 
       const messageWithUserData = await addUserDataToMessages([updatedMessage]);
       return messageWithUserData[0];
+    }),
+
+  getSearchHistoryUser: privateProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const searchHistory = await ctx.prisma.searchHistory.findMany({
+        where: { userId: input.userId },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      });
+
+      return searchHistory;
+    }),
+
+  addQueryToSearchHistory: privateProcedure
+    .input(
+      z.object({
+        query: z
+          .string()
+          .regex(
+            /^(?:[\s\S]*?[a-zA-Z0-9\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25AA}-\u{25AB}\u{23FA}\u{21AA}\u{21A9}\u{231A}-\u{231B}\u{23F0}\u{23F1}\u{23F2}\u{23F3}\u{23F8}-\u{23FA}][\s\S]*){1,280}$/u
+          )
+          .min(1)
+          .max(280),
+      })
+    )
+
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      // Now use the 'public_id' in your Prisma create call as the 'imageUrl'
+      const query = await ctx.prisma.searchHistory.create({
+        data: {
+          userId: authorId,
+          query: input.query,
+        },
+      });
+
+      return query;
     }),
 });

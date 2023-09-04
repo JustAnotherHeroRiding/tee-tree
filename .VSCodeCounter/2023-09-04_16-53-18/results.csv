@@ -1,0 +1,91 @@
+"filename", "language", "JSON with Comments", "TypeScript", "JavaScript", "JSON", "Markdown", "TypeScript JSX", "CSS", "YAML", "Prisma", "comment", "blank", "total"
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\.eslintrc.cjs", "JavaScript", 0, 0, 31, 0, 0, 0, 0, 0, 0, 2, 3, 36
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\.github\workflows\ci.yml", "YAML", 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 12, 59
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\Notes and Reqs.md", "Markdown", 0, 0, 0, 0, 354, 0, 0, 0, 0, 0, 70, 424
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\README.md", "Markdown", 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 13, 36
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\jest.config.ts", "TypeScript", 0, 12, 0, 0, 0, 0, 0, 0, 0, 1, 1, 14
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\next.config.mjs", "JavaScript", 0, 0, 27, 0, 0, 0, 0, 0, 0, 11, 6, 44
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\package-lock.json", "JSON", 0, 0, 0, 12469, 0, 0, 0, 0, 0, 0, 1, 12470
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\package.json", "JSON", 0, 0, 0, 93, 0, 0, 0, 0, 0, 0, 1, 94
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\postcss.config.cjs", "JavaScript", 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 2, 9
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\prettier.config.cjs", "JavaScript", 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 2, 7
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\prisma\schema.prisma", "Prisma", 0, 0, 0, 0, 0, 0, 0, 0, 88, 11, 28, 127
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\Context\HomePageContext.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 5, 25
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\Context\PusherContex.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 24, 0, 0, 0, 1, 9, 34
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\Context\UserContext.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 25, 0, 0, 0, 7, 8, 40
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\SearchResults\infiniteScrollOnlyGifs.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 87, 0, 0, 0, 1, 17, 105
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\SearchResults\infiniteScrollSearchResults.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 87, 0, 0, 0, 1, 17, 105
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\SearchResults\infinitescrollOnlyImages.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 87, 0, 0, 0, 1, 17, 105
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\infiniteScrollFollowerUsersFeed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 114, 0, 0, 0, 0, 21, 135
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\infiniteScrollProfileFeed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 90, 0, 0, 0, 1, 19, 110
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\infiniteScrollProfileLikedFeed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 75, 0, 0, 0, 1, 17, 93
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\infiniteScrollProfileRepliesFeed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 112, 0, 0, 0, 1, 17, 130
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\infinitescroll.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 78, 0, 0, 0, 4, 21, 103
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\PostFeeds\paginationtest.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 17, 58
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\BackButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 35, 0, 0, 0, 0, 6, 41
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\CreatePostWizard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 1020, 0, 0, 0, 1, 32, 1053
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\EmojiPicker.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 67, 0, 0, 0, 0, 8, 75
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Messages\MessageFeed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 180, 0, 0, 0, 7, 41, 228
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Messages\MessageView.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 224, 0, 0, 0, 7, 14, 245
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Messages\MessagesSearch.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 165, 0, 0, 0, 2, 21, 188
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Messages\NewMessageModal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 5, 82
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Messages\PreviousConversations.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 151, 0, 0, 0, 7, 23, 181
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\SearchForm.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 171, 0, 0, 0, 2, 9, 182
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Trends.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 56, 0, 0, 0, 0, 9, 65
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Users\RetweetedBy.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 43, 0, 0, 0, 1, 6, 50
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Users\SearchResultCards.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 160, 0, 0, 0, 3, 8, 171
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Users\SuggestedUsers.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 206, 0, 0, 0, 5, 21, 232
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\Users\UserHover.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 111, 0, 0, 0, 0, 5, 116
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\loading.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 4, 29
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\ReusableElements\postview.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 1575, 0, 0, 0, 57, 126, 1758
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\SidebarIcons\LogoHomePageLink.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 7, 30
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\SidebarIcons\MessagesIcon.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 10
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\SidebarIcons\MessagesLink.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 8, 34
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\SidebarIcons\Sidebar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 4, 24
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\UserFeeds\onlyUsersSearchResults.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 220, 0, 0, 0, 10, 27, 257
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\UserFeeds\userSearchResults.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 108, 0, 0, 0, 6, 18, 132
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\customHooks\outsideClick.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 6, 31
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\components\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 69, 0, 0, 0, 0, 4, 73
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\env.mjs", "JavaScript", 0, 0, 45, 0, 0, 0, 0, 0, 0, 19, 5, 69
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\middleware.ts", "TypeScript", 0, 19, 0, 0, 0, 0, 0, 0, 0, 1, 2, 22
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\[slug].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 324, 0, 0, 0, 4, 34, 362
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\[slug]\likes.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 312, 0, 0, 0, 22, 32, 366
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\[slug]\replies.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 312, 0, 0, 0, 4, 33, 349
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\_app.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 35, 0, 0, 0, 1, 4, 40
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\api\trpc\[trpc].ts", "TypeScript", 0, 16, 0, 0, 0, 0, 0, 0, 0, 1, 2, 19
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\followers\[slug].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 212, 0, 0, 0, 2, 28, 242
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\following\[slug].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 209, 0, 0, 0, 2, 29, 240
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\i\search.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 154, 0, 0, 0, 4, 10, 168
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\i\suggested_users.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 6, 23
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\i\trends.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 7, 24
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 106, 0, 0, 0, 2, 11, 119
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\messages\[id].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 129, 0, 0, 0, 0, 22, 151
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\messages\index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 99, 0, 0, 0, 1, 14, 114
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\post\[id].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 62, 0, 0, 0, 1, 14, 77
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\reply\[id].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 63, 0, 0, 0, 1, 14, 78
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\sign-in\[[...index]].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 2, 10
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\pages\sign-up\[[...index]].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 2, 10
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\root.ts", "TypeScript", 0, 14, 0, 0, 0, 0, 0, 0, 0, 6, 4, 24
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\__test\clerk.getAllUsers.test.ts", "TypeScript", 0, 25, 0, 0, 0, 0, 0, 0, 0, 31, 6, 62
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\__test\posts.exampleMock.test.ts", "TypeScript", 0, 26, 0, 0, 0, 0, 0, 0, 0, 0, 7, 33
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\__test\posts.getById.test.ts", "TypeScript", 0, 38, 0, 0, 0, 0, 0, 0, 0, 84, 10, 132
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\__test\posts.infiniteScrollAllPosts.test.ts", "TypeScript", 0, 24, 0, 0, 0, 0, 0, 0, 0, 1, 13, 38
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\__test\posts.likePost.test.ts", "TypeScript", 0, 92, 0, 0, 0, 0, 0, 0, 0, 1, 24, 117
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\__test\posts.retweetPost.test.ts", "TypeScript", 0, 92, 0, 0, 0, 0, 0, 0, 0, 1, 24, 117
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\clerk.ts", "TypeScript", 0, 34, 0, 0, 0, 0, 0, 0, 0, 1, 3, 38
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\followers.ts", "TypeScript", 0, 148, 0, 0, 0, 0, 0, 0, 0, 12, 47, 207
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\messages.ts", "TypeScript", 0, 201, 0, 0, 0, 0, 0, 0, 0, 11, 37, 249
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\posts.ts", "TypeScript", 0, 1511, 0, 0, 0, 0, 0, 0, 0, 59, 179, 1749
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\routers\profile.ts", "TypeScript", 0, 137, 0, 0, 0, 0, 0, 0, 0, 16, 30, 183
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\api\trpc.ts", "TypeScript", 0, 58, 0, 0, 0, 0, 0, 0, 0, 47, 22, 127
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\db.ts", "TypeScript", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 4, 16
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\helpers\FilterUserForClient.ts", "TypeScript", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 1, 12
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\helpers\countHashtags.ts", "TypeScript", 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 5, 27
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\helpers\similarityScore.ts", "TypeScript", 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, 3, 12
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\helpers\ssgHelper.ts", "TypeScript", 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\server\pusher.ts", "TypeScript", 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 1, 10
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\styles\globals.css", "CSS", 0, 0, 0, 0, 0, 0, 46, 0, 0, 0, 16, 62
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\src\utils\api.ts", "TypeScript", 0, 30, 0, 0, 0, 0, 0, 0, 0, 32, 6, 68
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\tailwind.config.ts", "TypeScript", 0, 86, 0, 0, 0, 0, 0, 0, 0, 0, 5, 91
+"c:\Users\Admin\Desktop\CS50web and other fullstack projects\tee-tree\tsconfig.json", "JSON with Comments", 26, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 35
+"Total", "-", 26, 2635, 114, 12562, 377, 7674, 46, 47, 88, 529, 1456, 25554
