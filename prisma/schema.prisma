@@ -124,3 +124,13 @@ model Follow {
 
   @@index([followerId, followingId], name: "UniqueFollow")
 }
+
+model SearchHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  query     String
+  createdAt DateTime @default(now())
+
+  @@index([userId], name: "userIdIndex")
+  @@index([createdAt], name: "createdAtIndex")
+}
