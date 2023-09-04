@@ -18,6 +18,8 @@ type MessageViewComponentProps = {
   author: PostAuthor;
   showLineBelow?: boolean;
   homePage: boolean;
+  isLastSenderMessage?: boolean;
+  isLastRecipientMessage?: boolean;
 };
 
 const MessageViewComponent = (props: MessageViewComponentProps) => {
@@ -28,7 +30,6 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
   const params = new URLSearchParams(location.search);
   const cld = new Cloudinary({ cloud: { cloudName: "de5zmknvp" } });
   const ctx = api.useContext();
-
 
   const modalMediaFullRef = useRef<HTMLDivElement>(null);
 
@@ -81,11 +82,19 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
 
   return (
     <div
-      className={`mx-2 mb-2  max-w-[250px] rounded-lg border border-slate-300 ${
+      className={`mx-2 mb-2 max-w-[250px] border border-slate-300 ${
         author.id === user?.id
-          ? "ml-auto bg-Intone-100"
-          : "mr-auto bg-slate-700"
-      } w-fit py-1 px-2`}
+          ? `ml-auto bg-Intone-100 ${
+              props.isLastSenderMessage
+                ? "rounded-bl-3xl rounded-br-none rounded-tl-3xl rounded-tr-3xl"
+                : "rounded-3xl"
+            }`
+          : `mr-auto bg-slate-700 ${
+              props.isLastRecipientMessage
+                ? "rounded-bl-none rounded-br-3xl rounded-tl-3xl rounded-tr-3xl"
+                : "rounded-3xl"
+            }`
+      } w-fit px-3 py-2`}
     >
       <h1>{message.content}</h1>
       {message.imageUrl && (
