@@ -16,6 +16,13 @@ const MessagesPage: NextPage = () => {
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
   const { user, isLoaded: isUserLoaded } = useUser();
+  const [isFocused, setIsFocused] = useState(false);
+
+  const { data: searchHistory, isLoading: loadingSearchHistory } =
+  api.messages.getSearchHistoryUser.useQuery(undefined, {
+    enabled: isFocused,
+  });
+
 
   const { data: allMessages, isLoading: isLoadingMessages } =
     api.messages.getById.useQuery({ authorId: user?.id ?? "" });
@@ -98,12 +105,16 @@ const MessagesPage: NextPage = () => {
           modalNewMessageRef={modalNewMessageRef}
           messages={allMessages}
           isLoadingMessages={isLoadingMessages}
+          isFocused={isFocused}
+          setIsFocused={setIsFocused}
         />
       )}
       <MessageSearch
         searchPosition="left-[5%]"
         messages={allMessages}
         isLoadingMessages={isLoadingMessages}
+        isFocused={isFocused}
+        setIsFocused={setIsFocused}
       />
       <PreviousUsers uniqueUserIds={uniqueUserIds} />
     </PageLayout>

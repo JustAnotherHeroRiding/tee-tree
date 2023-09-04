@@ -13,18 +13,24 @@ import { type ExtendedMessage } from "~/server/api/routers/messages";
 import { type PostAuthor } from "~/server/api/routers/posts";
 import { type User } from "../CreatePostWizard";
 import { api } from "~/utils/api";
-
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
+import { type FormEvent } from "react";
 
 interface MessageSearchProps {
   searchPosition: string;
   messages: { message: ExtendedMessage; author: PostAuthor }[];
   isLoadingMessages: boolean;
+  isFocused: boolean;
+  setIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const MessageSearch: React.FC<MessageSearchProps> = ({
   searchPosition,
   messages,
   isLoadingMessages,
+  isFocused,
+  setIsFocused
 }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
@@ -32,12 +38,69 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
 
   const resultRefs = useRef<React.RefObject<HTMLAnchorElement>[]>([]);
 
-  const [isFocused, setIsFocused] = useState(false);
 
-  const { data: searchHistory, isLoading: loadingSearchHistory } =
-    api.messages.getSearchHistoryUser.useQuery(undefined, {
-      enabled: isFocused,
+  const router = useRouter();
+
+
+  const ctx = api.useContext();
+
+  const { mutate: searchHistoryMutate, isLoading: addSearchQueryLoading } =
+    api.messages.addQueryToSearchHistory.useMutation({
+      onSuccess: () => {
+        void ctx.messages.getSearchHistoryUser.invalidate();
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Follow! Are you logged in?");
+        }
+      },
     });
+
+  const handleSearchSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    // Add query to database
+    searchHistoryMutate({ query: input });
+
+    // Real-time filtering logic
+    const newCombinedResults: CombinedResult[] = [];
+
+    if (input.startsWith("@")) {
+      userList.forEach((user, index) => {
+        if (
+          user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+          user.firstName
+            ?.toLowerCase()
+            .includes(input.slice(1).toLowerCase()) ||
+          user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
+        ) {
+          newCombinedResults.push({ type: "user", data: user, index });
+        }
+      });
+    }
+
+    messages.forEach((message, index) => {
+      if (message.message.content.toLowerCase().includes(input.toLowerCase())) {
+        newCombinedResults.push({ type: "message", data: message, index });
+      }
+    });
+
+    // Update state
+    setCombinedResultsSubmit(newCombinedResults);
+
+    // Update URL query parameter
+    await router.push(
+      {
+        pathname: router.pathname,
+        query: { q: input },
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   const [input, setInput] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -52,6 +115,9 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
       };
 
   const [combinedResults, setCombinedResults] = useState<CombinedResult[]>([]);
+  const [combinedResultsSubmit, setCombinedResultsSubmit] = useState<
+    CombinedResult[]
+  >([]);
 
   useEffect(() => {
     const newCombinedResults: CombinedResult[] = [];
@@ -115,43 +181,57 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
 
   return (
     <div className="relative px-4">
-      <input
-        type="text"
-        placeholder="Search Direct Messages"
-        className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
-        name="q" // query parameter
-        value={input}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        onChange={(e) => handleQueryChange(e)}
-        autoComplete="off"
-        onKeyDown={(e) => {
-          if (e.key === "ArrowDown") {
-            handleArrowNavigation("down");
-          } else if (e.key === "ArrowUp") {
-            handleArrowNavigation("up");
-          } else if (e.key === "Tab") {
-            resultRefs.current[highlightedIndex]?.current?.click();
-          }
+      <form
+      className=""
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSearchSubmit(e).catch(() =>
+            toast.error("Something went wrong")
+          );
         }}
-      />
-      <FontAwesomeIcon
-        icon={faSearch}
-        className={`absolute ${searchPosition} top-[38%] h-3 w-3 text-Intone-300`}
-      />
-      {isFocused && loadingSearchHistory ? (
+      >
+        <input
+          type="text"
+          placeholder="Search Direct Messages"
+          className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
+          name="q" // query parameter
+          value={input}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          onChange={(e) => handleQueryChange(e)}
+          autoComplete="off"
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown") {
+              handleArrowNavigation("down");
+            } else if (e.key === "ArrowUp") {
+              handleArrowNavigation("up");
+            } else if (e.key === "Tab") {
+              resultRefs.current[highlightedIndex]?.current?.click();
+            }
+          }}
+        />
+        <FontAwesomeIcon
+          icon={faSearch}
+          className={`absolute ${searchPosition} top-[38%] h-3 w-3 text-Intone-300`}
+        />
+      </form>
+     {/*  <div className="absolute z-[5] bg-Intone-100">
+      {isFocused && (loadingSearchHistory || addSearchQueryLoading) ? (
         <LoadingSpinner />
       ) : (
+        isFocused &&
         searchHistory?.map((query) => {
           return (
             <div className="flex flex-row justify-between" key={query.id}>
-            <span>{query.query}</span>
-            <button>X</button>
-         </div>
-          )
+              <span>{query.query}</span>
+              <button>X</button>
+            </div>
+          );
         })
       )}
-      {isTypingQuery && combinedResults.length > 0  && (
+      </div> */}
+
+      {isTypingQuery && combinedResults.length > 0 && (
         <div
           className={`${"right-1/2 top-14 min-w-3/4 translate-x-1/2 "} 
     gray-thin-scrollbar absolute z-10 flex max-h-[300px] 

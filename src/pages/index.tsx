@@ -25,6 +25,7 @@ const Home: NextPage = () => {
 
   const username = user?.username;
 
+  
   // Return empty div if BOTH are not loaded, since user tends to load faster
   if (!userLoaded) return <LoadingPage />;
 

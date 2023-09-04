@@ -248,7 +248,7 @@ export const messagesRouter = createTRPCRouter({
     const searchHistory = await ctx.prisma.searchHistory.findMany({
       where: { userId: userId },
       orderBy: { createdAt: "desc" },
-      take: 10,
+      take: 6,
     });
 
     return searchHistory;

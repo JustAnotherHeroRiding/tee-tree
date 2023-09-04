@@ -331,7 +331,8 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Make the messages look like chat bubbles #DONE 
 - Only the last message should have this kind of styling #DONE 
 - If a user clicks on the input(focuses it) it should show the previous search results #DONE 
-- If user submits a query it should save it to the search results
+- If user submits a query it should save it to the search results #DONE 
+- Turned is focused to a shared state between the message components #DONE 
 - Then it should search again and filter the results, removing the previously messaged users
 - Selector for only messages or Users
 - Back button which will show the previous users again
