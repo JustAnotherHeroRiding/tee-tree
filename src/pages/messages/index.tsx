@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { PageLayout } from "~/components/layout";
-import BackButton from "~/components/ReusableElements/BackButton";
+import { FormkitArrowleft } from "~/components/ReusableElements/BackButton";
 import { Tooltip } from "react-tooltip";
 import { useState, useRef, useEffect } from "react";
 import useOutsideClick from "~/components/customHooks/outsideClick";
@@ -74,7 +74,15 @@ const MessagesPage: NextPage = () => {
         className="sticky top-0 z-50 flex 
         h-16 flex-row items-center justify-between bg-transparent backdrop-blur-sm"
       >
-        <BackButton />
+        <button
+          onClick={() => {
+            const currentPath = router.pathname;
+            void router.push(currentPath === "/messages" && !router.query.q ? "/" : "/messages");
+          }}
+        >
+          <FormkitArrowleft />
+        </button>
+
         <h1 className="ml-16 mr-auto w-fit text-2xl font-bold">Messages</h1>
         <button
           data-tooltip-id="newMessage-tooltip"
@@ -125,7 +133,7 @@ const MessagesPage: NextPage = () => {
         combinedResultsSubmit={combinedResultsSubmit}
         setCombinedResultsSubmit={setCombinedResultsSubmit}
       />
-      {loadingSearchHistory ? (
+      {loadingSearchHistory && router.query.q  ? (
         <LoadingSpinner />
       ) : (isFocused && router.query.q && router.query.q.length > 0) ||
         (router.query.q && router.query.q.length > 0 && searchHistory) ? (
