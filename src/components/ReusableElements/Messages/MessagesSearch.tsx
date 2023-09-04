@@ -12,6 +12,8 @@ import { useUser } from "@clerk/nextjs";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
 import { type PostAuthor } from "~/server/api/routers/posts";
 import { type User } from "../CreatePostWizard";
+import { api } from "~/utils/api";
+
 
 interface MessageSearchProps {
   searchPosition: string;
@@ -29,6 +31,13 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const { user: currentUser } = useUser();
 
   const resultRefs = useRef<React.RefObject<HTMLAnchorElement>[]>([]);
+
+  const [isFocused, setIsFocused] = useState(false);
+
+  const { data: searchHistory, isLoading: loadingSearchHistory } =
+    api.messages.getSearchHistoryUser.useQuery(undefined, {
+      enabled: isFocused,
+    });
 
   const [input, setInput] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -85,12 +94,12 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const handleArrowNavigation = (direction: "up" | "down") => {
     setHighlightedIndex((prevIndex) => {
       let nextIndex = direction === "up" ? prevIndex - 1 : prevIndex + 1;
-  
+
       // Boundary checks
       const maxIndex = combinedResults.length - 1; // Use the length of combinedResults
       if (nextIndex < 0) nextIndex = 0;
       if (nextIndex > maxIndex) nextIndex = maxIndex;
-  
+
       // Scroll into view
       const nextRef = resultRefs.current[nextIndex];
       if (nextRef && nextRef.current) {
@@ -99,11 +108,10 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           block: "nearest",
         });
       }
-  
+
       return nextIndex;
     });
   };
-  
 
   return (
     <div className="relative px-4">
@@ -113,6 +121,8 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
         className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
         name="q" // query parameter
         value={input}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         onChange={(e) => handleQueryChange(e)}
         autoComplete="off"
         onKeyDown={(e) => {
@@ -129,7 +139,19 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
         icon={faSearch}
         className={`absolute ${searchPosition} top-[38%] h-3 w-3 text-Intone-300`}
       />
-      {isTypingQuery && combinedResults.length > 0 && (
+      {isFocused && loadingSearchHistory ? (
+        <LoadingSpinner />
+      ) : (
+        searchHistory?.map((query) => {
+          return (
+            <div className="flex flex-row justify-between" key={query.id}>
+            <span>{query.query}</span>
+            <button>X</button>
+         </div>
+          )
+        })
+      )}
+      {isTypingQuery && combinedResults.length > 0  && (
         <div
           className={`${"right-1/2 top-14 min-w-3/4 translate-x-1/2 "} 
     gray-thin-scrollbar absolute z-10 flex max-h-[300px] 

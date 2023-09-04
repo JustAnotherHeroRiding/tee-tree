@@ -330,13 +330,13 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Endpoints for fetching a user's search history and adding entries to it #DONE 
 - Make the messages look like chat bubbles #DONE 
 - Only the last message should have this kind of styling #DONE 
+- If a user clicks on the input(focuses it) it should show the previous search results #DONE 
 - If user submits a query it should save it to the search results
 - Then it should search again and filter the results, removing the previously messaged users
 - Selector for only messages or Users
 - Back button which will show the previous users again
 - Clear all button to delete all search results 
 - Previous search results for logged in users 
-- If a user starts typing it should hide the previous users and show the previous search results
 - Most recently messaged users should appear on the main page - check the messages and their createdAt to decide this
 
 ## Extended Message features
