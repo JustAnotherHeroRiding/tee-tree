@@ -2,12 +2,12 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "~/components/Context/UserContext";
 import { LoadingSpinner } from "../loading";
 import Image from "next/image";
-import Link from "next/link";
 import { UserHoverCard } from "../Users/UserHover";
 import { type User } from "../CreatePostWizard";
 import { useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 type PreviousUsersProps = {
   uniqueUserIds: Set<string>;
@@ -21,6 +21,11 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
 
   const arrayUniqueUserIds = Array.from(uniqueUserIds);
 
+  const router = useRouter();
+
+  const handleUserClick = (userId: string) => {
+    void router.push(`/messages/${userId}`);
+  };
 
   const [
     fetchMentionedUsersFollowingData,
@@ -29,11 +34,9 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
 
   const { data: followingData } = api.follow.getFollowingCurrentUser.useQuery();
 
-
-
   const { data: followersDataMentionedUsers } =
     api.follow.getFollowersCountByIds.useQuery(
-      { mentionedUserIds: arrayUniqueUserIds},
+      { mentionedUserIds: arrayUniqueUserIds },
       { enabled: fetchMentionedUsersFollowingData }
     );
   const { data: followingDataMentionedUsers } =
@@ -131,12 +134,12 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
   }
 
   return (
-    <div className="mt-8 flex flex-col relative">
+    <div className="relative mt-8 flex flex-col">
       {filteredUsers.map((user) => (
-        <Link
-          href={`/messages/${user.id}`}
+        <div
+          onClick={() => handleUserClick(user.id)}
           key={user.id}
-          className="p-4 hover:bg-Intone-400"
+          className="cursor-pointer p-4 hover:bg-Intone-400"
         >
           <div className="flex flex-row">
             <Image
@@ -148,12 +151,17 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
             />
             <div className="flex flex-col">
               <div className="group inline-block">
-                <Link className="text-slate-300" href={`/@${user.username ?? ""}`}>
-                  @
-                  <span className="hover:text-white hover:underline">{`${
-                    user.username ?? ""
-                  }`}</span>
-                </Link>
+                <div className="flex flex-col">
+                <span className="whitespace-normal">
+                  {user.firstName} {user.lastName}
+                </span>
+                <span className="text-slate-300">
+                @
+                <span className="hover:text-white hover:underline">{`${
+                  user.username ?? ""
+                }`}</span>
+              </span>
+              </div>
                 <UserHoverCard
                   user={currentUser as User}
                   userList={userList}
@@ -168,12 +176,10 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
                   location="previousUsers"
                 />
               </div>
-              <span className="whitespace-normal">
-                {user.firstName} {user.lastName}
-              </span>
+              
             </div>
           </div>{" "}
-        </Link>
+        </div>
       ))}
     </div>
   );

@@ -22,6 +22,10 @@ export const UserHoverCard = (props: {
 }) => {
   const router = useRouter();
 
+  const handleProfileClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
+
   return (
     <div
       className={`overflow invisible absolute ${
@@ -84,17 +88,19 @@ export const UserHoverCard = (props: {
             </div>
           ))}
       </div>
-      <Link href={`/@${props.username}`} className="mt-4 flex flex-col">
+      <Link href={`/@${props.username}`}>
+      <div className="mt-4 flex flex-col" onClick={handleProfileClick}>
         <span className="font-bold text-white">
           {props.mentionedUser.firstName} {props.mentionedUser.lastName}
         </span>
         <span className="cursor-pointer text-slate-300 hover:underline">
           @{props.username}
         </span>
+        </div>
       </Link>
       <div className="mt-4 flex flex-row">
         <Link href={`/followers/@${props.username}`}>
-          <div className="mb-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
+          <div onClick={handleProfileClick} className="mb-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
             <h1>Followers</h1>
             <h1 className="text-bold ml-2 text-2xl">
               {props.followerCount[props.mentionedUser.id] || 0}
@@ -102,7 +108,7 @@ export const UserHoverCard = (props: {
           </div>
         </Link>
         <Link href={`/following/@${props.username}`}>
-          <div className="mb-4 ml-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
+          <div onClick={handleProfileClick} className="mb-4 ml-4 flex cursor-pointer flex-row items-center text-slate-300 hover:text-white">
             <h1>Following</h1>
             <h1 className="text-bold ml-2 text-2xl">
               {props.followingCount[props.mentionedUser.id] || 0}
