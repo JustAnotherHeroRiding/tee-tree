@@ -10,6 +10,8 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { PreviousUsers } from "~/components/ReusableElements/Messages/PreviousConversations";
+import { LoadingSpinner } from "~/components/ReusableElements/loading";
+import { type CombinedResult } from "~/components/ReusableElements/Messages/MessagesSearch";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
@@ -29,6 +31,10 @@ const MessagesPage: NextPage = () => {
     api.messages.getById.useQuery({ authorId: user?.id ?? "" });
 
   const [uniqueUserIds, setUniqueUserIds] = useState<Set<string>>(new Set());
+
+  const [combinedResultsSubmit, setCombinedResultsSubmit] = useState<
+    CombinedResult[]
+  >([]);
 
   useEffect(() => {
     const newUniqueUserIds = new Set<string>();
@@ -106,6 +112,8 @@ const MessagesPage: NextPage = () => {
           isLoadingMessages={isLoadingMessages}
           isFocused={isFocused}
           setIsFocused={setIsFocused}
+          combinedResultsSubmit={combinedResultsSubmit}
+          setCombinedResultsSubmit={setCombinedResultsSubmit}
         />
       )}
       <MessageSearch
@@ -114,9 +122,13 @@ const MessagesPage: NextPage = () => {
         isLoadingMessages={isLoadingMessages}
         isFocused={isFocused}
         setIsFocused={setIsFocused}
+        combinedResultsSubmit={combinedResultsSubmit}
+        setCombinedResultsSubmit={setCombinedResultsSubmit}
       />
-      {(isFocused && router.query.q && router.query.q.length > 0) ||
-      (router.query.q && router.query.q.length > 0 && searchHistory) ? (
+      {loadingSearchHistory ? (
+        <LoadingSpinner />
+      ) : (isFocused && router.query.q && router.query.q.length > 0) ||
+        (router.query.q && router.query.q.length > 0 && searchHistory) ? (
         searchHistory?.map((query) => (
           <div key={query.id}>
             <span>{query.query}</span>

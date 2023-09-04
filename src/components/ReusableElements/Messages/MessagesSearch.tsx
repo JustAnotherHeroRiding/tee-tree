@@ -23,6 +23,8 @@ interface MessageSearchProps {
   isLoadingMessages: boolean;
   isFocused: boolean;
   setIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
+  combinedResultsSubmit: CombinedResult[]
+  setCombinedResultsSubmit: React.Dispatch<React.SetStateAction<CombinedResult[]>>;
 }
 
 export type CombinedResult =
@@ -39,6 +41,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   isLoadingMessages,
   isFocused,
   setIsFocused,
+  setCombinedResultsSubmit
 }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
@@ -101,9 +104,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const [isTypingQuery, setIsTypingQuery] = useState(false);
 
   const [combinedResults, setCombinedResults] = useState<CombinedResult[]>([]);
-  const [combinedResultsSubmit, setCombinedResultsSubmit] = useState<
-    CombinedResult[]
-  >([]);
+
 
   useEffect(() => {
     const newCombinedResults: CombinedResult[] = [];
@@ -193,7 +194,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           );
         }}
       >
-       
         <input
           type="text"
           placeholder="Search Direct Messages"

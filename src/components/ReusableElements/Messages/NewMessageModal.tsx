@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { type ExtendedMessage } from "~/server/api/routers/messages";
 import type { PostAuthor } from "~/server/api/routers/posts";
+import type { CombinedResult } from "./MessagesSearch";
 
 type NewMessageModalProps = {
   showNewMessageModal: boolean;
@@ -17,6 +18,8 @@ type NewMessageModalProps = {
   isLoadingMessages: boolean;
   isFocused: boolean;
   setIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
+  combinedResultsSubmit: CombinedResult[]
+  setCombinedResultsSubmit: React.Dispatch<React.SetStateAction<CombinedResult[]>>;
 };
 
 export const NewMessageModal: React.FC<NewMessageModalProps> = ({
@@ -27,6 +30,9 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
   isLoadingMessages,
   isFocused,
   setIsFocused,
+  combinedResultsSubmit,
+  setCombinedResultsSubmit
+  
 }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
@@ -58,6 +64,8 @@ border border-indigo-200 bg-black sm:w-[55vw] lg:w-[35vw]"
           isLoadingMessages={isLoadingMessages}
           isFocused={isFocused}
           setIsFocused={setIsFocused}
+          combinedResultsSubmit={combinedResultsSubmit}
+          setCombinedResultsSubmit={setCombinedResultsSubmit}
         />
         <h1 className="mt-4 px-4 text-xl"> Previously messaged users</h1>
         {LoadingUserList ? (
