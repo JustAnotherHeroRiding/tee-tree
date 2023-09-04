@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { PageLayout } from "~/components/layout";
-import BackButton from "~/components/ReusableElements/BackButton";
+import { FormkitArrowleft } from "~/components/ReusableElements/BackButton";
 import { Tooltip } from "react-tooltip";
 import { useState, useRef, useEffect } from "react";
 import useOutsideClick from "~/components/customHooks/outsideClick";
@@ -10,23 +10,35 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { PreviousUsers } from "~/components/ReusableElements/Messages/PreviousConversations";
+import { LoadingSpinner } from "~/components/ReusableElements/loading";
+import { type CombinedResult } from "~/components/ReusableElements/Messages/MessagesSearch";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
+
   const { user, isLoaded: isUserLoaded } = useUser();
+  const [isFocused, setIsFocused] = useState(false);
+
+  const { data: searchHistory, isLoading: loadingSearchHistory } =
+    api.messages.getSearchHistoryUser.useQuery(undefined, {
+      enabled: isFocused,
+    });
 
   const { data: allMessages, isLoading: isLoadingMessages } =
     api.messages.getById.useQuery({ authorId: user?.id ?? "" });
 
-  const router = useRouter();
-
   const [uniqueUserIds, setUniqueUserIds] = useState<Set<string>>(new Set());
+
+  const [combinedResultsSubmit, setCombinedResultsSubmit] = useState<
+    CombinedResult[]
+  >([]);
 
   useEffect(() => {
     const newUniqueUserIds = new Set<string>();
-  
+
     allMessages?.forEach((message) => {
       if (message.message.authorId === user?.id) {
         newUniqueUserIds.add(message.message.recipientId);
@@ -34,7 +46,7 @@ const MessagesPage: NextPage = () => {
         newUniqueUserIds.add(message.message.authorId);
       }
     });
-  
+
     setUniqueUserIds(newUniqueUserIds);
   }, [allMessages, user?.id]);
 
@@ -62,7 +74,15 @@ const MessagesPage: NextPage = () => {
         className="sticky top-0 z-50 flex 
         h-16 flex-row items-center justify-between bg-transparent backdrop-blur-sm"
       >
-        <BackButton />
+        <button
+          onClick={() => {
+            const currentPath = router.pathname;
+            void router.push(currentPath === "/messages" && !router.query.q ? "/" : "/messages");
+          }}
+        >
+          <FormkitArrowleft />
+        </button>
+
         <h1 className="ml-16 mr-auto w-fit text-2xl font-bold">Messages</h1>
         <button
           data-tooltip-id="newMessage-tooltip"
@@ -98,14 +118,33 @@ const MessagesPage: NextPage = () => {
           modalNewMessageRef={modalNewMessageRef}
           messages={allMessages}
           isLoadingMessages={isLoadingMessages}
+          isFocused={isFocused}
+          setIsFocused={setIsFocused}
+          combinedResultsSubmit={combinedResultsSubmit}
+          setCombinedResultsSubmit={setCombinedResultsSubmit}
         />
       )}
       <MessageSearch
         searchPosition="left-[5%]"
         messages={allMessages}
         isLoadingMessages={isLoadingMessages}
+        isFocused={isFocused}
+        setIsFocused={setIsFocused}
+        combinedResultsSubmit={combinedResultsSubmit}
+        setCombinedResultsSubmit={setCombinedResultsSubmit}
       />
-      <PreviousUsers uniqueUserIds={uniqueUserIds} />
+      {loadingSearchHistory && router.query.q  ? (
+        <LoadingSpinner />
+      ) : (isFocused && router.query.q && router.query.q.length > 0) ||
+        (router.query.q && router.query.q.length > 0 && searchHistory) ? (
+        searchHistory?.map((query) => (
+          <div key={query.id}>
+            <span>{query.query}</span>
+          </div>
+        ))
+      ) : (
+        <PreviousUsers uniqueUserIds={uniqueUserIds} />
+      )}
     </PageLayout>
   );
 };

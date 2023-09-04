@@ -243,17 +243,16 @@ export const messagesRouter = createTRPCRouter({
       return messageWithUserData[0];
     }),
 
-  getSearchHistoryUser: privateProcedure
-    .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const searchHistory = await ctx.prisma.searchHistory.findMany({
-        where: { userId: input.userId },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      });
+  getSearchHistoryUser: privateProcedure.query(async ({ ctx }) => {
+    const userId = ctx.userId;
+    const searchHistory = await ctx.prisma.searchHistory.findMany({
+      where: { userId: userId },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    });
 
-      return searchHistory;
-    }),
+    return searchHistory;
+  }),
 
   addQueryToSearchHistory: privateProcedure
     .input(

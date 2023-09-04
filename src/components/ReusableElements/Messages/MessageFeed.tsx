@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { LoadingSpinner } from "../loading";
 import React from "react";
 import { useRouter } from "next/router";
+import { useUser } from "@clerk/nextjs";
 
 declare global {
   interface Math {
@@ -13,7 +14,11 @@ declare global {
   }
 }
 
-export const smoothScrollTo = (element: HTMLElement, target: number, duration: number) => {
+export const smoothScrollTo = (
+  element: HTMLElement,
+  target: number,
+  duration: number
+) => {
   const start = element.scrollTop;
   const change = target - start;
   let currentTime = 0;
@@ -39,19 +44,18 @@ export const smoothScrollTo = (element: HTMLElement, target: number, duration: n
   animateScroll();
 };
 
-
 export const MessageFeed = (props: {
   senderId: string;
   recipientId: string;
 }) => {
-
-  
   const { homePage } = useHomePage();
 
   const router = useRouter();
   const targetMessageId = router.query.targetMessageId as string | undefined;
 
   const [page, setPage] = useState(0);
+
+  const { user: currentUser} = useUser();
 
   const {
     data,
@@ -119,19 +123,19 @@ export const MessageFeed = (props: {
           if (targetElement) {
             const parentDiv = document.getElementById("mainScrollDiv");
             const offset = 80; // Scroll 100px further down
-          
+
             if (parentDiv) {
               const targetPosition = targetElement.getBoundingClientRect().top;
               const parentPosition = parentDiv.getBoundingClientRect().top;
-              const finalPosition = targetPosition - parentPosition + parentDiv.scrollTop;
-          
+              const finalPosition =
+                targetPosition - parentPosition + parentDiv.scrollTop;
+
               smoothScrollTo(parentDiv, finalPosition + offset, 800); // 800ms duration
             }
-          
+
             clearInterval(intervalId);
             setScrollCompleted(true);
           }
-          
         }, 100);
       }
     } else {
@@ -194,6 +198,13 @@ export const MessageFeed = (props: {
     <div className="flex flex-col">
       {data?.pages?.map((page, pageIndex) =>
         page.messages.map((message, messageIndex) => {
+          const nextMessage = page.messages[messageIndex + 1];
+          const isLastSenderMessage = nextMessage
+            ? message.message.authorId !== nextMessage.message.authorId
+            : message.message.authorId === currentUser?.id;
+          const isLastRecipientMessage = nextMessage
+            ? message.message.recipientId !== nextMessage.message.recipientId
+            : message.message.recipientId === currentUser?.id;
           const isLastPost =
             pageIndex === data.pages.length - 1 &&
             messageIndex === page.messages.length - 1;
@@ -206,7 +217,12 @@ export const MessageFeed = (props: {
               className={`relative ${isHighlighted ? "bg-Intone-700" : ""}`}
               ref={messageRefs.current[message.message.id]}
             >
-              <MessageView {...message} homePage={homePage} />
+              <MessageView
+                {...message}
+                homePage={homePage}
+                isLastSenderMessage={isLastSenderMessage}
+                isLastRecipientMessage={isLastRecipientMessage}
+              />
               {isLastPost && (
                 <div
                   ref={lastPostElementRef}
