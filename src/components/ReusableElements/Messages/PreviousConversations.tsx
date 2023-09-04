@@ -148,7 +148,7 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
             />
             <div className="flex flex-col">
               <div className="group inline-block">
-                <Link href={`/@${user.username ?? ""}`}>
+                <Link className="text-slate-300" href={`/@${user.username ?? ""}`}>
                   @
                   <span className="hover:text-white hover:underline">{`${
                     user.username ?? ""
