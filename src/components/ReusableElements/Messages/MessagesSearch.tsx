@@ -25,12 +25,20 @@ interface MessageSearchProps {
   setIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+export type CombinedResult =
+  | { type: "user"; data: User; index: number }
+  | {
+      type: "message";
+      data: { message: ExtendedMessage; author: PostAuthor };
+      index: number;
+    };
+
 export const MessageSearch: React.FC<MessageSearchProps> = ({
   searchPosition,
   messages,
   isLoadingMessages,
   isFocused,
-  setIsFocused
+  setIsFocused,
 }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
@@ -38,32 +46,18 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
 
   const resultRefs = useRef<React.RefObject<HTMLAnchorElement>[]>([]);
 
-
   const router = useRouter();
 
-
   const ctx = api.useContext();
-
-  const { mutate: searchHistoryMutate, isLoading: addSearchQueryLoading } =
-    api.messages.addQueryToSearchHistory.useMutation({
-      onSuccess: () => {
-        void ctx.messages.getSearchHistoryUser.invalidate();
-      },
-      onError: (e) => {
-        const errorMessage = e.data?.zodError?.fieldErrors.content;
-        if (errorMessage && errorMessage[0]) {
-          toast.error(errorMessage[0]);
-        } else {
-          toast.error("Failed to Follow! Are you logged in?");
-        }
-      },
-    });
 
   const handleSearchSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     // Add query to database
     searchHistoryMutate({ query: input });
+    if (isFocused) {
+      setIsFocused(false);
+    }
 
     // Real-time filtering logic
     const newCombinedResults: CombinedResult[] = [];
@@ -106,14 +100,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [isTypingQuery, setIsTypingQuery] = useState(false);
 
-  type CombinedResult =
-    | { type: "user"; data: User; index: number }
-    | {
-        type: "message";
-        data: { message: ExtendedMessage; author: PostAuthor };
-        index: number;
-      };
-
   const [combinedResults, setCombinedResults] = useState<CombinedResult[]>([]);
   const [combinedResultsSubmit, setCombinedResultsSubmit] = useState<
     CombinedResult[]
@@ -144,6 +130,23 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
 
     setCombinedResults(newCombinedResults);
   }, [input, userList, messages]);
+
+  const { mutate: searchHistoryMutate, isLoading: addSearchQueryLoading } =
+    api.messages.addQueryToSearchHistory.useMutation({
+      onSuccess: () => {
+        setInput("");
+        setIsTypingQuery(false);
+        void ctx.messages.getSearchHistoryUser.invalidate();
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else {
+          toast.error("Failed to Follow! Are you logged in?");
+        }
+      },
+    });
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = event.target.value;
@@ -182,7 +185,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   return (
     <div className="relative px-4">
       <form
-      className=""
+        className=""
         onSubmit={(e) => {
           e.preventDefault();
           handleSearchSubmit(e).catch(() =>
@@ -190,6 +193,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           );
         }}
       >
+       
         <input
           type="text"
           placeholder="Search Direct Messages"
@@ -215,22 +219,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           className={`absolute ${searchPosition} top-[38%] h-3 w-3 text-Intone-300`}
         />
       </form>
-     {/*  <div className="absolute z-[5] bg-Intone-100">
-      {isFocused && (loadingSearchHistory || addSearchQueryLoading) ? (
-        <LoadingSpinner />
-      ) : (
-        isFocused &&
-        searchHistory?.map((query) => {
-          return (
-            <div className="flex flex-row justify-between" key={query.id}>
-              <span>{query.query}</span>
-              <button>X</button>
-            </div>
-          );
-        })
-      )}
-      </div> */}
-
+      {addSearchQueryLoading && <LoadingSpinner />}
       {isTypingQuery && combinedResults.length > 0 && (
         <div
           className={`${"right-1/2 top-14 min-w-3/4 translate-x-1/2 "} 

@@ -15,25 +15,24 @@ const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
+
   const { user, isLoaded: isUserLoaded } = useUser();
   const [isFocused, setIsFocused] = useState(false);
 
   const { data: searchHistory, isLoading: loadingSearchHistory } =
-  api.messages.getSearchHistoryUser.useQuery(undefined, {
-    enabled: isFocused,
-  });
-
+    api.messages.getSearchHistoryUser.useQuery(undefined, {
+      enabled: isFocused,
+    });
 
   const { data: allMessages, isLoading: isLoadingMessages } =
     api.messages.getById.useQuery({ authorId: user?.id ?? "" });
-
-  const router = useRouter();
 
   const [uniqueUserIds, setUniqueUserIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const newUniqueUserIds = new Set<string>();
-  
+
     allMessages?.forEach((message) => {
       if (message.message.authorId === user?.id) {
         newUniqueUserIds.add(message.message.recipientId);
@@ -41,7 +40,7 @@ const MessagesPage: NextPage = () => {
         newUniqueUserIds.add(message.message.authorId);
       }
     });
-  
+
     setUniqueUserIds(newUniqueUserIds);
   }, [allMessages, user?.id]);
 
@@ -116,7 +115,16 @@ const MessagesPage: NextPage = () => {
         isFocused={isFocused}
         setIsFocused={setIsFocused}
       />
-      <PreviousUsers uniqueUserIds={uniqueUserIds} />
+      {(isFocused && router.query.q && router.query.q.length > 0) ||
+      (router.query.q && router.query.q.length > 0 && searchHistory) ? (
+        searchHistory?.map((query) => (
+          <div key={query.id}>
+            <span>{query.query}</span>
+          </div>
+        ))
+      ) : (
+        <PreviousUsers uniqueUserIds={uniqueUserIds} />
+      )}
     </PageLayout>
   );
 };
