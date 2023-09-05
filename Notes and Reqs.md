@@ -334,11 +334,17 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - If user submits a query it should save it to the search results #DONE 
 - Turned is focused to a shared state between the message components #DONE 
 - Then it should search again and filter the results, removing the previously messaged users #DONE 
+- Previous search results for logged in users #DONE 
+
+##### The idea here is that the popup is showing instant suggestions. Once a user clicks enters the suggestions disappear and a page of results is shown containing the query of the user. If nothing appears then we show the search results
+#### Or just just the state of focus should replace the previous users with search history, then on submit show the results. If the input is focused then it means we turn the page into search mode.
+
 - Selector for only messages or Users
 - Back button which will show the previous users again
+- X button to delete a single search result
 - Clear all button to delete all search results 
-- Previous search results for logged in users 
 - Most recently messaged users should appear on the main page - check the messages and their createdAt to decide this
+- Clicking on a previous search result should open the search results for that query
 
 ## Extended Message features
 - Add a message icon on the profile page

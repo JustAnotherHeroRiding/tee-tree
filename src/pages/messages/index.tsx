@@ -23,9 +23,7 @@ const MessagesPage: NextPage = () => {
   const [isFocused, setIsFocused] = useState(false);
 
   const { data: searchHistory, isLoading: loadingSearchHistory } =
-    api.messages.getSearchHistoryUser.useQuery(undefined, {
-      enabled: isFocused,
-    });
+    api.messages.getSearchHistoryUser.useQuery(undefined);
 
   const { data: allMessages, isLoading: isLoadingMessages } =
     api.messages.getById.useQuery({ authorId: user?.id ?? "" });
@@ -77,7 +75,9 @@ const MessagesPage: NextPage = () => {
         <button
           onClick={() => {
             const currentPath = router.pathname;
-            void router.push(currentPath === "/messages" && !router.query.q ? "/" : "/messages");
+            void router.push(
+              currentPath === "/messages" && !router.query.q ? "/" : "/messages"
+            );
           }}
         >
           <FormkitArrowleft />
@@ -133,15 +133,16 @@ const MessagesPage: NextPage = () => {
         combinedResultsSubmit={combinedResultsSubmit}
         setCombinedResultsSubmit={setCombinedResultsSubmit}
       />
-      {loadingSearchHistory && router.query.q  ? (
+      {loadingSearchHistory ? (
         <LoadingSpinner />
-      ) : (isFocused && router.query.q && router.query.q.length > 0) ||
-        (router.query.q && router.query.q.length > 0 && searchHistory) ? (
+      ) : isFocused ? (
         searchHistory?.map((query) => (
           <div key={query.id}>
             <span>{query.query}</span>
           </div>
         ))
+      ) : router.query.q && router.query.q.length > 0 ? (
+        <div>Placeholder for search results</div>
       ) : (
         <PreviousUsers uniqueUserIds={uniqueUserIds} />
       )}
