@@ -751,6 +751,8 @@ export const CreatePostWizard: React.FC<CreatePostWizardProps> = ({
             }}
           />
           <TextareaAutosize
+            aria-label="New Tweet"
+            spellCheck="true"
             placeholder={placeholder}
             className="w-full grow resize-none bg-transparent outline-none"
             value={input}

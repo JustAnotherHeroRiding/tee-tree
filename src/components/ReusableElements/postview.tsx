@@ -492,6 +492,8 @@ const PostViewComponent = (props: PostViewComponentProps) => {
     api.posts.editPost.useMutation({
       onSuccess: () => {
         invalidateResources(location, homePage, params, repliesOfReply, ctx);
+        setIsTypingTrend(false);
+        setIsTypingUsername(false);
 
         console.log("Post Edited");
       },
