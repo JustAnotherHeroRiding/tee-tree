@@ -339,6 +339,9 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 ##### The idea here is that the popup is showing instant suggestions. Once a user clicks enters the suggestions disappear and a page of results is shown containing the query of the user. If nothing appears then we show the search results
 #### Or just just the state of focus should replace the previous users with search history, then on submit show the results. If the input is focused then it means we turn the page into search mode.
 
+- Style the search results #DONE 
+- Make the clear all button delete the entire search history
+
 - Selector for only messages or Users
 - Back button which will show the previous users again
 - X button to delete a single search result

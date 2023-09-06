@@ -12,6 +12,9 @@ import { api } from "~/utils/api";
 import { PreviousUsers } from "~/components/ReusableElements/Messages/PreviousConversations";
 import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { type CombinedResult } from "~/components/ReusableElements/Messages/MessagesSearch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
@@ -62,9 +65,14 @@ const MessagesPage: NextPage = () => {
     }
   });
 
-  if (!allMessages) {
-    return null;
-  }
+  const { mutate : clearSearchHistory, isLoading } = api.messages.deleteSearchHistoryUser.useMutation({
+    onSuccess: () => {
+      toast("Search history deleted successfully");
+    },
+    onError: () => {
+      toast.error("Failed to delete search history");
+    },
+  });
 
   return (
     <PageLayout>
@@ -136,11 +144,25 @@ const MessagesPage: NextPage = () => {
       {loadingSearchHistory ? (
         <LoadingSpinner />
       ) : isFocused ? (
-        searchHistory?.map((query) => (
-          <div key={query.id}>
-            <span>{query.query}</span>
+        <div className="mt-4">
+          <div className="flex flex-row items-center justify-between">
+            <h1 className="mb-4 px-4 text-2xl font-bold">Recent Searches</h1>
+            <button onClick={() => clearSearchHistory()} className="mr-1 rounded-3xl border px-4 py-2 hover:border-slate-700 hover:bg-Intone-100">
+              Clear all
+            </button>
           </div>
-        ))
+          {searchHistory?.map((query, index) => (
+            <div
+              className={`cursor-pointer p-4 hover:bg-slate-700 ${
+                index === searchHistory.length - 1 ? "border-y" : "border-t"
+              } border-slate-700`}
+              key={query.id}
+            >
+              <FontAwesomeIcon icon={faSearch} className="mr-4" />
+              <span>{query.query}</span>
+            </div>
+          ))}
+        </div>
       ) : router.query.q && router.query.q.length > 0 ? (
         <div>Placeholder for search results</div>
       ) : (

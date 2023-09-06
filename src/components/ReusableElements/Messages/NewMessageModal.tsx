@@ -54,9 +54,9 @@ border border-indigo-200 bg-black sm:w-[55vw] lg:w-[35vw]"
             className="-mt-1 w-fit rounded-3xl p-1 hover:bg-Intone-700"
             onClick={() => setShowNewMessageModal(false)}
           >
-            <FontAwesomeIcon className="h-6 w-6" icon={faXmark} />
+            <FontAwesomeIcon className="h-6 w-6 flex" icon={faXmark} />
           </button>
-          <p className="text-xl">New Message</p>
+          <p className="text-xl font-bold">New Message</p>
         </div>
         <MessageSearch
           searchPosition="left-[6%]"
