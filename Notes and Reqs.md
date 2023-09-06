@@ -340,8 +340,7 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 #### Or just just the state of focus should replace the previous users with search history, then on submit show the results. If the input is focused then it means we turn the page into search mode.
 
 - Style the search results #DONE 
-- Make the clear all button delete the entire search history
-
+- Make the clear all button delete the entire search history #DONE 
 - Selector for only messages or Users
 - Back button which will show the previous users again
 - X button to delete a single search result

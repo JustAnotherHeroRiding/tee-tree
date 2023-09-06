@@ -21,6 +21,7 @@ const MessagesPage: NextPage = () => {
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
+  const ctx = api.useContext();
 
   const { user, isLoaded: isUserLoaded } = useUser();
   const [isFocused, setIsFocused] = useState(false);
@@ -65,14 +66,16 @@ const MessagesPage: NextPage = () => {
     }
   });
 
-  const { mutate : clearSearchHistory, isLoading } = api.messages.deleteSearchHistoryUser.useMutation({
-    onSuccess: () => {
-      toast("Search history deleted successfully");
-    },
-    onError: () => {
-      toast.error("Failed to delete search history");
-    },
-  });
+  const { mutate: clearSearchHistory, isLoading: isClearingMessages } =
+    api.messages.deleteSearchHistoryUser.useMutation({
+      onSuccess: () => {
+        void ctx.messages.getSearchHistoryUser.invalidate();
+        toast("Search history deleted successfully");
+      },
+      onError: () => {
+        toast.error("Failed to delete search history");
+      },
+    });
 
   return (
     <PageLayout>
@@ -82,10 +85,16 @@ const MessagesPage: NextPage = () => {
       >
         <button
           onClick={() => {
-            const currentPath = router.pathname;
-            void router.push(
-              currentPath === "/messages" && !router.query.q ? "/" : "/messages"
-            );
+            if (isFocused) {
+              setIsFocused(false);
+            } else {
+              const currentPath = router.pathname;
+              void router.push(
+                currentPath === "/messages" && !router.query.q
+                  ? "/"
+                  : "/messages"
+              );
+            }
           }}
         >
           <FormkitArrowleft />
@@ -124,7 +133,7 @@ const MessagesPage: NextPage = () => {
           showNewMessageModal={showNewMessageModal}
           setShowNewMessageModal={setShowNewMessageModal}
           modalNewMessageRef={modalNewMessageRef}
-          messages={allMessages}
+          messages={allMessages || []}
           isLoadingMessages={isLoadingMessages}
           isFocused={isFocused}
           setIsFocused={setIsFocused}
@@ -134,7 +143,7 @@ const MessagesPage: NextPage = () => {
       )}
       <MessageSearch
         searchPosition="left-[5%]"
-        messages={allMessages}
+        messages={allMessages || []}
         isLoadingMessages={isLoadingMessages}
         isFocused={isFocused}
         setIsFocused={setIsFocused}
@@ -143,11 +152,14 @@ const MessagesPage: NextPage = () => {
       />
       {loadingSearchHistory ? (
         <LoadingSpinner />
-      ) : isFocused ? (
+      ) : isFocused || isClearingMessages ? (
         <div className="mt-4">
           <div className="flex flex-row items-center justify-between">
             <h1 className="mb-4 px-4 text-2xl font-bold">Recent Searches</h1>
-            <button onClick={() => clearSearchHistory()} className="mr-1 rounded-3xl border px-4 py-2 hover:border-slate-700 hover:bg-Intone-100">
+            <button
+              onClick={() => clearSearchHistory()}
+              className="mr-1 rounded-3xl border px-4 py-2 hover:border-slate-700 hover:bg-Intone-100"
+            >
               Clear all
             </button>
           </div>
