@@ -16,10 +16,11 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { type FormEvent } from "react";
+import { type Message } from "@prisma/client";
 
 interface MessageSearchProps {
   searchPosition: string;
-  messages: { message: ExtendedMessage; author: PostAuthor }[];
+  messages: { message: Message; author: PostAuthor }[];
   isLoadingMessages: boolean;
   isFocused: boolean;
   setIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
@@ -201,7 +202,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           name="q" // query parameter
           value={input}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           onChange={(e) => handleQueryChange(e)}
           autoComplete="off"
           onKeyDown={(e) => {
