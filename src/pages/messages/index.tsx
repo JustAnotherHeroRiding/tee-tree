@@ -174,7 +174,8 @@ const MessagesPage: NextPage = () => {
       console.log(combinedResultsSubmit)
       handleInitialLoad();
     }
-  }, [urlQuery]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingMessages]);
 
   const { mutate: clearSearchHistory, isLoading: isClearingMessages } =
     api.messages.deleteSearchHistoryUser.useMutation({
