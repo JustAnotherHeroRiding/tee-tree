@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { PageLayout } from "~/components/layout";
 import { FormkitArrowleft } from "~/components/ReusableElements/BackButton";
 import { Tooltip } from "react-tooltip";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import useOutsideClick from "~/components/customHooks/outsideClick";
 import { NewMessageModal } from "~/components/ReusableElements/Messages/NewMessageModal";
 import { MessageSearch } from "~/components/ReusableElements/Messages/MessagesSearch";
@@ -12,6 +12,7 @@ import { api } from "~/utils/api";
 import { PreviousUsers } from "~/components/ReusableElements/Messages/PreviousConversations";
 import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { type CombinedResult } from "~/components/ReusableElements/Messages/MessagesSearch";
+import { UserContext } from "~/components/Context/UserContext";
 
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -82,7 +83,13 @@ const MessagesPage: NextPage = () => {
   const router = useRouter();
   const ctx = api.useContext();
 
+  const [urlQuery, setUrlQuery] = useState<string | undefined>(
+    (router.query.q as string) || undefined
+  );
+
   const { user, isLoaded: isUserLoaded } = useUser();
+  const { userList } = useContext(UserContext);
+
   const [isFocused, setIsFocused] = useState(false);
 
   const { data: searchHistory, isLoading: loadingSearchHistory } =
@@ -124,6 +131,50 @@ const MessagesPage: NextPage = () => {
       setShowNewMessageModal(false);
     }
   });
+
+  const handleInitialLoad = () => {
+    // Real-time filtering logic
+    const newCombinedResults: CombinedResult[] = [];
+
+    if (urlQuery && urlQuery.length > 0) {
+      userList.forEach((user, index) => {
+        if (
+          user.username
+            ?.toLowerCase()
+            .includes(urlQuery?.slice(1).toLowerCase()) ||
+          user.firstName
+            ?.toLowerCase()
+            .includes(urlQuery.slice(1).toLowerCase()) ||
+          user.lastName
+            ?.toLowerCase()
+            .includes(urlQuery?.slice(1).toLowerCase())
+        ) {
+          newCombinedResults.push({ type: "user", data: user, index });
+        }
+      });
+      if (allMessages) {
+        allMessages.forEach((message, index) => {
+          if (
+            message.message.content
+              .toLowerCase()
+              .includes(urlQuery?.toLowerCase())
+          ) {
+            newCombinedResults.push({ type: "message", data: message, index });
+          }
+        });
+      }
+    }
+
+    // Update state
+    setCombinedResultsSubmit(newCombinedResults);
+  };
+
+  useEffect(() => {
+    if (urlQuery && combinedResultsSubmit.length === 0 && !isLoadingMessages) {
+      console.log(combinedResultsSubmit)
+      handleInitialLoad();
+    }
+  }, [urlQuery]);
 
   const { mutate: clearSearchHistory, isLoading: isClearingMessages } =
     api.messages.deleteSearchHistoryUser.useMutation({
@@ -172,7 +223,7 @@ const MessagesPage: NextPage = () => {
           onClick={() => {
             if (isFocused) {
               setIsFocused(false);
-            } else if (!isFocused && router.query.q?.length !== 0) {
+            } else if (!isFocused && urlQuery?.length !== 0) {
               setIsFocused(true);
               void router.push(
                 {
@@ -184,9 +235,7 @@ const MessagesPage: NextPage = () => {
             } else {
               const currentPath = router.pathname;
               void router.push(
-                currentPath === "/messages" && !router.query.q
-                  ? "/"
-                  : "/messages"
+                currentPath === "/messages" && !urlQuery ? "/" : "/messages"
               );
             }
           }}
@@ -292,7 +341,7 @@ const MessagesPage: NextPage = () => {
             </div>
           ))}
         </div>
-      ) : router.query.q && router.query.q.length > 0 ? (
+      ) : urlQuery && urlQuery.length > 0 ? (
         combinedResultsSubmit.map((result, index) => (
           <div key={index} className="">
             {result.type === "user" && !userBannerRendered && (

@@ -352,6 +352,12 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Banner above the user/message section #DONE 
 - Style up the results #DONE 
 - Separate sections with an icon #DONE 
+
+## Bug Alert
+- Search results disappear after a while despite the query being in the url, let's add a new state for the url query #DONE 
+- This is because the only place where search results get fetched are when submitting the form, I need to also fetch them on initial render
+
+
 - Style the message results
 - The results should link to the message/conversation
 - When searching from the new post modal it should only search for users and it should not show the history in the background
