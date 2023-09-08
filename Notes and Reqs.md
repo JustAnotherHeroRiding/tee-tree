@@ -341,6 +341,7 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 
 - Style the search results #DONE 
 - Make the clear all button delete the entire search history #DONE 
+- Removed onBlur selected so that I can set isFocused to false manually #DONE 
 - Selector for only messages or Users
 - Back button which will show the previous users again
 - X button to delete a single search result

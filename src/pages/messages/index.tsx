@@ -13,7 +13,7 @@ import { PreviousUsers } from "~/components/ReusableElements/Messages/PreviousCo
 import { LoadingSpinner } from "~/components/ReusableElements/loading";
 import { type CombinedResult } from "~/components/ReusableElements/Messages/MessagesSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 
 const MessagesPage: NextPage = () => {
@@ -165,18 +165,32 @@ const MessagesPage: NextPage = () => {
           </div>
           {searchHistory?.map((query, index) => (
             <div
-              className={`cursor-pointer p-4 hover:bg-slate-700 ${
+              className={`group flex cursor-pointer flex-row items-center justify-between p-4 hover:bg-slate-700 ${
                 index === searchHistory.length - 1 ? "border-y" : "border-t"
               } border-slate-700`}
               key={query.id}
             >
-              <FontAwesomeIcon icon={faSearch} className="mr-4" />
-              <span>{query.query}</span>
+              <div className="flex flex-row items-center justify-between">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="mr-4 h-10 w-10 rounded-3xl border border-slate-700 p-2 group-hover:border-slate-900"
+                />
+                <span>{query.query}</span>
+              </div>
+              <FontAwesomeIcon
+                icon={faXmark}
+                className="mr-4 h-10 w-10 rounded-3xl text-Intone-300 hover:bg-slate-800 p-2"
+              />
             </div>
           ))}
         </div>
       ) : router.query.q && router.query.q.length > 0 ? (
-        <div>Placeholder for search results</div>
+        combinedResultsSubmit.map((result, index) => (
+          <div key={index}>
+            {result.type === "user" && <h1>{result.data.username}</h1>}
+            {result.type === "message" && <p>{result.data.message.content}</p>}
+          </div>
+        ))
       ) : (
         <PreviousUsers uniqueUserIds={uniqueUserIds} />
       )}
