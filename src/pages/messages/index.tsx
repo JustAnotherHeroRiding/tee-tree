@@ -17,6 +17,10 @@ import { UserContext } from "~/components/Context/UserContext";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 interface UilUserProps {
   width: string | number;
@@ -171,10 +175,10 @@ const MessagesPage: NextPage = () => {
 
   useEffect(() => {
     if (urlQuery && combinedResultsSubmit.length === 0 && !isLoadingMessages) {
-      console.log(combinedResultsSubmit)
+      console.log(combinedResultsSubmit);
       handleInitialLoad();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingMessages]);
 
   const { mutate: clearSearchHistory, isLoading: isClearingMessages } =
@@ -395,8 +399,23 @@ const MessagesPage: NextPage = () => {
             )}
 
             {result.type === "message" && (
-              <div className="bg-slate-800 hover:bg-slate-900">
-                <p>{result.data.message.content}</p>
+              <div className="flex flex-col bg-slate-800 p-4 hover:bg-slate-900">
+                <div className="flex flex-row">
+                  <Image
+                    src={result.data.author.profileImageUrl}
+                    alt="Message Author"
+                    width={50}
+                    height={50}
+                    className="mx-4 h-8 w-8 rounded-full"
+                  />
+                  <p className="mr-2">
+                    {result.data.author.firstName} {result.data.author.lastName}
+                  </p>
+                  <p>{` ·  ${dayjs(
+                    result.data.message.createdAt
+                  ).fromNow()}`}</p>
+                </div>
+                <p className="px-8">{result.data.message.content}</p>
               </div>
             )}
             {result.type === "message" &&
