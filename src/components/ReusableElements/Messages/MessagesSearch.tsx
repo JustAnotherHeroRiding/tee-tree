@@ -66,7 +66,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
     // Real-time filtering logic
     const newCombinedResults: CombinedResult[] = [];
 
-    if (input.startsWith("@")) {
       userList.forEach((user, index) => {
         if (
           user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
@@ -78,7 +77,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           newCombinedResults.push({ type: "user", data: user, index });
         }
       });
-    }
 
     messages.forEach((message, index) => {
       if (message.message.content.toLowerCase().includes(input.toLowerCase())) {
@@ -201,7 +199,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
           className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
           name="q" // query parameter
           value={input}
-          onFocus={() => setIsFocused(true)}
+          onClick={() => setIsFocused(true)}
           onChange={(e) => handleQueryChange(e)}
           autoComplete="off"
           onKeyDown={(e) => {

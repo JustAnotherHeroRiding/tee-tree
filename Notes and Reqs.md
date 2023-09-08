@@ -341,12 +341,28 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 
 - Style the search results #DONE 
 - Make the clear all button delete the entire search history #DONE 
+- Removed onBlur selected so that I can set isFocused to false manually #DONE 
+- X button to delete a single search result #DONE 
+- Clear all button to delete all search results  #DONE 
+- Make the X button actually delete the search results #DONE 
+- Clicking on a previous search result will open the search results #DONE 
+- Back button which will show the previous users again #DONE 
+- Better loading spinner when loading search results #DONE 
+- Show the search results #DONE 
+- Banner above the user/message section #DONE 
+- Style up the results #DONE 
+- Separate sections with an icon #DONE 
+
+## Bug Alert
+- Search results disappear after a while despite the query being in the url, let's add a new state for the url query #DONE 
+- This is because the only place where search results get fetched are when submitting the form, I need to also fetch them on initial render
+
+
+- Style the message results
+- The results should link to the message/conversation
+- When searching from the new post modal it should only search for users and it should not show the history in the background
 - Selector for only messages or Users
-- Back button which will show the previous users again
-- X button to delete a single search result
-- Clear all button to delete all search results 
 - Most recently messaged users should appear on the main page - check the messages and their createdAt to decide this
-- Clicking on a previous search result should open the search results for that query
 
 ## Extended Message features
 - Add a message icon on the profile page
