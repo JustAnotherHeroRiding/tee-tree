@@ -266,6 +266,20 @@ export const messagesRouter = createTRPCRouter({
     }
   }),
 
+  deleteSearchHistorySingle: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      try {
+        await ctx.prisma.searchHistory.delete({
+          where: { userId: userId, id: input.id },
+        });
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }),
+
   addQueryToSearchHistory: privateProcedure
     .input(
       z.object({
