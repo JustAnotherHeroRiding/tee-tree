@@ -355,7 +355,8 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 
 ## Bug Alert
 - Search results disappear after a while despite the query being in the url, let's add a new state for the url query #DONE 
-- This is because the only place where search results get fetched are when submitting the form, I need to also fetch them on initial render
+- This is because the only place where search results get fetched are when submitting the form, I need to also fetch them on initial render #DONE 
+#### Current use effect seems to work, let's see if I notice it breaking later
 
 
 - Style the message results
