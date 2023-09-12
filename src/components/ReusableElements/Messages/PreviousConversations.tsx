@@ -152,7 +152,7 @@ export const PreviousUsers: React.FC<PreviousUsersProps> = ({
             <div className="flex flex-col">
               <div className="group inline-block">
                 <div className="flex flex-col">
-                <span className="whitespace-normal">
+                <span className="whitespace-normal hover:font-semibold">
                   {user.firstName} {user.lastName}
                 </span>
                 <span className="text-slate-300">

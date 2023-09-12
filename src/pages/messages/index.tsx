@@ -80,6 +80,24 @@ export function SearchIcon({ width, height, className }: UilUserProps) {
   );
 }
 
+export const highlightText = (text: string, query: string) => {
+  const parts = text.split(new RegExp(`(${query})`, "gi"));
+  return (
+    <span>
+      {parts.map((part, i) => (
+        <span
+          key={i}
+          className={
+            part.toLowerCase() === query.toLowerCase() ? "bg-yellow-300 text-black" : ""
+          }
+        >
+          {part}
+        </span>
+      ))}
+    </span>
+  );
+};
+
 const MessagesPage: NextPage = () => {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const modalNewMessageRef = useRef<HTMLDivElement>(null);
@@ -366,13 +384,13 @@ const MessagesPage: NextPage = () => {
                 />
                 <div className="flex flex-col">
                   <span>
-                    {result.data.firstName} {result.data.lastName}{" "}
+                    {highlightText(result.data.firstName?? "", urlQuery)} {highlightText(result.data.lastName ?? "", urlQuery)}{" "}
                   </span>
                   <Link
                     href={`/@${result.data.username ?? ""}`}
                     className="text-slate-300"
                   >
-                    @{result.data.username}
+                    @{highlightText(result.data.username ?? "", urlQuery)}
                   </Link>
                 </div>
               </div>
@@ -384,7 +402,7 @@ const MessagesPage: NextPage = () => {
             {result.type === "message" && !messageBannerRendered && (
               <div className="my-4 flex flex-row items-center text-2xl font-bold">
                 <svg
-                  className={`h-10 w-10 rounded-2xl p-1 group-hover:text-Intone-300`}
+                  className={`ml-4 h-10 w-10 rounded-2xl p-1 group-hover:text-Intone-300`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                 >
@@ -411,11 +429,13 @@ const MessagesPage: NextPage = () => {
                   <p className="mr-2">
                     {result.data.author.firstName} {result.data.author.lastName}
                   </p>
-                  <p>{` ·  ${dayjs(
+                  <p className="text-slate-400">{` ·  ${dayjs(
                     result.data.message.createdAt
                   ).fromNow()}`}</p>
                 </div>
-                <p className="px-8">{result.data.message.content}</p>
+                <p className="px-4">
+                  {highlightText(result.data.message.content, urlQuery)}
+                </p>
               </div>
             )}
             {result.type === "message" &&

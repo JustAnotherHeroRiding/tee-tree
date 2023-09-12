@@ -359,7 +359,10 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 #### Current use effect seems to work, let's see if I notice it breaking later
 
 
-- Style the message results
+- Style the message results #DONE 
+- Style the spinners as they were too small and not centered #DONE 
+- Further style the message results #DONE 
+- Highlight the search query in the results
 - The results should link to the message/conversation
 - When searching from the new post modal it should only search for users and it should not show the history in the background
 - Selector for only messages or Users
@@ -453,3 +456,4 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Add Refs and scroll into view #DONE 
 - Clicking on them should open the search query for that trend #DONE 
 - Separate trend page for expanded view of a trend and the posts containing those hashtags, this should just be a search query for posts containing that word if the user clicks the trend #DONE 
+- Trends should also show if you are not signed in #DONE 

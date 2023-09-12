@@ -46,7 +46,7 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
     >
       <div
         ref={modalNewMessageRef}
-        className="modalComment mx-auto flex h-fit w-[95vw] flex-col overflow-auto rounded-3xl
+        className="modalMessage mx-auto flex h-fit w-[95vw] flex-col overflow-auto rounded-3xl
 border border-indigo-200 bg-black sm:w-[55vw] lg:w-[35vw]"
       >
         <div className="flex flex-row p-4">
