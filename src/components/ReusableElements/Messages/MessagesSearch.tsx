@@ -24,8 +24,10 @@ interface MessageSearchProps {
   isLoadingMessages: boolean;
   isFocused: boolean;
   setIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
-  combinedResultsSubmit: CombinedResult[]
-  setCombinedResultsSubmit: React.Dispatch<React.SetStateAction<CombinedResult[]>>;
+  combinedResultsSubmit: CombinedResult[];
+  setCombinedResultsSubmit: React.Dispatch<
+    React.SetStateAction<CombinedResult[]>
+  >;
 }
 
 export type CombinedResult =
@@ -42,7 +44,7 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   isLoadingMessages,
   isFocused,
   setIsFocused,
-  setCombinedResultsSubmit
+  setCombinedResultsSubmit,
 }) => {
   const { userList, isLoading: LoadingUserList } = useContext(UserContext);
 
@@ -66,17 +68,15 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
     // Real-time filtering logic
     const newCombinedResults: CombinedResult[] = [];
 
-      userList.forEach((user, index) => {
-        if (
-          user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
-          user.firstName
-            ?.toLowerCase()
-            .includes(input.slice(1).toLowerCase()) ||
-          user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
-        ) {
-          newCombinedResults.push({ type: "user", data: user, index });
-        }
-      });
+    userList.forEach((user, index) => {
+      if (
+        user.username?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+        user.firstName?.toLowerCase().includes(input.slice(1).toLowerCase()) ||
+        user.lastName?.toLowerCase().includes(input.slice(1).toLowerCase())
+      ) {
+        newCombinedResults.push({ type: "user", data: user, index });
+      }
+    });
 
     messages.forEach((message, index) => {
       if (message.message.content.toLowerCase().includes(input.toLowerCase())) {
@@ -103,7 +103,6 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   const [isTypingQuery, setIsTypingQuery] = useState(false);
 
   const [combinedResults, setCombinedResults] = useState<CombinedResult[]>([]);
-
 
   useEffect(() => {
     const newCombinedResults: CombinedResult[] = [];
@@ -183,94 +182,104 @@ export const MessageSearch: React.FC<MessageSearchProps> = ({
   };
 
   return (
-    <div className="relative px-4">
-      <form
-        className=""
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSearchSubmit(e).catch(() =>
-            toast.error("Something went wrong")
-          );
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Search Direct Messages"
-          className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
-          name="q" // query parameter
-          value={input}
-          onClick={() => setIsFocused(true)}
-          onChange={(e) => handleQueryChange(e)}
-          autoComplete="off"
-          onKeyDown={(e) => {
-            if (e.key === "ArrowDown") {
-              handleArrowNavigation("down");
-            } else if (e.key === "ArrowUp") {
-              handleArrowNavigation("up");
-            } else if (e.key === "Tab") {
-              resultRefs.current[highlightedIndex]?.current?.click();
-            }
+    <>
+      <div className="relative px-4">
+        <form
+          className=""
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearchSubmit(e).catch(() =>
+              toast.error("Something went wrong")
+            );
           }}
-        />
-        <FontAwesomeIcon
-          icon={faSearch}
-          className={`absolute ${searchPosition} top-[38%] h-3 w-3 text-Intone-300`}
-        />
-      </form>
-      {addSearchQueryLoading && <LoadingSpinner />}
-      {isTypingQuery && combinedResults.length > 0 && (
-        <div
-          className={`${"right-1/2 top-14 min-w-3/4 translate-x-1/2 "} 
+        >
+          <input
+            type="text"
+            placeholder="Search Direct Messages"
+            className="h-10 w-full rounded-full border-2 border-Intone-300 bg-transparent py-2 pl-8 pr-4 outline-none"
+            name="q" // query parameter
+            value={input}
+            onClick={() => setIsFocused(true)}
+            onChange={(e) => handleQueryChange(e)}
+            autoComplete="off"
+            onKeyDown={(e) => {
+              if (e.key === "ArrowDown") {
+                handleArrowNavigation("down");
+              } else if (e.key === "ArrowUp") {
+                handleArrowNavigation("up");
+              } else if (e.key === "Tab") {
+                resultRefs.current[highlightedIndex]?.current?.click();
+              }
+            }}
+          />
+          <FontAwesomeIcon
+            icon={faSearch}
+            className={`absolute ${searchPosition} top-[38%] h-3 w-3 text-Intone-300`}
+          />
+        </form>
+        {isTypingQuery && combinedResults.length > 0 && (
+          <div
+            className={`${"right-1/2 top-14 min-w-3/4 translate-x-1/2 "} 
     gray-thin-scrollbar absolute z-10 flex max-h-[300px] 
           scroll-p-4 
           flex-col overflow-auto rounded-xl border border-slate-400 bg-Intone-100 shadow-xl`}
-        >
-          <div className="flex flex-col">
-            {LoadingUserList || isLoadingMessages ? (
-              <LoadingSpinner />
-            ) : (
-              <>
-                {combinedResults.map((result, index) => {
-                  const refIndex = index;
+          >
+            <div className="flex flex-col">
+              {LoadingUserList || isLoadingMessages ? (
+                <div className="flex flex-col py-4 mx-auto justify-center items-center">
+                <LoadingSpinner size={32} />
+                <p className="my-4 w-fit font-semibold">Searching...</p>
+                </div>
+              ) : (
+                <>
+                  {combinedResults.map((result, index) => {
+                    const refIndex = index;
 
-                  if (!resultRefs.current[refIndex]) {
-                    resultRefs.current[refIndex] =
-                      React.createRef<HTMLAnchorElement>();
-                  }
-                  return (
-                    <React.Fragment key={index}>
-                      {result.type === "user" && (
-                        <UserCardSearchResults
-                          user={result.data}
-                          index={index}
-                          src="message"
-                          highlightedIndex={highlightedIndex}
-                          scrollRef={
-                            resultRefs.current?.[index] ??
-                            React.createRef<HTMLAnchorElement>()
-                          }
-                        />
-                      )}
-                      {result.type === "message" && (
-                        <MessageCardSearchResults
-                          message={result.data}
-                          index={index}
-                          highlightedIndex={highlightedIndex}
-                          currentUserId={currentUser?.id ?? ""}
-                          scrollRef={
-                            resultRefs.current?.[index] ??
-                            React.createRef<HTMLAnchorElement>()
-                          }
-                        />
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </>
-            )}
+                    if (!resultRefs.current[refIndex]) {
+                      resultRefs.current[refIndex] =
+                        React.createRef<HTMLAnchorElement>();
+                    }
+                    return (
+                      <React.Fragment key={index}>
+                        {result.type === "user" && (
+                          <UserCardSearchResults
+                            user={result.data}
+                            index={index}
+                            src="message"
+                            highlightedIndex={highlightedIndex}
+                            scrollRef={
+                              resultRefs.current?.[index] ??
+                              React.createRef<HTMLAnchorElement>()
+                            }
+                          />
+                        )}
+                        {result.type === "message" && (
+                          <MessageCardSearchResults
+                            message={result.data}
+                            index={index}
+                            highlightedIndex={highlightedIndex}
+                            currentUserId={currentUser?.id ?? ""}
+                            scrollRef={
+                              resultRefs.current?.[index] ??
+                              React.createRef<HTMLAnchorElement>()
+                            }
+                          />
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </>
+              )}
+            </div>
           </div>
+        )}
+      </div>
+      {addSearchQueryLoading && (
+        <div className="my-4 flex flex-col items-center justify-center">
+          <LoadingSpinner size={32} />
+          <p className="my-4 w-fit font-semibold">Searching...</p>
         </div>
       )}
-    </div>
+    </>
   );
 };

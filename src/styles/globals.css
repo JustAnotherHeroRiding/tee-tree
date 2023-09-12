@@ -33,6 +33,11 @@ body {
         -translate-y-1/2 max-w-[850px] min-h-[100px] max-h-[650px] shadow-md z-50
     }
 
+    .modalMessage {
+        @apply fixed top-[45%] left-1/2 -translate-x-1/2 
+        -translate-y-1/2 max-w-[850px] min-h-[100px] max-h-[650px] shadow-md z-50
+    }
+
     .gray-thin-scrollbar {
         @apply scrollbar-thin 
         scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full scrollbar-track-white scrollbar-track-rounded-full
