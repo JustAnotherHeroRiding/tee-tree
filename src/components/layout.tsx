@@ -29,7 +29,7 @@ export const PageLayout = (props: PropsWithChildren) => {
             <SearchInput src="trends" />
           </div>
           <div className="gap-6@ flex flex-col items-center justify-center">
-            {!router.pathname.startsWith("/i/trends") && user && (
+            {!router.pathname.startsWith("/i/trends") && (
               <div className="mb-4 w-full items-center rounded-2xl bg-twitter-100">
                 <h1 className="mb-2 px-4 pt-2 text-2xl font-bold">
                   Trends for you
