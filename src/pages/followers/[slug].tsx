@@ -177,7 +177,7 @@ const ProfileFollowingPage: NextPage<{ username: string }> = ({ username }) => {
                 height={64}
               />
               <Link href={`/@${follower.author.username}`}>
-                <div className="mr-auto flex flex-col">
+                <div className="ml-4 mr-auto flex flex-col">
                   <span className="font-bold hover:underline">
                     {follower.author.firstName} {follower.author.lastName}
                   </span>
