@@ -148,17 +148,18 @@
   },
   "active": "4e95bf705e98997f",
   "lastOpenFiles": [
-    "node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js.map",
-    "node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js.map",
-    "node_modules/next/dist/compiled/next-server/app-page-turbo-experimental.runtime.prod.js.map",
-    "node_modules/next/dist/compiled/next-server/app-page-experimental.runtime.prod.js.map",
-    "node_modules/next/dist/compiled/next-server/app-page-experimental.runtime.dev.js.map",
-    "node_modules/next/web-vitals.js",
-    "node_modules/next/dist/compiled/ua-parser-js/ua-parser.js",
-    "node_modules/next/dist/compiled/ua-parser-js/package.json",
-    "node_modules/next/dist/compiled/ua-parser-js",
-    "node_modules/next/dist/server/lib/types.js",
-    "node_modules/next/script.js",
+    "node_modules/prettier/doc.d.ts",
+    "node_modules/prettier/index.d.ts",
+    "node_modules/prettier/index.cjs",
+    "node_modules/emoji-picker-react/dist/config/customEmojiConfig.d.ts",
+    "node_modules/emoji-picker-react/dist/components/emoji/BaseEmojiProps.d.ts",
+    "node_modules/@upstash/redis/types/pkg/commands/xadd.d.ts",
+    "node_modules/@clerk/shared/dist/types/hooks/types.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/instance.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/callWithRetry.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/deprecated.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/runtimeEnvironment.d.ts",
+    "node_modules/undici-types/README.md",
     "node_modules/@jest/reporters/node_modules/istanbul-lib-instrument/README.md",
     "node_modules/@jest/reporters/node_modules/istanbul-lib-instrument/CHANGELOG.md",
     "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/m3u8-parser/node_modules/@videojs/vhs-utils/README.md",
@@ -192,7 +193,6 @@
     "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/images/mp2t-packet-types.png",
     "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/images/hls-format.png",
     "node_modules/cloudinary-video-player/node_modules/aes-decrypter/node_modules/@videojs/vhs-utils/README.md",
-    "node_modules/cloudinary-video-player/node_modules/aes-decrypter/node_modules/@videojs/vhs-utils/CONTRIBUTING.md",
-    "node_modules/cloudinary-video-player/node_modules/aes-decrypter/node_modules/@videojs/vhs-utils/CHANGELOG.md"
+    "node_modules/cloudinary-video-player/node_modules/aes-decrypter/node_modules/@videojs/vhs-utils/CONTRIBUTING.md"
   ]
 }
