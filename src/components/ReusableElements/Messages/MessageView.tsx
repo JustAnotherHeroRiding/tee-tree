@@ -40,6 +40,7 @@ const MessageViewComponent = (props: MessageViewComponentProps) => {
   });
 
   const [showMediaFullScreen, setShowMediaFullScreen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isEditing, setIsEditing] = useState(false);
 
   const { mutate: deleteMediaMessage, isLoading: isDeletingMediaMessage } =
