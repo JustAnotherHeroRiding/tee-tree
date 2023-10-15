@@ -14,14 +14,11 @@ export const env = createEnv({
     CLOUDINARY_API_SECRET: z.string(),
     UPSTASH_REDIS_REST_URL: z.string(),
     UPSTASH_REDIS_REST_TOKEN: z.string(),
-    NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
-    NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string(),
-    NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
-    NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string(),
+   
     PUSHER_APP_ID: z.string().min(1),
-    NEXT_PUBLIC_PUSHER_KEY: z.string().min(1),
+    //NEXT_PUBLIC_PUSHER_KEY: z.string().min(1),
     PUSHER_SECRET: z.string().min(1),
-    NEXT_PUBLIC_PUSHER_CLUSTER: z.string().min(1),
+    //NEXT_PUBLIC_PUSHER_CLUSTER: z.string().min(1),
   },
 
   /**
@@ -33,6 +30,10 @@ export const env = createEnv({
     client: {
       NEXT_PUBLIC_PUSHER_KEY: z.string(),
       NEXT_PUBLIC_PUSHER_CLUSTER: z.string(),
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string(),
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string(),
     },
 
   /**
