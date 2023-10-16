@@ -105,7 +105,7 @@ const MessagesPage: NextPage = () => {
   const router = useRouter();
   const ctx = api.useContext();
 
-  const [urlQuery, setUrlQuery] = useState<string | undefined>(
+  const [urlQuery] = useState<string | undefined>(
     (router.query.q as string) || undefined
   );
 

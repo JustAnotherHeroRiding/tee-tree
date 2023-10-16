@@ -1,0 +1,198 @@
+{
+  "main": {
+    "id": "20fdd5da2c913beb",
+    "type": "split",
+    "children": [
+      {
+        "id": "c7767f9ed418529d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4e95bf705e98997f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notes and Reqs.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9cc843dabaabf0a1",
+    "type": "split",
+    "children": [
+      {
+        "id": "accbf97b5ce804e1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2362e140867623ff",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "3b2de153fdd024d9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "39c29acecd7a35ec",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "62cc94766aba2a93",
+    "type": "split",
+    "children": [
+      {
+        "id": "32d1dd1f627f4d1c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e27973176d4d6555",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Notes and Reqs.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "0b2b20038763f6a7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Notes and Reqs.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "04f2f73859a842f3",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "bdb7455fc9c76135",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Notes and Reqs.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "4e95bf705e98997f",
+  "lastOpenFiles": [
+    "node_modules/prettier/doc.d.ts",
+    "node_modules/prettier/index.d.ts",
+    "node_modules/prettier/index.cjs",
+    "node_modules/emoji-picker-react/dist/config/customEmojiConfig.d.ts",
+    "node_modules/emoji-picker-react/dist/components/emoji/BaseEmojiProps.d.ts",
+    "node_modules/@upstash/redis/types/pkg/commands/xadd.d.ts",
+    "node_modules/@clerk/shared/dist/types/hooks/types.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/instance.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/callWithRetry.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/deprecated.d.ts",
+    "node_modules/@clerk/shared/dist/types/utils/runtimeEnvironment.d.ts",
+    "node_modules/undici-types/README.md",
+    "node_modules/@jest/reporters/node_modules/istanbul-lib-instrument/README.md",
+    "node_modules/@jest/reporters/node_modules/istanbul-lib-instrument/CHANGELOG.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/m3u8-parser/node_modules/@videojs/vhs-utils/README.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/m3u8-parser/node_modules/@videojs/vhs-utils/CONTRIBUTING.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/m3u8-parser/node_modules/@videojs/vhs-utils/CHANGELOG.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/mux.js/docs/test-content.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/mux.js/docs/troubleshooting.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/mux.js/docs/streams.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/mux.js/docs/captions.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/mux.js/docs/diagram.png",
+    "node_modules/cloudinary-video-player/node_modules/m3u8-parser/node_modules/@videojs/vhs-utils/README.md",
+    "node_modules/cloudinary-video-player/node_modules/m3u8-parser/node_modules/@videojs/vhs-utils/CONTRIBUTING.md",
+    "node_modules/cloudinary-video-player/node_modules/m3u8-parser/node_modules/@videojs/vhs-utils/CHANGELOG.md",
+    "node_modules/cloudinary-video-player/node_modules/mpd-parser/node_modules/@videojs/vhs-utils/README.md",
+    "node_modules/cloudinary-video-player/node_modules/mpd-parser/node_modules/@videojs/vhs-utils/CONTRIBUTING.md",
+    "node_modules/cloudinary-video-player/node_modules/mpd-parser/node_modules/@videojs/vhs-utils/CHANGELOG.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/mux.js/README.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/mux.js/CHANGELOG.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/m3u8-parser/README.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/m3u8-parser/CONTRIBUTING.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/node_modules/m3u8-parser/CHANGELOG.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/lhls/transmux-before-append-changes.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/lhls/new-segment-loader-sequence.plantuml.png",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/lhls/index.md",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/lhls/current-flow.plantuml.png",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/lhls/expected-flow.plantuml.png",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/lhls/current-transmux-and-append-flow.plantuml.png",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/images/segment-loader-states.png",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/images/playlist-loader-states.nomnoml.svg",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/images/mp2t-structure.png",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/images/mp2t-packet-types.png",
+    "node_modules/cloudinary-video-player/node_modules/@videojs/http-streaming/docs/images/hls-format.png",
+    "node_modules/cloudinary-video-player/node_modules/aes-decrypter/node_modules/@videojs/vhs-utils/README.md",
+    "node_modules/cloudinary-video-player/node_modules/aes-decrypter/node_modules/@videojs/vhs-utils/CONTRIBUTING.md"
+  ]
+}

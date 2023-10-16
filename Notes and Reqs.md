@@ -362,7 +362,7 @@ If WebSockets are the primary focus of your project, you may want to consider a 
 - Style the message results #DONE 
 - Style the spinners as they were too small and not centered #DONE 
 - Further style the message results #DONE 
-- Highlight the search query in the results
+- Highlight the search query in the results with yellow #DONE
 - The results should link to the message/conversation
 - When searching from the new post modal it should only search for users and it should not show the history in the background
 - Selector for only messages or Users
