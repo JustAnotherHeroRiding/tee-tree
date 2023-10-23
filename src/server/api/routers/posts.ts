@@ -626,6 +626,7 @@ export const postsRouter = createTRPCRouter({
         nextCursor = nextItem?.id;
       }
       const extendedPosts = await addUserDataToPosts(items);
+      //console.log(extendedPosts);
       return {
         posts: extendedPosts,
         nextCursor,
