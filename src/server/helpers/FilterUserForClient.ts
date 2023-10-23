@@ -1,7 +1,7 @@
 import { type User } from "@clerk/nextjs/dist/types/server";
 
 export const filterUserForClient = (user: User) => {
-  console.log(user)
+  //console.log(user)
     return {
       id: user.id,
       username: user.username,
